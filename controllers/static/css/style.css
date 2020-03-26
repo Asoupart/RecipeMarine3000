@@ -1,0 +1,8 @@
+        header {
+            color: wheat;
+            min-height: 300px;
+            background-color: brown;
+        }
+        header h1{
+            font-size: 100px;
+        }

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Les ingrédients</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
+    <style>
+
+        header {
+            color: wheat;
+            min-height: 300px;
+            background-color: brown;
+        }
+        header h1{
+            font-size: 100px;
+            margin: 10px 30px;
+        }
+        a.nav-link {
+            font-size: 50px;
+        }
+        td {
+            font-size: 50px;
+        }
+        form {
+            margin: 30px;
+        }
+        input[type=text], label {
+            font-size: 40px;
+        }
+        a {
+            color: white;
+        }
+        .btn {
+            padding: 20px 40px;
+            font-size: 25px;
+        }
+        #btn-submit{
+            margin-top: 10px;
+        }
+        .searchIngredient {
+            min-width: 350px;
+        }
+    </style>
+    <script type="text/javascript" src="static/js/script.js"></script>
+</head>
+<body class="container-fluid">
+    <header class="row">
+        <section class="col">
+            <h1 class="text-center">Liste des ingrédients</h1>
+        </section>
+    </header>
+    <nav class="row bg-dark text-white text-center">
+        <div class="col-lg-4 col-sm-12 menu">
+            <a class="nav-link" href="/">Recettes</a>
+        </div>
+        <div class="col-lg-4 col-sm-12 menu">
+            <a class="nav-link" href="#">Ingrédients</a>
+        </div>
+        <div class="col-lg-4 col-sm-12 menu">
+            <a class="nav-link" href="#">Ajout</a>
+        </div>
+    </nav>
+    <main class="row">
+        <div class="col-1"></div>
+        <section class="col-10">
+            <form class="row">
+                <div class="col-10">
+                    <input id="searchIngredient" type="text" class="form-control" placeholder="Rechercher un ingrédient">
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-lg btn-success" onclick="addIngredient()">+</button>
+                </div>
+            </form>
+        <table class="col table">
+            <tbody id="listIngredients">
+
+			</tbody>
+        </table>
+        </section>
+        <div class="col-1"></div>
+    </main>
+
+    <!--La modal d'ajout et d'edit-->
+    <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+                    <h1 id="h1Modal">
+                        Ajouter un ingrédient
+                    </h1>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body mx-3 row">
+					<div class="col">
+						<form action="" method="post">
+							<input type="hidden" id="ingredientId">
+							<label for="ingredientName">Nom</label>
+							<br>
+							<input type="text" id="ingredientName" name="name" size="15"/>
+							<br>
+							<button id="btn-submit" class="btn btn-warning" type="submit">Ok</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- La modal de suppression -->
+    <div id="modalDelete" class="modal fade" tabindex="-1" role="dialog"
+		aria-labelledby="deleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<p hidden id="idIngredientToDelete"></p>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>Êtes vous sûr ?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" onclick="deleteIngredient()">Oui</button>
+					<button type="button" class="btn btn-dark" data-dismiss="modal">Annuler</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- Tous les scripts -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        let displayIngredients = function (data) {
+            $("#listIngredients").empty()
+                $.each(data, function(key, val) {
+                    let tr = $("<tr>")
+                    $("#listIngredients").append(tr.addClass("text-left"))
+                    tr.append($("<td>").html(val.name).addClass("ingredientName"))
+                    tr.append($("<td>").append(
+                        $("<button>")
+                            .attr("type", "button")
+                            .attr("onclick","editIngredient(" + val.id + ")")
+                            .addClass("btn btn-warning btn-lg")
+                            .html("<i class='fas fa-cog'></i>")
+                    ))
+                    tr.append($("<td>").append(
+                        $("<button>")
+                            .attr("type", "button")
+                            .attr("onclick","toggleModalDelete(" + val.id + ")")
+                            .addClass("btn btn-danger btn-lg")
+                            .html("<i class='fas fa-times'></i>")
+                    ))
+                });
+        }
+
+        $("#searchIngredient").keyup(function () {
+            let tag = $("#searchIngredient").val()
+            if(tag != "" && tag != null) {
+                $.getJSON(port + "api/ingredients/" + tag, function(data) {
+                    displayIngredients(data)
+                })
+            } else {
+                allIngredients()
+            }
+
+        })
+
+        let allIngredients = function(){
+            $.getJSON(port + "api/ingredients", function(data) {
+                displayIngredients(data)
+            })
+        }
+
+        $("#modalAdd").submit(function (event) {
+            let ingredient = {
+                "name": $("#ingredientName").val()
+            }
+            if($("#ingredientId").val() > 0){
+                $.ajax({
+                    url : port + "api/ingredients/" + $("#ingredientId").val(),
+                    type : 'PUT',
+                    data :  JSON.stringify(ingredient),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success : function(result) {
+                        allIngredients()
+                    }
+                });
+
+            } else {
+                $.ajax({
+                    url : port + "api/ingredients",
+                    type : 'POST',
+                    data :  JSON.stringify(ingredient),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success : function(result) {
+                        allIngredients()
+                    }
+                });
+            }
+            event.preventDefault()
+            $("#modalAdd").modal("hide")
+        })
+
+        let deleteIngredient = function(){
+            $.ajax({
+				url : port + 'api/ingredients/' + $("#idIngredientToDelete").val(),
+				type : 'DELETE',
+				success : function(result) {
+				    $("#modalDelete").modal("hide")
+                    allIngredients()
+				}
+			})
+        }
+
+        let toggleModalAdd = function(){
+            $("#modalAdd").modal("show")
+        }
+
+        let addIngredient = function(){
+            $("#ingredientId").val(null)
+            $("#ingredientName").val(null)
+            toggleModalAdd()
+        }
+
+        let editIngredient = function(id){
+            toggleModalAdd()
+            $("#ingredientId").val(id)
+            $.getJSON(port + "api/ingredients/" + id, function(data) {
+                $("#ingredientName").val(data.name)
+            })
+        }
+
+        let toggleModalDelete = function(id){
+            $("#modalDelete").modal("show")
+            $("#idIngredientToDelete").val(id)
+        }
+
+        window.onload = allIngredients();
+    </script>
+</body>
