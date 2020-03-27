@@ -52,6 +52,7 @@ def insert(ingredient):
     try:
         cursor.execute('INSERT INTO ingredients (\'name\') VALUES (?)', (ingredient.name,))
         conn.commit()
+        return cursor.lastrowid
     except sqlite3.Error as error:
         print(error.with_traceback())
 

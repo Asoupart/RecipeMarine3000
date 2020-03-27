@@ -51,6 +51,12 @@ paths:
       responses:
        201:
         description: Successfully created ingredient in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_ing:
+                type: "integer"
 
   /ingredients/{id_ing}:
     get:
@@ -214,7 +220,7 @@ paths:
           description: Id of the category
           type: integer
           required: True
-        - name: source
+        - name: category
           in: body
           schema:
             type: object

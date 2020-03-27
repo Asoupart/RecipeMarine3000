@@ -27,7 +27,9 @@ def read_by_tag(tag):
 def create(ingredient):
     name = ingredient.get("name", None)
     ingredient = Ingredient(None, name)
-    IngredientDAOImpl.insert(ingredient)
+    id_ing = IngredientDAOImpl.insert(ingredient)
+    json.dumps(id_ing)
+    return id_ing
 
 
 def update(id_ing, ingredient):

@@ -9,7 +9,7 @@
           crossorigin="anonymous">
     <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
     <style>
-
+		/* Header et nav*/
         header {
             color: wheat;
             min-height: 300px;
@@ -21,37 +21,76 @@
         }
         a.nav-link {
             font-size: 50px;
+            color: white;
         }
-        td {
-            font-size: 50px;
-        }
+
+		a.nav-link:hover{
+			background-color: black;
+		}
+
+		a.nav-link:active {
+			color: wheat;
+		}
+
+
+		main h1 {
+			font-size: 50px;
+			font-weight: bold;
+			margin-top: 15px;
+		}
+
         form {
             margin: 30px;
         }
-        input[type=text], label {
+        input[type=text], input[type=number], label, select, h2 {
             font-size: 40px;
+			margin: 10px !important;
         }
-        a {
-            color: white;
+
+		input[type=number] {
+			width: 120px;
+		}
+
+		input[type=checkbox] {
+			margin: 0px 20px 0 10px;
+			height: 1.4em;
+			width: 1.4em;
+		}
+
+		select {
+			margin-right: 30px;
+		}
+
+		td {
+            font-size: 50px;
         }
+
+		textarea {
+			margin-top: 20px;
+			font-size: 40px;
+		}
+
         .btn {
+			margin: 20px 0px;
             padding: 20px 40px;
             font-size: 25px;
         }
-        #btn-submit{
-            margin-top: 10px;
-        }
-        .searchIngredient {
-            min-width: 350px;
-        }
+
+		p {
+			font-size: 30px;
+		}
+
+		section {
+			margin-top: 20px;
+			border: black solid 1px;
+		}
+
     </style>
     <script type="text/javascript" src="static/js/script.js"></script>
 </head>
 <body class="container-fluid">
     <header class="row">
-        <section class="col">
-            <h1 class="text-center">Liste des ingrédients</h1>
-        </section>
+		<h1 class="col text-center">Liste des ingrédients</h1>
     </header>
     <nav class="row bg-dark text-white text-center">
         <div class="col-lg-4 col-sm-12 menu">
@@ -66,7 +105,7 @@
     </nav>
     <main class="row">
         <div class="col-1"></div>
-        <section class="col-10">
+        <article class="col-10">
 			<h1>
 				Nouvelle recette
 			</h1>
@@ -80,41 +119,48 @@
 				<section class="row">
 					<div class="col-12">
 						<label for="recipeNumber">Nombre de personnes</label>
-						<input type="text" id="recipeNumber" class="form-control">
+						<input type="number" id="recipeNumber" class="form-control">
 					</div>
 				</section>
 				<section class="row">
 					<div class="col-10">
 						<label for="sources">Source</label><br>
 						<select id="sources">
-							<option disabled selected>Choississez votre source</option>
+
 						</select>
 					</div>
 					<div class="col-2">
-						<button type="button" class="btn btn-warning" onclick="addElem('source')">+</button>
+						<button type="button" class="btn btn-success" onclick="addElem('sources')">NEW</button>
+					</div>
+				</section>
+				<section class="row"><div class="col">
+					<h2 class="row">Catégories</h2>
+					<div class="row">
+						<div class="col-10" id="categories">
+						</div>
+						<div class="col-2">
+							<button type="button" class="btn btn-success" onclick="addElem('categories')">NEW</button>
+						</div>
 					</div>
 				</section>
 				<section class="row">
-					<div class="col-10" id="categories">
-						<h2>Catégories</h2>
-					</div>
-					<div class="col-2">
-						<button type="button" class="btn btn-warning" onclick="addElem('category')">+</button>
-					</div>
-				</section>
-				<section class="row">
-					<div class="col-10" id="tools">
-						<h2>Outils</h2>
-					</div>
-					<div class="col-2">
-						<button type="button" class="btn btn-warning" onclick="addElem('tool')">+</button>
+					<div class="col">
+						<h2 class="row">Outils</h2>
+						<div class="row">
+							<div class="col-10" id="tools">
+							</div>
+							<div class="col-2">
+								<button type="button" class="btn btn-success" onclick="addElem('tools')">NEW</button>
+							</div>
+						</div>
 					</div>
 				</section>
-				<button type="button" class="btn btn-success" onclick="addSection()">Ajouter section</button>
 				<section class="row" id="sections">
 				</section>
+				<button type="button" class="btn btn-success" onclick="addSection()">Ajouter section</button>
+				<button type="button" class="btn btn-primary" onclick="submitForm()">Créer la recette</button>
 			</form>
-        </section>
+        </article>
         <div class="col-1"></div>
     </main>
 
@@ -126,16 +172,17 @@
 				<div class="modal-header text-center">
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
-						<span aria-hidden="true">&times;</span>
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
 					</button>
 				</div>
 				<div class="modal-body mx-3 row">
 					<div class="col">
 						<form action="" method="post">
-							<input type="hidden" id="ingredientId">
-							<label for="ingredientName">Nom</label>
+							<input type="hidden" id="elemType">
+							<input type="hidden" id="sectionId">
+							<label for="elemToBeAdded" id="labelForElemToBeAdded">Nom</label>
 							<br>
-							<input type="text" id="ingredientName" name="name" size="15"/>
+							<input type="text" id="elemToBeAdded" name="name" size="15"/>
 							<br>
 							<button id="btn-submit" class="btn btn-warning" type="submit">Ok</button>
 						</form>
@@ -154,11 +201,11 @@
 					<p hidden id="idIngredientToDelete"></p>
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
-						<span aria-hidden="true">&times;</span>
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<p>Êtes vous sûr ?</p>
+					<h3>Êtes vous sûr ?</h3>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-danger" onclick="deleteIngredient()">Oui</button>
@@ -181,26 +228,42 @@
 
     <script type="text/javascript">
 		window.onload = function () {
+			displaySources()
+			displayCategories()
+			displayTools()
+		}
+
+		let displaySources = function(){
+			$("#sources").empty()
+			$("#sources").append($("<option>").attr("disabled", "disabled").attr("selected","selected").html("Choississez votre source"))
+			$("#sources").append($("<option>").val(0).html("Aucune"))
 			$.getJSON(port + "api/sources", function(data) {
 				$.each(data, function(key, val) {
           	      $("#sources").append($("<option>").val(val.id).html(val.name))
             	})
 			})
+		}
+
+		let displayCategories = function(){
+			$("#categories").empty()
 			$.getJSON(port + "api/categories", function(data) {
 				$.each(data, function(key, val) {
-					$("#categories").append($("<input>").attr("type", "checkbox").attr("id", "category"+val.id).val(val.id))
+					$("#categories").append($("<input>").attr("type", "checkbox").addClass("category").attr("id", "category"+val.id).val(val.id))
 					$("#categories").append($("<label>").attr("for", "category"+val.id).html(val.name))
 					$("#categories").append($("<br>"))
 				})
 			})
+		}
+
+		let displayTools = function(){
+			$("#tools").empty()
 			$.getJSON(port + "api/tools", function(data) {
 				$.each(data, function(key, val) {
-					$("#tools").append($("<input>").attr("type", "checkbox").attr("id", "tool"+val.id).val(val.id))
+					$("#tools").append($("<input>").attr("type", "checkbox").addClass("toolRequired").attr("id", "tool"+val.id).val(val.id))
 					$("#tools").append($("<label>").attr("for", "tool"+val.id).html(val.name))
 					$("#tools").append($("<br>"))
 				})
 			})
-
 		}
 
 		let i = 1
@@ -213,6 +276,7 @@
 					.attr("onclick","addIngredient("+ i +")")
 					.html("Ajouter ingrédient")
 			)
+			divAddIngredient.append($("<button>").attr("type", "button").addClass("btn btn-success").attr("onclick","addElem('ingredients', "+ i + ")").html("NEW"))
 			divAddIngredient.append($("<br>"))
 
 			let divAddInstruction = $("<div>").attr("id","instructions"+i)
@@ -225,7 +289,7 @@
 			)
 			divAddInstruction.append($("<br>"))
 
-			let div = $("<div>").attr("id", "section"+i).addClass("col-12")
+			let div = $("<div>").attr("id", "section"+i).addClass("col-12 sectionRecipe").attr("sectionId", i)
 			div.append($("<button>")
 					.attr("type", "button")
 					.addClass("btn btn-danger")
@@ -234,7 +298,7 @@
 			div.append($("<br>"))
 			div.append($("<input>")
 					.attr("type", "text")
-					.addClass("form-control")
+					.addClass("form-control sectionTitle")
 					.attr("id", "sectionTitle"+i)
 					.attr("placeholder","Titre de la section"))
 			div.append($("<br>"))
@@ -248,46 +312,55 @@
 			$("#section"+idSection).remove()
 		}
 
-		let addIngredient = function (idSection){
-			$("#buttonIngredient"+idSection).attr("disabled", "disabled")
-			let selectIngredient = $("<select>").attr("id","selectIngredient"+idSection)
-			let table = $("<table>").attr("id", "listIngredients"+i)
-
+		let displayIngredients = function(idSection){
 			$.getJSON(port + "api/ingredients", function(data) {
-				selectIngredient.append($("<option>").attr("disabled","disabled").attr("selected","selected").html("Ingrédient"))
 				$.each(data, function(key, val) {
-					selectIngredient.append($("<option>")
+					$("#selectIngredient"+idSection).append($("<option>")
 							.attr("id", "section"+idSection+"ingredient"+val.id)
 							.attr("value", val.id)
 							.html(val.name))
 				})
 			})
+		}
+
+		let addIngredient = function (idSection){
+			$("#buttonIngredient"+idSection).attr("disabled", "disabled")
+			let selectIngredient = $("<select>").attr("id","selectIngredient"+idSection)
+			let table = $("<table>").attr("id", "listIngredients"+i)
+			selectIngredient.append($("<option>").attr("disabled","disabled").attr("selected","selected").html("Ingrédient"))
+			displayIngredients(idSection)
+
 			$("#ingredients"+idSection).append(selectIngredient)
 			$("#ingredients"+idSection).append($("<button>")
 					.attr("type","button")
-					.addClass("btn btn-success")
-					.html("+")
+					.addClass("btn btn-primary")
+					.html("<i class='fas fa-plus'></i>")
 					.click(function () {
-						let tr = $("<tr>")
-						tr.append($("<td>")
-								.attr("value", selectIngredient.val())
-								.html($("#section"+idSection+"ingredient"+selectIngredient.val()).html()))
-						tr.append($("<td>")
-								.append($("<input>")
-										.attr("type", "number")
-										.attr("id", "quantityIngredient"+selectIngredient.val())
-								))
-						tr.append($("<td>")
-								.append($("<select>")
-										.append($("<option>").attr("id","unitIngredient"+selectIngredient.val()).html("Sans unité").val(null))
-										.append($("<option>").attr("id","unitIngredient"+selectIngredient.val()).html("g").val("g"))
-								)
-						)
-						tr.append($("<button>").attr("type", "button").addClass("btn btn-warning").html("-").click(function () {
-								tr.remove()
-								}
-						))
-						table.append(tr)
+						if(selectIngredient.val() != null && selectIngredient.val() != 0){
+							let tr = $("<tr>")
+							tr.attr("sectionId", idSection)
+							tr.addClass("ingredientsSection")
+							tr.append($("<td>")
+									.attr("value", selectIngredient.val())
+									.html($("#section"+idSection+"ingredient"+selectIngredient.val()).html()))
+							tr.append($("<td>")
+									.append($("<input>")
+											.attr("type", "number")
+											.attr("id", "quantityIngredient"+selectIngredient.val())
+									))
+							tr.append($("<td>")
+									.append($("<select>")
+											.append($("<option>").attr("id","unitIngredient"+selectIngredient.val()).html("Sans unité").val("nounit"))
+											.append($("<option>").attr("id","unitIngredient"+selectIngredient.val()).html("g").val("g"))
+									)
+							)
+							tr.append($("<td>")
+									.append($("<button>").attr("type", "button").addClass("btn btn-danger").html("<i class='fas fa-minus'></i>").click(function () {
+									tr.remove()
+									}
+							)))
+							table.append(tr)
+						}
 					})
 					)
 			$("#ingredients"+idSection).append(table)
@@ -296,26 +369,27 @@
 		let j = 1
 		let addInstruction = function(idSection){
 			$("#buttonInstruction"+idSection).attr("disabled", "disabled")
-			let textarea = $("<textarea>").attr("id","insertInstruction"+idSection)
+			let textarea = $("<textarea>").attr("id","insertInstruction"+idSection).addClass("col-12").attr("placeholder", "Ecrivez votre instruction")
 			$("#instructions"+idSection).append(textarea)
+			$("#instructions"+idSection).append($("<br>"))
 			$("#instructions"+idSection).append($("<button>")
 					.attr("type","button")
 					.addClass("btn btn-success")
-					.html("+")
+					.html("<i class='fas fa-plus'></i>")
 					.attr("onclick", "displayInstruction(" + idSection + ")")
 			)
 		}
 
 		let displayInstruction = function(idSection){
 			let instruction = $("<div>").addClass("row").attr("id","section"+idSection+"instruction"+j)
-					.append($("<div>")
+					.append($("<p>")
 							.addClass("col-10")
 							.html($("#insertInstruction"+idSection).val()))
 					.append($("<div>")
 						.append($("<button>")
 							.addClass("btn btn-warning")
 							.attr("type","button")
-							.html("-")
+							.html("<i class='fas fa-minus'></i>")
 							.attr("onclick", "removeInstruction("+ idSection + "," + j +")")
 						)
 					)
@@ -328,10 +402,109 @@
 			$("#section"+idSection+"instruction"+idInstruction).remove()
 		}
 
-		let addElem = function(elem){
-			if (elem == "source"){
-				console.log(elem)
+		let addElem = function(elem, idSection){
+			$("#modalAdd").modal("show")
+			$("#elemType").val(elem)
+			$("#sectionId").val(idSection)
+			switch (elem) {
+				case "sources":
+					$("#labelForElemToBeAdded").html("Nouvelle source")
+					break
+				case "categories":
+					$("#labelForElemToBeAdded").html("Nouvelle catégorie")
+					break
+				case "tools":
+					$("#labelForElemToBeAdded").html("Nouvel outil")
+					break
+				case "ingredients":
+					$("#labelForElemToBeAdded").html("Nouvel ingrédient")
+					break
 			}
+		}
+
+		$("#modalAdd").submit(function (event) {
+			let elemToBeAdded = {
+				"name": $("#elemToBeAdded").val()
+			}
+			$.ajax({
+				url : port + "api/"+$("#elemType").val(),
+				type : 'POST',
+				data :  JSON.stringify(elemToBeAdded),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success : function(result) {
+					switch ($("#elemType").val()) {
+						case "sources":
+							displaySources()
+							break
+						case "categories":
+							displayCategories()
+							break
+						case "tools":
+							displayTools()
+							break
+						case "ingredients":
+							displayIngredients($("#sectionId").val())
+							break
+					}
+				}
+			});
+			event.preventDefault()
+            $("#modalAdd").modal("hide")
+		})
+
+		let submitForm = function () {
+			let source
+			if($("#sources").val() == 0){
+				source = 0
+			} else {
+				source = $("#sources").val()
+			}
+
+			let new_recipe = {
+				"name": $("#recipeTitle").val(),
+				"nbr_person": $("#recipeNumber").val(),
+				"id_src": source
+			}
+			let id_recipe=0
+
+			console.log(new_recipe)
+
+			$(".category").each(function () {
+				if(this.checked == true){
+					console.log(this.value)
+				}
+			})
+
+			$(".toolRequired").each(function () {
+				if(this.checked == true){
+					console.log(this.value)
+				}
+			})
+
+			$(".sectionRecipe").each(function () {
+				let sectionId = $(this).attr("sectionId")
+				let title = $(this).find("input").val()
+				let section = {
+					"name": title,
+					"id_recipe": id_recipe
+				}
+				let sectionDBId = 0
+				console.log(title)
+
+				$("tr[sectionId =" + sectionId +"]").each(function () {
+					let columns = $(this).find("td")
+					let map_section_ingredient = {
+						"id_section": sectionDBId,
+						"id_ingredient": columns[0].getAttribute("value"),
+						"quantity": columns[1].firstElementChild.value,
+						"unit": columns[2].firstElementChild.value
+					}
+					console.log(map_section_ingredient)
+				})
+			})
+
+
 		}
     </script>
 </body>
