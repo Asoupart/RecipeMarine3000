@@ -19,7 +19,9 @@ def read_one(id_ing):
 def create(category):
     name = category.get("name", None)
     category = Category(None, name)
-    CategoryDAOimpl.insert(category)
+    id_cat = CategoryDAOimpl.insert(category)
+    json.dumps(id_cat)
+    return id_cat
 
 
 def update(id_cat, category):

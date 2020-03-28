@@ -28,7 +28,9 @@ def create(section):
     name = section.get("name", None)
     id_recipe = section.get("id_recipe", None)
     section = Section(None, name, id_recipe)
-    SectionDAOimpl.insert(section)
+    id_section = SectionDAOimpl.insert(section)
+    json.dumps(id_section)
+    return id_section
 
 
 def update(id_sec, section):

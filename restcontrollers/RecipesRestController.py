@@ -29,7 +29,9 @@ def create(recipe):
     nbr_person = recipe.get("nbr_person", None)
     id_src = recipe.get("id_src", None)
     recipe = Recipe(None, name, nbr_person, id_src)
-    RecipeDAOimpl.insert(recipe)
+    id_recipe = RecipeDAOimpl.insert(recipe)
+    json.dumps(id_recipe)
+    return id_recipe
 
 
 def update(id_recipe, recipe):

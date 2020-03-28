@@ -28,7 +28,9 @@ def create(image):
     name = image.get("name", None)
     id_recipe = image.get("id_recipe", None)
     image = Image(None, name, id_recipe)
-    ImageDAOImpl.insert(image)
+    id_img = ImageDAOImpl.insert(image)
+    json.dumps(id_img)
+    return id_img
 
 
 def update(id_img, image):

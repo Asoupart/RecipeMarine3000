@@ -19,7 +19,9 @@ def read_one(id_src):
 def create(source):
     name = source.get("name", None)
     source = Source(None, name)
-    SourceDAOimpl.insert(source)
+    id_src = SourceDAOimpl.insert(source)
+    json.dumps(id_src)
+    return id_src
 
 
 def update(id_src, source):

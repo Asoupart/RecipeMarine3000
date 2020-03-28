@@ -50,6 +50,7 @@ def insert(instruction):
         cursor.execute('INSERT INTO instructions (text_ins, id_section) VALUES (?, ?)',
                        (instruction.text_ins, instruction.id_section))
         conn.commit()
+        return cursor.lastrowid
     except sqlite3.Error as error:
         print(error.with_traceback())
 

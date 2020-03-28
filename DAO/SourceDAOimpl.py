@@ -50,6 +50,7 @@ def insert(source):
     try:
         cursor.execute('INSERT INTO sources (name) VALUES (?)', (source.name,))
         conn.commit()
+        return cursor.lastrowid
     except sqlite3.Error as error:
         print(error.with_traceback())
 

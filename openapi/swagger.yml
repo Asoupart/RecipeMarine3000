@@ -183,6 +183,12 @@ paths:
       responses:
        201:
         description: Successfully created category in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_cat:
+                type: "integer"
 
   /categories/{id_cat}:
     get:
@@ -286,6 +292,12 @@ paths:
       responses:
        201:
         description: Successfully created source in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_src:
+                type: "integer"
 
   /sources/{id_src}:
     get:
@@ -385,12 +397,20 @@ paths:
           schema:
            type: object
            properties:
-             name:
+             text:
                 type: string
                 description: Name of the instruction
+             id_section:
+                type : integer
       responses:
        201:
         description: Successfully created instruction in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_ins:
+                type: "integer"
 
   /instructions/{id_ins}:
     get:
@@ -522,9 +542,17 @@ paths:
              name:
                 type: string
                 description: Name of the section
+             id_recipe:
+                type: integer
       responses:
        201:
         description: Successfully created section in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_sec:
+                type: "integer"
 
   /sections/{id_sec}:
     get:
@@ -687,6 +715,12 @@ paths:
       responses:
        201:
         description: Successfully created source in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_tool:
+                type: "integer"
 
   /tools/{id_tool}:
     get:
@@ -794,6 +828,12 @@ paths:
       responses:
        201:
         description: Successfully created image in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_img:
+                type: "integer"
 
   /images/{id_img}:
     get:
@@ -909,6 +949,12 @@ paths:
       responses:
        201:
         description: Successfully created recipe in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_recipe:
+                type: "integer"
 
   /recipes/{id_recipe}:
     get:

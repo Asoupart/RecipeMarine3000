@@ -19,7 +19,9 @@ def read_one(id_tool):
 def create(tool):
     name = tool.get("name", None)
     tool = Tool(None, name)
-    ToolDAOImpl.insert(tool)
+    id_tool = ToolDAOImpl.insert(tool)
+    json.dumps(id_tool)
+    return id_tool
 
 
 def update(id_tool, tool):

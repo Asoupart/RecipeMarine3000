@@ -50,8 +50,9 @@ def insert(recipe):
         if recipe.id_src is None:
             cursor.execute('INSERT INTO recipes (name, nbr_person) VALUES (?,?)', (recipe.name, recipe.nbr_person,))
         else:
-            cursor.execute('INSERT INTO recipes (name, nrb_person, id_src) VALUES (?,?,?)', (recipe.name, recipe.nbr_person, recipe.id_src))
+            cursor.execute('INSERT INTO recipes (name, nbr_person, id_src) VALUES (?,?,?)', (recipe.name, recipe.nbr_person, recipe.id_src))
         conn.commit()
+        return cursor.lastrowid
     except sqlite3.Error as error:
         print(error.with_traceback())
 

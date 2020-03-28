@@ -28,7 +28,9 @@ def create(instruction):
     text = instruction.get("text", None)
     id_section = instruction.get("id_section", None)
     instruction = Instruction(None, text, id_section)
-    InstructionDAOimpl.insert(instruction)
+    id_instruction = InstructionDAOimpl.insert(instruction)
+    json.dumps(id_instruction)
+    return id_instruction
 
 
 def update(id_ins, instruction):

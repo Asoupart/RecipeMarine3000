@@ -50,6 +50,7 @@ def insert(category):
     try:
         cursor.execute('INSERT INTO categories (\'name\') VALUES (?)', (category.name,))
         conn.commit()
+        return cursor.lastrowid
     except sqlite3.Error as error:
         print("FAIL")
 

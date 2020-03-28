@@ -12,4 +12,4 @@ class Instruction:
         return f"({self.id_ins}, {self.text_ins})"
 
     def to_dict(self):
-        return {"id": self.id_ins, "text": self.text, "id_section": self.id_section}
+        return {"id": self.id_ins, "text_ins": self.text_ins, "id_section": self.id_section}

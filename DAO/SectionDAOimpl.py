@@ -50,6 +50,7 @@ def insert(section):
     try:
         cursor.execute('INSERT INTO sections (name, id_recipe) VALUES (?, ?)', (section.name, section.id_recipe,))
         conn.commit()
+        return cursor.lastrowid
     except sqlite3.Error as error:
         print(error.with_traceback())
 

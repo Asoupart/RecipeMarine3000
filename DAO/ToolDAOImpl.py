@@ -50,6 +50,7 @@ def insert(tool):
     try:
         cursor.execute('INSERT INTO tools (name) VALUES (?)', (tool.name,))
         conn.commit()
+        return cursor.lastrowid
     except sqlite3.Error as error:
         print(error.with_traceback())
 

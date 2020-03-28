@@ -164,7 +164,7 @@
         <div class="col-1"></div>
     </main>
 
-    <!--La modal d'ajout et d'edit-->
+    <!--La modal d'ajout-->
     <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog"
 		aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
@@ -185,6 +185,34 @@
 							<input type="text" id="elemToBeAdded" name="name" size="15"/>
 							<br>
 							<button id="btn-submit" class="btn btn-warning" type="submit">Ok</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	 <!--La modal d'edit d'instruction-->
+	 <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
+					</button>
+				</div>
+				<div class="modal-body mx-3 row">
+					<div class="col">
+						<form action="" method="post">
+							<input type="hidden" id="sectionIdforEdit">
+							<input type="hidden" id="instructionIdforEdit">
+							<label for="instructionToBeEdited">Nom</label>
+							<br>
+							<input type="text" id="instructionToBeEdited" name="name" size="15"/>
+							<br>
+							<button type="submit" class="btn btn-warning">Ok</button>
 						</form>
 					</div>
 				</div>
@@ -381,13 +409,21 @@
 		}
 
 		let displayInstruction = function(idSection){
-			let instruction = $("<div>").addClass("row").attr("id","section"+idSection+"instruction"+j)
+			let instruction = $("<div>").addClass("row section" + idSection + "instructions").attr("id","section"+idSection+"instruction"+j)
 					.append($("<p>")
-							.addClass("col-10")
+							.addClass("col-8")
 							.html($("#insertInstruction"+idSection).val()))
-					.append($("<div>")
-						.append($("<button>")
+					.append($("<div>").addClass("col-2")
+							.append($("<button>")
 							.addClass("btn btn-warning")
+							.attr("type","button")
+							.html("<i class='fas fa-cog'></i>")
+							.attr("onclick","editInstruction(" + idSection + "," + j + ")")
+							)
+					)
+					.append($("<div>").addClass("col-2")
+						.append($("<button>")
+							.addClass("btn btn-danger")
 							.attr("type","button")
 							.html("<i class='fas fa-minus'></i>")
 							.attr("onclick", "removeInstruction("+ idSection + "," + j +")")
@@ -401,6 +437,21 @@
 		let removeInstruction = function(idSection, idInstruction){
 			$("#section"+idSection+"instruction"+idInstruction).remove()
 		}
+
+		let editInstruction = function(idSection, idInstruction){
+			$("#modalEdit").modal("show")
+			$("#sectionIdforEdit").val(idSection)
+			$("#instructionIdforEdit").val(idInstruction)
+			$("#instructionToBeEdited").val($("#section"+idSection+"instruction"+idInstruction).find("p").html())
+		}
+
+		$("#modalEdit").submit(function (event) {
+			let idSection = $("#sectionIdforEdit").val()
+			let idInstruction = $("#instructionIdforEdit").val()
+			$("#section"+idSection+"instruction"+idInstruction).find("p").html($("#instructionToBeEdited").val())
+			event.preventDefault()
+            $("#modalEdit").modal("hide")
+		})
 
 		let addElem = function(elem, idSection){
 			$("#modalAdd").modal("show")
@@ -453,58 +504,113 @@
             $("#modalAdd").modal("hide")
 		})
 
+		/*La fonction de création de recette
+		* D'abord crée la recette avec name, nbr_person et id_src
+		* Puis map la recette avec ses catégories
+		* Puis map la recette avec ses outils requis
+		* */
 		let submitForm = function () {
 			let source
 			if($("#sources").val() == 0){
 				source = 0
 			} else {
-				source = $("#sources").val()
+				source = parseInt($("#sources").val())
 			}
 
-			let new_recipe = {
-				"name": $("#recipeTitle").val(),
-				"nbr_person": $("#recipeNumber").val(),
-				"id_src": source
+			if ($("#recipeTitle").val() == null || $("#recipeTitle").val() == "" || $("#recipeNumber").val() == null || $("#recipeNumber").val() == ""){
+				alert("Champ non renseigné")
+			} else {
+				let new_recipe = {
+					"name": $("#recipeTitle").val(),
+					"nbr_person": parseInt($("#recipeNumber").val()),
+					"id_src": source
+				}
+				$.ajax({
+				url : port + "api/recipes",
+				type : 'POST',
+				data :  JSON.stringify(new_recipe),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success : function(id_returned) {
+					let id_recipe = id_returned
+					$(".category").each(function () {
+						if(this.checked == true){
+							let id_cat = this.value
+							$.ajax({
+							url : port + "api/recipes/" + id_recipe + "/category/" + id_cat,
+							type : 'POST',
+							success : function(result) {
+                                $(".toolRequired").each(function () {
+                                    if(this.checked == true){
+                                        let id_tool = this.value
+                                        $.ajax({
+                                        url : port + "api/recipes/" + id_recipe + "/tool/" + id_tool,
+                                        type : 'POST',
+                                        success : function(result) {
+                                            $(".sectionRecipe").each(function () {
+                                                let sectionId = $(this).attr("sectionId")
+                                                let title = $(this).find("input").val()
+
+                                                if (title == null || title == ""){
+                                                    alert("Titre de section manquant !")
+                                                } else {
+                                                    let new_section = {
+                                                        "name": title,
+                                                        "id_recipe": id_recipe
+                                                    }
+                                                    $.ajax({
+                                                    url : port + "api/sections",
+                                                    type : 'POST',
+                                                    data :  JSON.stringify(new_section),
+                                                    contentType: "application/json; charset=utf-8",
+                                                    dataType: "json",
+                                                    success : function(id_returned) {
+                                                        let sectionDBId = id_returned
+                                                        $("tr[sectionId =" + sectionId +"]").each(function () {
+                                                            let columns = $(this).find("td")
+                                                            let id_ingredient = columns[0].getAttribute("value")
+                                                            let map_section_ingredient = {
+                                                                "quantity": parseInt(columns[1].firstElementChild.value),
+                                                                "unit": columns[2].firstElementChild.value
+                                                            }
+                                                            $.ajax({
+                                                            url : port + "api/sections/" + sectionDBId + "/ingredient/" + id_ingredient,
+                                                            type : 'POST',
+                                                            data :  JSON.stringify(map_section_ingredient),
+                                                            contentType: "application/json; charset=utf-8",
+                                                            dataType: "json",
+                                                            success : function(result) {
+                                                                $(".section" + sectionId + "instructions").each(function () {
+                                                                    let instructionText = $(this).find("p").html()
+                                                                    let new_instruction = {
+                                                                        "text" : instructionText,
+                                                                        "id_section": sectionDBId
+                                                                    }
+                                                                    $.ajax({
+                                                                    url : port + "api/instructions",
+                                                                    type : 'POST',
+                                                                    data :  JSON.stringify(new_instruction),
+                                                                    contentType: "application/json; charset=utf-8",
+                                                                    dataType: "json",
+                                                                    success : function(result) {
+                                                                        window.location.href = "/";
+                                                                    }
+                                                                    })
+                                                                })
+                                                            }})
+                                                        })
+                                                    }
+                                                    })
+                                                }
+                                            })
+                                        }})
+                                    }
+                                })
+							}})
+						}
+					})
+				}})
 			}
-			let id_recipe=0
-
-			console.log(new_recipe)
-
-			$(".category").each(function () {
-				if(this.checked == true){
-					console.log(this.value)
-				}
-			})
-
-			$(".toolRequired").each(function () {
-				if(this.checked == true){
-					console.log(this.value)
-				}
-			})
-
-			$(".sectionRecipe").each(function () {
-				let sectionId = $(this).attr("sectionId")
-				let title = $(this).find("input").val()
-				let section = {
-					"name": title,
-					"id_recipe": id_recipe
-				}
-				let sectionDBId = 0
-				console.log(title)
-
-				$("tr[sectionId =" + sectionId +"]").each(function () {
-					let columns = $(this).find("td")
-					let map_section_ingredient = {
-						"id_section": sectionDBId,
-						"id_ingredient": columns[0].getAttribute("value"),
-						"quantity": columns[1].firstElementChild.value,
-						"unit": columns[2].firstElementChild.value
-					}
-					console.log(map_section_ingredient)
-				})
-			})
-
-
 		}
     </script>
 </body>
