@@ -144,6 +144,35 @@ paths:
                   type: "integer"
                 name:
                   type: "string"
+  /ingredients/section/{id_section}:
+    get:
+      operationId: "restcontrollers.IngredientsRestController.read_by_section"
+      tags:
+        - "Ingredients"
+      summary: "Un ingrédient dans la section recherchée"
+      description: "read ingredients by section"
+      parameters:
+        - name: id_section
+          in: path
+          description: id of a section
+          type: "integer"
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_ing:
+                  type: "integer"
+                name:
+                  type: "string"
+                quantity:
+                  type: "integer"
+                unit:
+                  type: "string"
+
 # Paths for categories
   /categories:
     get:

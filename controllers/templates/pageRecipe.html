@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Bienvenue !</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
+    <style>
+		/* Header et nav*/
+        header {
+            color: wheat;
+            min-height: 300px;
+            background-color: brown;
+        }
+        header h1{
+            font-size: 100px;
+            margin: 10px 30px;
+        }
+        a.nav-link {
+            font-size: 50px;
+            color: white;
+        }
+
+		a.nav-link:hover{
+			background-color: black;
+		}
+
+		a.nav-link:active {
+			color: wheat;
+		}
+
+        th{
+            font-size: 40px;
+        }
+
+        td {
+            font-size: 30px;
+            min-width: 100px;
+        }
+
+        section {
+			margin-top: 20px;
+			border: black solid 1px;
+		}
+
+    </style>
+    <script type="text/javascript" src="../static/js/script.js"></script>
+</head>
+<body class="container-fluid">
+    <header class="row">
+		<h1 class="col text-center">Liste des ingrédients</h1>
+    </header>
+    <nav class="row bg-dark text-white text-center">
+        <div class="col-lg-4 col-sm-12 menu">
+            <a class="nav-link" href="/">Recettes</a>
+        </div>
+        <div class="col-lg-4 col-sm-12 menu">
+            <a class="nav-link" href="#">Ingrédients</a>
+        </div>
+        <div class="col-lg-4 col-sm-12 menu">
+            <a class="nav-link" href="#">Ajout</a>
+        </div>
+    </nav>
+    <main class="row">
+         <div class="col-1"></div>
+         <div class="col-10">
+            <h1 id="recipeTitle"></h1>
+            <article id="sections">
+
+            </article>
+         </div>
+         <div class="col-1"></div>
+    </main>
+</body>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+<script type="text/javascript">
+    window.onload = function(){
+        let id_recipe = window.location.toString().split('/')[4]
+        $.getJSON(port + "api/recipes/"+id_recipe, function(data) {
+            $("#recipeTitle").html(data.name)
+            console.log(data.name)
+        })
+        $.getJSON(port + "api/sections/recipe/"+id_recipe, function(data) {
+            $.each(data, function(key, val) {
+                let id_section = val.id
+                $("#sections").append($("<section>")
+                    .attr("id","section"+id_section)
+                    .append($("<h2>")
+                        .html(val.name)))
+                $.getJSON(port + "api/ingredients/section/"+id_section, function(data) {
+                    $("#section"+id_section).append($("<table>")
+                                                        .append($("<thead>")
+                                                                .append($("<th>").html("Ingredients"))
+                                                                .append($("<th>"))
+                                                                .append($("<th>")))
+                                                        .append($("<tbody>")
+                                                            .attr("id", "ingredients_section"+id_section)))
+                    $.each(data, function(key, val) {
+                        let tr = $("<tr>").attr("id_ingredient", val.id_ingredient)
+                        tr.append($("<td>").html(val.name +" : "))
+                        tr.append($("<td>").html(val.quantity))
+                        if (val.unit != "nounit"){
+                            tr.append($("<td>").html(val.unit))
+                        }
+                        $("#ingredients_section"+id_section).append(tr)
+                    })
+                    $.getJSON(port + "api/instructions/section/"+id_section, function(data) {
+                        $("#section"+id_section).append($("<table>")
+                                                        .append($("<thead>")
+                                                                .append($("<th>").html("Instructions"))
+                                                                .append($("<th>"))
+                                                                .append($("<th>")))
+                                                        .append($("<tbody>")
+                                                            .attr("id", "instructions_section"+id_section)))
+                        $.each(data, function(key, val) {
+                            let tr = $("<tr>").attr("id_instruction", val.id)
+                            tr.append($("<td>").html(val.text_ins))
+                            $("#instructions_section"+id_section).append(tr)
+                        })
+                    })
+                })
+
+            })
+        })
+    }
+</script>
+</html>

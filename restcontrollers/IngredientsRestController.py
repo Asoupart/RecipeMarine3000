@@ -24,6 +24,15 @@ def read_by_tag(tag):
     return ingredients
 
 
+def read_by_section(id_section):
+    ingredients = []
+    for row in IngredientDAOImpl.findBySection(id_section):
+        ingredient = {"id_ingredient": row[0], "name": row[1], "quantity": row[2], "unit": row[3]}
+        ingredients.append(ingredient)
+    json.dumps(ingredients)
+    return ingredients
+
+
 def create(ingredient):
     name = ingredient.get("name", None)
     ingredient = Ingredient(None, name)
