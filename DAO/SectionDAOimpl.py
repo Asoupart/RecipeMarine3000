@@ -88,3 +88,13 @@ def addIngredientToDB(id_sec, id_ing, quantity, unit):
     except sqlite3.Error as error:
         print(error.with_traceback())
 
+
+def removeIngredientFromDB(id_sec, id_ing):
+    conn = ConnectionDB().getConnection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('DELETE FROM map_section_ingredient WHERE id_section = ? AND id_ingredient = ?', (id_sec, id_ing,))
+        conn.commit()
+    except sqlite3.Error as error:
+        print(error.with_traceback())

@@ -74,6 +74,65 @@
          </div>
          <div class="col-1"></div>
     </main>
+
+	 <!--La modal d'edit d'ingrédient-->
+	 <div class="modal fade" id="modalEditIngredient" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
+					</button>
+				</div>
+				<div class="modal-body mx-3 row">
+					<div class="col">
+						<form action="" method="post">
+							<input type="hidden" id="sectionIdforEdit">
+							<input type="hidden" id="ingredientIdforEdit">
+							<select id="listIngredientsModal">
+
+                            </select>
+							<br>
+							<input type="number" id="editQuantity"/>
+							<br>
+                            <select id="editUnit">
+                                <option value="gr">gr</option>
+                                <option value="nounit">Sans unité</option>
+                            </select>
+							<button type="button" class="btn btn-warning" onclick="editIngredient()">Ok</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- La modal de suppression -->
+    <div id="modalDeleteIngredient" class="modal fade" tabindex="-1" role="dialog"
+		aria-labelledby="deleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<input type="hidden" id="sectionIdforDelete">
+                    <input type="hidden" id="ingredientIdforDelete">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>Êtes vous sûr ?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" onclick="deleteIngredient()">Oui</button>
+					<button type="button" class="btn btn-dark" data-dismiss="modal">Annuler</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -89,7 +148,6 @@
         let id_recipe = window.location.toString().split('/')[4]
         $.getJSON(port + "api/recipes/"+id_recipe, function(data) {
             $("#recipeTitle").html(data.name)
-            console.log(data.name)
         })
         $.getJSON(port + "api/sections/recipe/"+id_recipe, function(data) {
             $.each(data, function(key, val) {
@@ -103,16 +161,31 @@
                                                         .append($("<thead>")
                                                                 .append($("<th>").html("Ingredients"))
                                                                 .append($("<th>"))
+                                                                .append($("<th>"))
+                                                                .append($("<th>"))
                                                                 .append($("<th>")))
                                                         .append($("<tbody>")
                                                             .attr("id", "ingredients_section"+id_section)))
                     $.each(data, function(key, val) {
-                        let tr = $("<tr>").attr("id_ingredient", val.id_ingredient)
-                        tr.append($("<td>").html(val.name +" : "))
-                        tr.append($("<td>").html(val.quantity))
+                        let tr = $("<tr>").attr("section", id_section).attr("ingredient", val.id_ingredient)
+                        tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "name").html(val.name +" : "))
+                        tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "quantity").html(val.quantity))
                         if (val.unit != "nounit"){
-                            tr.append($("<td>").html(val.unit))
+                            tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "unit").html(val.unit))
+                        } else {
+                            tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "unit"))
                         }
+                        tr.append($("<td>").append($("<button>")
+                            .attr("type","button")
+                            .addClass("btn btn-warning")
+                            .attr("onclick","toggleModalEditIngredient(" + id_section + "," + val.id_ingredient + ")")
+                            .html("<i class='fas fa-cog'>")))
+                        tr.append($("<td>").append($("<button>")
+                            .attr("type","button")
+                            .addClass("btn btn-danger")
+                            .attr("onclick","toggleModalDeleteIngredient(" + id_section + "," + val.id_ingredient + ")")
+                            .html("<i class='fas fa-minus'>")))
+
                         $("#ingredients_section"+id_section).append(tr)
                     })
                     $.getJSON(port + "api/instructions/section/"+id_section, function(data) {
@@ -130,9 +203,90 @@
                         })
                     })
                 })
-
             })
         })
     }
+
+    let toggleModalDeleteIngredient = function(id_section, id_ingredient) {
+        $("#modalDeleteIngredient").modal("show")
+        $("#sectionIdforDelete").val(id_section)
+        $("#ingredientIdforDelete").val(id_ingredient)
+    }
+
+    let deleteIngredient = function() {
+        let id_section = $("#sectionIdforDelete").val()
+        let id_ingredient = $("#ingredientIdforDelete").val()
+        $.ajax({
+				url : port + "api/sections/" + id_section + "/ingredient/" + id_ingredient,
+				type : 'DELETE',
+				success : function(result) {}
+        })
+        $("#modalDeleteIngredient").modal("hide")
+    }
+
+    let toggleModalEditIngredient = function(id_section, id_ingredient){
+        $("#modalEditIngredient").modal("show")
+        $("#sectionIdforEdit").val(id_section)
+        $("#ingredientIdforEdit").val(id_ingredient)
+        $.getJSON(port + "api/ingredients", function(data) {
+				$.each(data, function(key, val) {
+					$("#listIngredientsModal").append($("<option>")
+							.attr("id", "ingredient"+val.id)
+							.attr("value", val.id)
+							.html(val.name))
+				})
+			})
+    }
+
+    let editIngredient = function () {
+        let id_section = $("#sectionIdforEdit").val()
+        let id_ingredient_to_edit = $("#ingredientIdforEdit").val()
+        let id_new_ingredient = $("#listIngredientsModal option:selected").val()
+        let quantity = $("#editQuantity").val()
+        let unit = $("#editUnit").val()
+        let list_ingredient = []
+
+        $("tr[ingredient][section=" + id_section + "]").each(function(){
+            list_ingredient.push($(this).attr("ingredient"))
+        })
+        if(list_ingredient.indexOf(id_new_ingredient) >= 0 && id_new_ingredient != id_ingredient_to_edit){
+            alert("Ingrédient déjà dans la liste !")
+        } else {
+            $("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='name']").html($("#listIngredientsModal option:selected").text())
+            $("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='quantity']").html(quantity)
+
+            if ($("#editUnit") != "nounit") {
+                $("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='unit']").html(unit)
+            } else {
+                $("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='unit']").empty()
+            }
+
+            $("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "]").attr("ingredient", id_new_ingredient)
+
+            let mapping = {
+                "quantity": parseInt(quantity),
+                "unit": unit
+            }
+
+            $.ajax({
+				url : port + "api/sections/" + id_section + "/ingredient/" + id_ingredient_to_edit,
+				type : 'DELETE',
+				success : function(result) {
+                    $.ajax({
+                        url: port + "api/sections/" + id_section + "/ingredient/" + id_new_ingredient,
+                        type: 'POST',
+                        data: JSON.stringify(mapping),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (result) {
+                        }
+                    })
+                }
+            })
+
+            $("#modalEditIngredient").modal("hide")
+        }
+    }
+
 </script>
 </html>

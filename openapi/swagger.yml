@@ -705,6 +705,28 @@ paths:
         200:
           description: Successfully inserted ingredient in section
 
+
+    delete:
+      operationId: "restcontrollers.SectionsRestController.delete_mapping"
+      tags:
+        - "Sections"
+      summary: Delete a mapping in the list
+      description: Delete a mapping in the list
+      parameters:
+        - name: id_ing
+          in: path
+          description: Id of the ingredient
+          type: integer
+          required: True
+        - name: id_sec
+          in: path
+          description: Id of the section
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Successfully deleted the section"
+
 # Paths for tools
   /tools:
     get:

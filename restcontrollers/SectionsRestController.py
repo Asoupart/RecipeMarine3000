@@ -48,3 +48,8 @@ def set_ingredient(id_sec, id_ing, properties):
     quantity = properties.get("quantity", None)
     unit = properties.get("unit", None)
     SectionDAOimpl.addIngredientToDB(id_sec, id_ing, quantity, unit)
+
+
+def delete_mapping(id_sec, id_ing):
+    SectionDAOimpl.removeIngredientFromDB(id_sec, id_ing)
+
