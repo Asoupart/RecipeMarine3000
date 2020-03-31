@@ -60,8 +60,8 @@ def update(instruction):
     cursor = conn.cursor()
 
     try:
-        cursor.execute('UPDATE instruction SET text_ins = ? AND id_section = ? WHERE id = ?',
-                       (instruction.text_ins, instruction.id_section, instruction.id_ins))
+        cursor.execute('UPDATE instructions SET text_ins = ? WHERE id = ?',
+                       (instruction.text_ins, instruction.id_ins))
         conn.commit()
     except sqlite3.Error as error:
         print(error.with_traceback())

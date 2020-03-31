@@ -149,7 +149,7 @@ paths:
       operationId: "restcontrollers.IngredientsRestController.read_by_section"
       tags:
         - "Ingredients"
-      summary: "Un ingrédient dans la section recherchée"
+      summary: "Ingrédients dans la section recherchée"
       description: "read ingredients by section"
       parameters:
         - name: id_section
@@ -172,6 +172,35 @@ paths:
                   type: "integer"
                 unit:
                   type: "string"
+  /ingredients/recipe/{id_recipe}:
+      get:
+        operationId: "restcontrollers.IngredientsRestController.read_by_recipe"
+        tags:
+          - "Ingredients"
+        summary: "Ingrédients dans la recette recherchée"
+        description: "read ingredients by recipe"
+        parameters:
+          - name: id_recipe
+            in: path
+            description: id of a recipe
+            type: "integer"
+            required: True
+        responses:
+          200:
+            description: "Success"
+            schema:
+              type: "array"
+              items:
+                properties:
+                  id_ing:
+                    type: "integer"
+                  name:
+                    type: "string"
+                  quantity:
+                    type: "integer"
+                  unit:
+                    type: "string"
+
 
 # Paths for categories
   /categories:
@@ -479,7 +508,7 @@ paths:
           description: Id of the instruction
           type: integer
           required: True
-        - name: source
+        - name: instruction
           in: body
           schema:
             type: object
@@ -704,7 +733,6 @@ paths:
       responses:
         200:
           description: Successfully inserted ingredient in section
-
 
     delete:
       operationId: "restcontrollers.SectionsRestController.delete_mapping"

@@ -33,6 +33,26 @@ def read_by_section(id_section):
     return ingredients
 
 
+def read_by_recipe(id_recipe):
+    ingredients = []
+    for row in IngredientDAOImpl.findByRecipe(id_recipe):
+        ingredient = {"id_ingredient": int(row[0]), "name": row[1], "quantity": int(row[2]), "unit": row[3]}
+        insert_ingredient = True
+        if len(ingredients) > 0:
+            for elem in ingredients:
+                if int(elem['id_ingredient']) == row[0]:
+                    insert_ingredient = False
+                    elem['quantity'] = int(elem['quantity']) + int(row[2])
+                else:
+                    print("caca")
+            if insert_ingredient:
+                ingredients.append(ingredient)
+        else:
+            ingredients.append(ingredient)
+    json.dumps(ingredients)
+    return ingredients
+
+
 def create(ingredient):
     name = ingredient.get("name", None)
     ingredient = Ingredient(None, name)

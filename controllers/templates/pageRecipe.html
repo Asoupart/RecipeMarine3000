@@ -41,6 +41,10 @@
             min-width: 100px;
         }
 
+		td[instruction]{
+			min-width: 400px;
+		}
+
         section {
 			margin-top: 20px;
 			border: black solid 1px;
@@ -67,8 +71,13 @@
     <main class="row">
          <div class="col-1"></div>
          <div class="col-10">
-            <h1 id="recipeTitle"></h1>
-            <article id="sections">
+			<h1 id="recipeTitle"></h1>
+			<h3 id="recipeSource"></h3>
+			<h3 id="recipeNumber"></h3>
+			<div id="listIngredientsFull">
+
+			</div>
+			<article id="sections">
 
             </article>
          </div>
@@ -98,7 +107,7 @@
 							<input type="number" id="editQuantity"/>
 							<br>
                             <select id="editUnit">
-                                <option value="gr">gr</option>
+                                <option value="g">g</option>
                                 <option value="nounit">Sans unité</option>
                             </select>
 							<button type="button" class="btn btn-warning" onclick="editIngredient()">Ok</button>
@@ -133,6 +142,32 @@
 		</div>
 	</div>
 
+	 <!--La modal d'edit d'instruction-->
+	 <div class="modal fade" id="modalEditInstruction" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
+					</button>
+				</div>
+				<div class="modal-body mx-3 row">
+					<div class="col">
+						<form action="" method="post">
+							<input type="hidden" id="section2IdforEdit">
+							<input type="hidden" id="instructionIdforEdit">
+							<textarea id="instructionText"></textarea>
+							<br>
+							<button type="button" class="btn btn-warning" onclick="editInstruction()">Ok</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -144,10 +179,15 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
 <script type="text/javascript">
+	let id_recipe = window.location.toString().split('/')[4]
     window.onload = function(){
-        let id_recipe = window.location.toString().split('/')[4]
+		displayIngredientRecipe()
         $.getJSON(port + "api/recipes/"+id_recipe, function(data) {
             $("#recipeTitle").html(data.name)
+			$("#recipeNumber").html("Nombre de personnes : " + data.nbr_person)
+			$.getJSON(port + "api/sources/" + data.id_src, function (source) {
+				$("#recipeSource").html("Source : " + source.name)
+			})
         })
         $.getJSON(port + "api/sections/recipe/"+id_recipe, function(data) {
             $.each(data, function(key, val) {
@@ -156,56 +196,102 @@
                     .attr("id","section"+id_section)
                     .append($("<h2>")
                         .html(val.name)))
-                $.getJSON(port + "api/ingredients/section/"+id_section, function(data) {
-                    $("#section"+id_section).append($("<table>")
-                                                        .append($("<thead>")
-                                                                .append($("<th>").html("Ingredients"))
-                                                                .append($("<th>"))
-                                                                .append($("<th>"))
-                                                                .append($("<th>"))
-                                                                .append($("<th>")))
-                                                        .append($("<tbody>")
-                                                            .attr("id", "ingredients_section"+id_section)))
-                    $.each(data, function(key, val) {
-                        let tr = $("<tr>").attr("section", id_section).attr("ingredient", val.id_ingredient)
-                        tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "name").html(val.name +" : "))
-                        tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "quantity").html(val.quantity))
-                        if (val.unit != "nounit"){
-                            tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "unit").html(val.unit))
-                        } else {
-                            tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "unit"))
-                        }
-                        tr.append($("<td>").append($("<button>")
-                            .attr("type","button")
-                            .addClass("btn btn-warning")
-                            .attr("onclick","toggleModalEditIngredient(" + id_section + "," + val.id_ingredient + ")")
-                            .html("<i class='fas fa-cog'>")))
-                        tr.append($("<td>").append($("<button>")
-                            .attr("type","button")
-                            .addClass("btn btn-danger")
-                            .attr("onclick","toggleModalDeleteIngredient(" + id_section + "," + val.id_ingredient + ")")
-                            .html("<i class='fas fa-minus'>")))
-
-                        $("#ingredients_section"+id_section).append(tr)
-                    })
-                    $.getJSON(port + "api/instructions/section/"+id_section, function(data) {
-                        $("#section"+id_section).append($("<table>")
-                                                        .append($("<thead>")
-                                                                .append($("<th>").html("Instructions"))
-                                                                .append($("<th>"))
-                                                                .append($("<th>")))
-                                                        .append($("<tbody>")
-                                                            .attr("id", "instructions_section"+id_section)))
-                        $.each(data, function(key, val) {
-                            let tr = $("<tr>").attr("id_instruction", val.id)
-                            tr.append($("<td>").html(val.text_ins))
-                            $("#instructions_section"+id_section).append(tr)
-                        })
-                    })
-                })
+				$("#section" + id_section).append($("<div>").addClass("ingredients").attr("section",id_section))
+				displayIngredient(id_section)
+				$("#section" + id_section).append($("<div>").addClass("instructions").attr("section",id_section))
+                displayInstruction(id_section)
             })
         })
     }
+
+    let displayIngredient = function(id_section){
+    	if ($("div.ingredients[section=" + id_section + "]").length) {
+    		$("div.ingredients[section=" + id_section + "]").empty()
+		}
+    	$.getJSON(port + "api/ingredients/section/"+id_section, function(data) {
+			$("div.ingredients[section=" + id_section + "]").append($("<table>")
+					.append($("<thead>")
+							.append($("<th>").html("Ingredients"))
+							.append($("<th>"))
+							.append($("<th>"))
+							.append($("<th>"))
+							.append($("<th>")))
+					.append($("<tbody>")
+							.attr("id", "ingredients_section" + id_section)))
+			$.each(data, function (key, val) {
+				let tr = $("<tr>").attr("section", id_section).attr("ingredient", val.id_ingredient)
+				tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "name").html(val.name + " : "))
+				tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "quantity").html(val.quantity))
+				if (val.unit != "nounit") {
+					tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "unit").html(val.unit))
+				} else {
+					tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "unit"))
+				}
+				tr.append($("<td>").append($("<button>")
+						.attr("type", "button")
+						.addClass("btn btn-warning")
+						.attr("onclick", "toggleModalEditIngredient(" + id_section + "," + val.id_ingredient + ")")
+						.html("<i class='fas fa-cog'></i>")))
+				tr.append($("<td>").append($("<button>")
+						.attr("type", "button")
+						.addClass("btn btn-danger")
+						.attr("onclick", "toggleModalDeleteIngredient(" + id_section + "," + val.id_ingredient + ")")
+						.html("<i class='fas fa-minus'></i>")))
+
+				$("#ingredients_section" + id_section).append(tr)
+
+			})
+			$("div.ingredients[section=" + id_section + "]").append($("<button>")
+										.attr("type","button")
+										.addClass("btn btn-success")
+										.attr("onclick","toggleModalEditIngredient(" + id_section + ", 0)")
+										.html("<i class='fas fa-plus'></i>"))
+		})
+	}
+
+	let displayIngredientRecipe = function(){
+    	$("#listIngredientsFull").empty()
+		$.getJSON(port + "api/ingredients/recipe/"+ id_recipe, function(data) {
+			$.each(data, function(key, val) {
+				$("#listIngredientsFull").append($("<p>").html(val.name + " : " + val.quantity + " " + val.unit))
+			})
+		})
+	}
+
+	let displayInstruction = function(id_section){
+		if ($("div.instructions[section=" + id_section + "]").length) {
+    		$("div.instructions[section=" + id_section + "]").empty()
+		}
+		$.getJSON(port + "api/instructions/section/"+id_section, function(data) {
+			$("div.instructions[section=" + id_section + "]").append($("<table>")
+											.append($("<thead>")
+													.append($("<th>").html("Instructions"))
+													.append($("<th>"))
+													.append($("<th>")))
+											.append($("<tbody>")
+												.attr("id", "instructions_section"+id_section)))
+			$.each(data, function(key, val) {
+				let tr = $("<tr>").attr("section", id_section).attr("instruction", val.id)
+				tr.append($("<td>").attr("section", id_section).attr("instruction", val.id).html(val.text_ins))
+				tr.append($("<td>").append($("<button>")
+						.attr("type", "button")
+						.addClass("btn btn-warning")
+						.attr("onclick", "toggleModalEditInstruction(" + id_section + "," + val.id + ")")
+						.html("<i class='fas fa-cog'></i>")))
+				tr.append($("<td>").append($("<button>")
+						.attr("type", "button")
+						.addClass("btn btn-danger")
+						.attr("onclick", "toggleModalDeleteInstruction(" + id_section + "," + val.id + ")")
+						.html("<i class='fas fa-minus'></i>")))
+				$("#instructions_section"+id_section).append(tr)
+			})
+			$("div.instructions[section=" + id_section + "]").append($("<button>")
+										.attr("type","button")
+										.addClass("btn btn-success")
+										.attr("onclick","toggleModalEditInstruction(" + id_section + ", 0)")
+										.html("<i class='fas fa-plus'></i>"))
+		})
+	}
 
     let toggleModalDeleteIngredient = function(id_section, id_ingredient) {
         $("#modalDeleteIngredient").modal("show")
@@ -219,7 +305,10 @@
         $.ajax({
 				url : port + "api/sections/" + id_section + "/ingredient/" + id_ingredient,
 				type : 'DELETE',
-				success : function(result) {}
+				success : function(result) {
+					displayIngredientRecipe()
+					displayIngredient(id_section)
+				}
         })
         $("#modalDeleteIngredient").modal("hide")
     }
@@ -239,54 +328,114 @@
     }
 
     let editIngredient = function () {
-        let id_section = $("#sectionIdforEdit").val()
-        let id_ingredient_to_edit = $("#ingredientIdforEdit").val()
-        let id_new_ingredient = $("#listIngredientsModal option:selected").val()
-        let quantity = $("#editQuantity").val()
-        let unit = $("#editUnit").val()
-        let list_ingredient = []
+		let id_section = $("#sectionIdforEdit").val()
+		let id_ingredient_to_edit = $("#ingredientIdforEdit").val()
+		let id_new_ingredient = $("#listIngredientsModal option:selected").val()
+		let quantity = $("#editQuantity").val()
+		let unit = $("#editUnit").val()
+		let list_ingredient = []
 
-        $("tr[ingredient][section=" + id_section + "]").each(function(){
-            list_ingredient.push($(this).attr("ingredient"))
-        })
-        if(list_ingredient.indexOf(id_new_ingredient) >= 0 && id_new_ingredient != id_ingredient_to_edit){
-            alert("Ingrédient déjà dans la liste !")
-        } else {
-            $("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='name']").html($("#listIngredientsModal option:selected").text())
-            $("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='quantity']").html(quantity)
+		$("tr[ingredient][section=" + id_section + "]").each(function () {
+			list_ingredient.push($(this).attr("ingredient"))
+		})
+		if (list_ingredient.indexOf(id_new_ingredient) >= 0 && id_new_ingredient != id_ingredient_to_edit) {
+			alert("Ingrédient déjà dans la liste !")
+		} else {
+			let mapping = {
+				"quantity": parseInt(quantity),
+				"unit": unit
+			}
+			if (id_ingredient_to_edit > 0) {
+				$("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='name']").html($("#listIngredientsModal option:selected").text())
+				$("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='quantity']").html(quantity)
 
-            if ($("#editUnit") != "nounit") {
-                $("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='unit']").html(unit)
-            } else {
-                $("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='unit']").empty()
-            }
+				if ($("#editUnit") != "nounit") {
+					$("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='unit']").html(unit)
+				} else {
+					$("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='unit']").empty()
+				}
 
-            $("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "]").attr("ingredient", id_new_ingredient)
+				$("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "]").attr("ingredient", id_new_ingredient)
 
-            let mapping = {
-                "quantity": parseInt(quantity),
-                "unit": unit
-            }
+				$.ajax({
+					url: port + "api/sections/" + id_section + "/ingredient/" + id_ingredient_to_edit,
+					type: 'DELETE',
+					success: function (result) {
+						$.ajax({
+							url: port + "api/sections/" + id_section + "/ingredient/" + id_new_ingredient,
+							type: 'POST',
+							data: JSON.stringify(mapping),
+							contentType: "application/json; charset=utf-8",
+							dataType: "json",
+							success: function (result) {
+								displayIngredientRecipe()
+								displayIngredient(id_section)
+							}
+						})
+					}
+				})
+			} else {
+				$.ajax({
+					url: port + "api/sections/" + id_section + "/ingredient/" + id_new_ingredient,
+					type: 'POST',
+					data: JSON.stringify(mapping),
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function (result) {
+						displayIngredientRecipe()
+						displayIngredient(id_section)
+					}
+				})
+			}
+			$("#modalEditIngredient").modal("hide")
+		}
+	}
 
-            $.ajax({
-				url : port + "api/sections/" + id_section + "/ingredient/" + id_ingredient_to_edit,
-				type : 'DELETE',
-				success : function(result) {
-                    $.ajax({
-                        url: port + "api/sections/" + id_section + "/ingredient/" + id_new_ingredient,
-                        type: 'POST',
-                        data: JSON.stringify(mapping),
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: function (result) {
-                        }
-                    })
-                }
-            })
-
-            $("#modalEditIngredient").modal("hide")
-        }
+	let toggleModalEditInstruction = function(id_section, id_instruction){
+        $("#modalEditInstruction").modal("show")
+        $("#section2IdforEdit").val(id_section)
+        $("#instructionIdforEdit").val(id_instruction)
+		if (id_instruction > 0 ){
+			$("#instructionText").html($("td[section=" + id_section + "][instruction=" + id_instruction + "]").html())
+		} else {
+			$("#instructionText").empty()
+		}
     }
 
+    let editInstruction = function () {
+		let id_section = parseInt($("#section2IdforEdit").val())
+		let id_instruction = $("#instructionIdforEdit").val()
+		let text_instruction = $("#instructionText").val()
+
+		let instruction = {
+			"text": text_instruction,
+			"id_section": id_section
+		}
+
+		if (id_instruction > 0 ) {
+			$.ajax({
+				url: port + "api/instructions/" + id_instruction,
+				type: 'PUT',
+				data: JSON.stringify(instruction),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success: function (result) {
+					displayInstruction(id_section)
+				}
+			})
+		} else {
+			$.ajax({
+				url: port + "api/instructions",
+				type: 'POST',
+				data: JSON.stringify(instruction),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success: function (result) {
+					displayInstruction(id_section)
+				}
+			})
+		}
+		$("#modalEditInstruction").modal("hide")
+	}
 </script>
 </html>

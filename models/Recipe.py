@@ -14,4 +14,4 @@ class Recipe:
         return f"({self.id_recipe}, {self.name}, {self.id_src})"
 
     def to_dict(self):
-        return {"id": self.id_recipe, "name": self.name, "id_src": self.id_src}
+        return {"id": self.id_recipe, "name": self.name, "nbr_person": self.nbr_person, "id_src": self.id_src}

@@ -63,6 +63,25 @@ def findBySection(id_section):
         print(error.with_traceback())
 
 
+def findByRecipe(id_recipe):
+    conn = ConnectionDB().getConnection()
+    cursor = conn.cursor()
+
+    try:
+        ingredients = []
+        for row in cursor.execute(
+                '''SELECT map_section_ingredient.id_ingredient, ingredients.name, map_section_ingredient.quantity, map_section_ingredient.unit FROM map_section_ingredient
+                INNER JOIN ingredients
+                ON map_section_ingredient.id_ingredient = ingredients.id
+                INNER JOIN sections
+                ON map_section_ingredient.id_section = sections.id
+                WHERE sections.id_recipe = ?''', (id_recipe,)):
+            ingredients.append(row)
+        return ingredients
+    except sqlite3.Error as error:
+        print(error.with_traceback())
+
+
 def insert(ingredient):
     conn = ConnectionDB().getConnection()
     cursor = conn.cursor()
