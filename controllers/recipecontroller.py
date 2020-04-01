@@ -25,7 +25,6 @@ def new_recipe():
 
 @app.route('/recette/<id_recipe>')
 def page_recipe(id_recipe):
-    print(id_recipe)
     return render_template('pageRecipe.html')
 
 

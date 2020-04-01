@@ -43,8 +43,6 @@ def read_by_recipe(id_recipe):
                 if int(elem['id_ingredient']) == row[0]:
                     insert_ingredient = False
                     elem['quantity'] = int(elem['quantity']) + int(row[2])
-                else:
-                    print("caca")
             if insert_ingredient:
                 ingredients.append(ingredient)
         else:

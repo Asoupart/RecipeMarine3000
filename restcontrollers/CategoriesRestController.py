@@ -12,6 +12,14 @@ def read_all():
     return categories
 
 
+def read_by_recipe(id_recipe):
+    categories = []
+    for category in CategoryDAOimpl.findByRecipe(id_recipe):
+        categories.append(category.to_dict())
+    json.dumps(categories)
+    return categories
+
+
 def read_one(id_ing):
     return CategoryDAOimpl.findOneById(id_ing).to_dict()
 

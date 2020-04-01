@@ -310,6 +310,30 @@ paths:
       responses:
         200:
           description: "Successfully deleted the category"
+  /categories/recipe/{id_recipe}:
+      get:
+        operationId: "restcontrollers.CategoriesRestController.read_by_recipe"
+        tags:
+          - "Categories"
+        summary: "Les catégories d'une recette"
+        description: "read categories of a recipe"
+        parameters:
+          - name: id_recipe
+            in: path
+            description: Id of the recipe
+            type: integer
+            required: True
+        responses:
+          200:
+            description: "Success"
+            schema:
+              type: "array"
+              items:
+                properties:
+                  id_cat:
+                    type: "integer"
+                  name:
+                    type: "string"
 
 # Paths for sources
   /sources:

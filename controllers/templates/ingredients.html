@@ -153,7 +153,7 @@
             $("#listIngredients").empty()
                 $.each(data, function(key, val) {
                     let tr = $("<tr>")
-                    $("#listIngredients").append(tr.addClass("text-left"))
+                    $("#listIngredients").append(tr.addClass("text-left").attr("ingredient", val.id))
                     tr.append($("<td>").html(val.name).addClass("ingredientName"))
                     tr.append($("<td>").append(
                         $("<button>")
@@ -173,15 +173,10 @@
         }
 
         $("#searchIngredient").keyup(function () {
-            let tag = $("#searchIngredient").val()
-            if(tag != "" && tag != null) {
-                $.getJSON(port + "api/ingredients/" + tag, function(data) {
-                    displayIngredients(data)
-                })
-            } else {
-                allIngredients()
-            }
-
+            let tag = $("#searchIngredient").val().toLowerCase()
+            $("tr[ingredient]").filter(function () {
+                $(this).toggle($(this).find("td.ingredientName").text().toLowerCase().indexOf(tag) > -1)
+            })
         })
 
         let allIngredients = function(){
