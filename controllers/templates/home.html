@@ -32,23 +32,19 @@
 			color: wheat;
 		}
 
-        th{
-            font-size: 40px;
+        #ingredients {
+            display: none;
+            background-color: mediumaquamarine;
         }
 
-        td {
-            font-size: 30px;
-            min-width: 100px;
+        li {
+            list-style: none;
         }
 
-		td[instruction]{
-			min-width: 400px;
-		}
-
-        section {
-			margin-top: 20px;
-			border: black solid 1px;
-		}
+        #listIngredients {
+            font-size: 50px;
+            column-count: 2;
+        }
 
     </style>
 </head>
@@ -67,7 +63,7 @@
             <a class="nav-link" href="/nouvelleRecette">Ajout</a>
         </div>
     </nav>
-    <main>
+    <main class="row">
         <div class="col-1"></div>
         <div class="col-10">
             <h2>
@@ -85,6 +81,13 @@
                         </select>
                     </div>
                     <div class="row" id="categories">
+                    </div>
+                    <div class="row">
+                        <button type="button" class="btn btn-primary" id="buttonIngredients">Trier par ingrédient</button>
+                    </div>
+                    <div class="row text-center" id="ingredients">
+                        <ul id="listIngredients">
+                        </ul>
                     </div>
                 </div>
             </form>
@@ -107,91 +110,147 @@
             crossorigin="anonymous"></script>
     <script type="text/javascript" src="../static/js/script.js"></script>
     <script type="text/javascript">
-        window.onload = function () {
-            $.getJSON(port + "api/recipes", function(data) {
-                $.each(data, function(key, val) {
-                    let li = $("<li>")
-                    li.attr("recette", val.id).attr("source", val.id_src)
-                    li.append($("<a>").attr("href","/recette/"+val.id).html(val.name))
-                    $("#listRecipes").append(li)
-                    $.getJSON(port + "api/categories/recipe/" + val.id, function(data) {
-                        $.each(data, function(key, val) {
-                            li.append($("<div>").attr("hidden", "hidden").attr("category", val.id))
-                        })
-                    })
-                    $.getJSON(port + "api/ingredients/recipe/" + val.id, function(data) {
-                        $.each(data, function(key, val) {
-                            li.append($("<div>").attr("hidden", "hidden").attr("ingredient", val.id_ingredient))
-                        })
-                    })
-                    $.getJSON(port + "api/sources", function(data) {
-                        $.each(data, function(key, val) {
-                            $("#sources").append($("<option>").val(val.id).html(val.name))
-                        })
-                    })
-                    $.getJSON(port + "api/categories", function(data) {
-                        $.each(data, function(key, val) {
-                            let label = $("<label>").attr("for", "category"+val.id).html(val.name)
-                            let input = $("<input>").addClass("category")
-                                                    .attr("id", "category"+val.id)
-                                                    .attr("type", "checkbox").val(val.id)
-                                                    .attr("onclick", "filterCategory()")
-                                                    .html(val.name)
-                            $("#categories").append(label).append(input)
-                        })
+    window.onload = function () {
+        $.getJSON(port + "api/recipes", function(data) {
+            $.each(data, function(key, val) {
+                let li = $("<li>")
+                li.attr("recette", val.id).attr("source", val.id_src)
+                li.append($("<a>").attr("href","/recette/"+val.id).html(val.name))
+                $("#listRecipes").append(li)
+                $.getJSON(port + "api/categories/recipe/" + val.id, function(data) {
+                    $.each(data, function(key, val) {
+                        li.append($("<div>").attr("hidden", "hidden").attr("category", val.id))
                     })
                 })
-            })
-        }
-
-         $("#searchRecipeByName").keyup(function () {
-            let tag = $("#searchRecipeByName").val().toLowerCase()
-            $("li").filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(tag) > -1)
+                $.getJSON(port + "api/ingredients/recipe/" + val.id, function(data) {
+                    $.each(data, function(key, val) {
+                        li.append($("<div>").attr("hidden", "hidden").attr("ingredient", val.id_ingredient))
+                    })
+                })
             })
         })
+        $.getJSON(port + "api/sources", function(data) {
+            $.each(data, function(key, val) {
+                $("#sources").append($("<option>").val(val.id).html(val.name))
+            })
+        })
+        $.getJSON(port + "api/categories", function(data) {
+            $.each(data, function(key, val) {
+                let label = $("<label>").attr("for", "category"+val.id).html(val.name)
+                let input = $("<input>").addClass("category")
+                                        .attr("id", "category"+val.id)
+                                        .attr("type", "checkbox").val(val.id)
+                                        .attr("onclick", "filter_all()")
+                                        .html(val.name)
+                $("#categories").append(label).append(input)
+            })
+        })
+        $.getJSON(port + "api/ingredients", function(data) {
+            $.each(data, function(key, val) {
+                let label = $("<label>").attr("for", "ingredient" + val.id).html(val.name)
+                let input = $("<input>").addClass("ingredient")
+                                        .attr("id", "ingredient" + val.id)
+                                        .attr("id", "ingredient"+val.id)
+                                        .attr("type", "checkbox").val(val.id)
+                                        .attr("onclick", "filter_all()")
+                                        .html(val.name)
+                let li = $("<li>").append(input).append(label).addClass("li_ingredient")
+                $("#listIngredients").append(li)
+            })
+        })
+    }
 
-        $("#sources").change(function () {
-            if ($("#sources").val() != 0){
-                $("li").filter(function () {
-                    $(this).toggle($(this).attr("source").toLowerCase().indexOf($("#sources").val()) > -1)
-                })
-            } else {
-                $("li").filter(function () {
-                    $(this).toggle($(this).attr("source").toLowerCase().indexOf($("#sources").val()) == -1)
-                })
+    $("#buttonIngredients").click(function () {
+        $("#ingredients").toggle()
+    })
+
+    let filter_all = function(){
+        let tag = $("#searchRecipeByName").val().toLowerCase()
+        let source = $("#sources").val()
+        let checked = []
+        let ingredients_checked = []
+        $("input.category").each(function () {
+            if ($(this).is(':checked')){
+                checked.push(parseInt($(this).val()))
+            }
+        })
+        $("input.ingredient").each(function () {
+            if ($(this).is(':checked')){
+                ingredients_checked.push(parseInt($(this).val()))
             }
         })
 
-        let filterCategory = function(){
-            let checked = []
-            $("input.category").each(function () {
-                if ($(this).is(':checked')){
-                    checked.push(parseInt($(this).val()))
+        let recipes = $("li[recette]")
+        recipes.each(function () {
+            $(this).hide()
+        })
+        let filtered_recipes = []
+        recipes.each(function () {
+            if ($(this).text().toLowerCase().indexOf(tag) > -1){
+                filtered_recipes.push($(this))
+            }
+        })
+        
+        recipes = filtered_recipes
+        filtered_recipes = []
+
+        if (source != null && source !=0){
+            recipes.forEach(function (elem) {
+                if (elem.attr("source").toLowerCase().indexOf($("#sources").val()) > -1){
+                    filtered_recipes.push(elem)
                 }
             })
-
-            if (checked.length == 0) {
-                $("li").filter(function () {
-                    $(this).toggle(true)
-                })
-            } else {
-                $("li").each(function () {
-                    let id_recipe = $(this).attr("recette")
-                    let display = false
-                    let categories = []
-                    $(this).find("div[category]").each(function(){
-                        categories.push(parseInt($(this).attr("category")))
-                    })
-                    categories.forEach(function (elem) {
-                        if(checked.indexOf(elem) > -1){
-                            display = true
-                        }
-                    })
-                    $("li[recette=" + id_recipe + "]").toggle(display)
-                })
-            }
+            recipes = filtered_recipes
+            filtered_recipes = []
         }
+
+        if (checked.length != 0) {
+            recipes.forEach(function (recipe) {
+                let categories = []
+                recipe.find("div[category]").each(function(){
+                    categories.push(parseInt($(this).attr("category")))
+                })
+                categories.forEach(function (elem) {
+                    if(checked.indexOf(elem) > -1 && filtered_recipes.indexOf(recipe) == -1){
+                        filtered_recipes.push(recipe)
+                    }
+                })
+            })
+            recipes = filtered_recipes
+            filtered_recipes = []
+        }
+
+        if (ingredients_checked.length != 0){
+            recipes.forEach(function (recipe) {
+                let ingredients = []
+                let display = true
+                recipe.find("div[ingredient]").each(function () {
+                    ingredients.push(parseInt($(this).attr("ingredient")))
+                })
+                ingredients_checked.forEach(function (elem) {
+                    if(ingredients.indexOf(elem) == -1) {
+                        display = false
+                    }
+                })
+                if (display && filtered_recipes.indexOf(recipe) == -1){
+                    filtered_recipes.push(recipe)
+                }
+            })
+            recipes = filtered_recipes
+            filtered_recipes = []
+        }
+
+        recipes.forEach(function (recipe) {
+            recipe.show()
+        })
+    }
+
+    $("#searchRecipeByName").keyup(function () {
+      filter_all()
+    })
+     $("#sources").change(function () {
+      filter_all()
+     })
 
     </script>
 </body>
