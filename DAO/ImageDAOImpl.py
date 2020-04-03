@@ -61,7 +61,7 @@ def insert(image):
     cursor = conn.cursor()
 
     try:
-        cursor.execute('INSERT INTO sections (name, id_recipe) VALUES (?,?)', (image.name, image.id_recipe))
+        cursor.execute('INSERT INTO images (name, id_recipe) VALUES (?,?)', (image.name, image.id_recipe))
         conn.commit()
         return cursor.lastrowid
     except sqlite3.Error as error:

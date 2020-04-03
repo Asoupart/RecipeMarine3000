@@ -12,6 +12,14 @@ def read_all():
     return tools
 
 
+def read_by_recipe():
+    tools = []
+    for tool in ToolDAOImpl.findByRecipe():
+        tools.append(tool.to_dict())
+    json.dumps(tools)
+    return tools
+
+
 def read_one(id_tool):
     return ToolDAOImpl.findOneById(id_tool).to_dict()
 

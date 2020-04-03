@@ -17,6 +17,20 @@ def findAll():
         print(error.with_traceback())
 
 
+def findByRecipe(id_recipe):
+    conn = ConnectionDB().getConnection()
+    cursor = conn.cursor()
+
+    try:
+        tools = []
+        for row in cursor.execute('''SELECT tools.id, tools.name FROM tools JOIN map_recipe_tool ON 
+                            tools.id = map_recipe_tool.id_recipe WHERE map_recipe_tool.id_recipe = ?''', (id_recipe,)):
+            tools.append(Tool(row[0], row[1]))
+        return tools
+    except sqlite3.Error as error:
+        print(error.with_traceback())
+
+
 def findOneById(id_tool):
     conn = ConnectionDB().getConnection()
     cursor = conn.cursor()

@@ -62,10 +62,10 @@
             <a class="nav-link" href="/">Recettes</a>
         </div>
         <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="#">Ingrédients</a>
+            <a class="nav-link" href="/ingredient">Ingrédients</a>
         </div>
         <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="#">Ajout</a>
+            <a class="nav-link" href="/nouvelleRecette">Ajout</a>
         </div>
     </nav>
     <main class="row">
@@ -73,6 +73,7 @@
          <div class="col-10">
 			<h1 id="recipeTitle"></h1>
 			<h3 id="recipeSource"></h3>
+			<h3 id="recipeTools"></h3>
 			<h3 id="recipeNumber"></h3>
 			<div id="listIngredientsFull">
 
@@ -185,9 +186,9 @@
         $.getJSON(port + "api/recipes/"+id_recipe, function(data) {
             $("#recipeTitle").html(data.name)
 			$("#recipeNumber").html("Nombre de personnes : " + data.nbr_person)
-			$.getJSON(port + "api/sources/" + data.id_src, function (source) {
-				$("#recipeSource").html("Source : " + source.name)
-			})
+		$.getJSON(port + "api/sources/" + data.id_src, function (source) {
+			$("#recipeSource").html("Source : " + source.name)
+		})
         })
         $.getJSON(port + "api/sections/recipe/"+id_recipe, function(data) {
             $.each(data, function(key, val) {
@@ -253,7 +254,11 @@
     	$("#listIngredientsFull").empty()
 		$.getJSON(port + "api/ingredients/recipe/"+ id_recipe, function(data) {
 			$.each(data, function(key, val) {
-				$("#listIngredientsFull").append($("<p>").html(val.name + " : " + val.quantity + " " + val.unit))
+				if (val.unit != "nounit") {
+					$("#listIngredientsFull").append($("<p>").html(val.name + " : " + val.quantity + " " + val.unit))
+				} else {
+					$("#listIngredientsFull").append($("<p>").html(val.name + " : " + val.quantity))
+				}
 			})
 		})
 	}

@@ -32,7 +32,6 @@
 			color: wheat;
 		}
 
-
 		main h1 {
 			font-size: 50px;
 			font-weight: bold;
@@ -40,9 +39,9 @@
 		}
 
         form {
-            margin: 30px;
+            margin: 0px;
         }
-        input[type=text], input[type=number], label, select, h2 {
+        input[type=text], input[type=number], input[type=file], label, select, h2 {
             font-size: 40px;
 			margin: 10px !important;
         }
@@ -97,10 +96,10 @@
             <a class="nav-link" href="/">Recettes</a>
         </div>
         <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="#">Ingrédients</a>
+            <a class="nav-link" href="/ingredient">Ingrédients</a>
         </div>
         <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="#">Ajout</a>
+            <a class="nav-link" href="/nouvelleRecette">Ajout</a>
         </div>
     </nav>
     <main class="row">
@@ -112,10 +111,21 @@
 			<form>
 				<section class="row">
 					<div class="col-12">
+						<p id="error_msg"></p>
 						<label for="recipeTitle">Nom de la recette</label>
 						<input type="text" id="recipeTitle" class="form-control" placeholder="J'aime le piment d'espelette" required="required">
 					</div>
 				</section>
+			</form>
+				<section class="row">
+					<div class="col-12">
+						<form id="formImage" method="post" action="">
+							<label for="recipeFile">Images</label>
+							<input type="file" class="form-control-file" id="recipeFile" name="files[]" multiple="multiple">
+						</form>
+					</div>
+				</section>
+			<form>
 				<section class="row">
 					<div class="col-12">
 						<label for="recipeNumber">Nombre de personnes</label>
@@ -511,7 +521,127 @@
 		* Puis map la recette avec ses catégories
 		* Puis map la recette avec ses outils requis
 		* */
+
 		let submitForm = function () {
+			let source
+			if($("#sources").val() == 0){
+				source = 0
+			} else {
+				source = parseInt($("#sources").val())
+			}
+
+			let recipe = {
+ 				   "name_recipe": $("#recipeTitle").val(),
+    				"nbr_person": parseInt($("#recipeNumber").val()),
+					"images": [],
+    				"id_src": source,
+    				"id_cats": [],
+    				"id_tools": [],
+    				"sections": []
+				}
+
+			let ins = $('#recipeFile').prop('files').length
+			let images = []
+			for(let x = 0; x < ins; x++) {
+				let img = {
+					"name": $("#recipeFile").prop('files')[x].name
+				}
+				images.push(img)
+			}
+			recipe.images = images
+
+			let categories = []
+			$(".category").each(function () {
+				if(this.checked == true){
+					categories.push(this.value)
+				}
+			})
+			recipe.id_cats = categories
+
+			let tools = []
+			$(".toolRequired").each(function () {
+				if (this.checked == true) {
+					tools.push(this.value)
+				}
+			})
+			recipe.id_tools = tools
+
+			let sections = []
+			$(".sectionRecipe").each(function () {
+				let sectionId = $(this).attr("sectionId")
+				let title = $(this).find("input").val()
+				if (title == null || title == ""){
+					alert("Titre de section manquant !")
+					return
+				}
+
+				let section = {
+					"name": title,
+					"ingredients": [],
+					"instructions": []
+				}
+
+				let ingredients = []
+				$("tr[sectionId =" + sectionId +"]").each(function () {
+					let columns = $(this).find("td")
+					let id_ingredient = columns[0].getAttribute("value")
+					let quantity = parseInt(columns[1].firstElementChild.value)
+					let unit = columns[2].firstElementChild.value
+					let ingredient = {
+						"id_ingredient": id_ingredient,
+						"quantity": quantity,
+						"unit": unit
+					}
+					ingredients.push(ingredient)
+				})
+				section.ingredients = ingredients
+
+				let instructions = []
+				$(".section" + sectionId + "instructions").each(function () {
+					let instructionText = $(this).find("p").html()
+					let instruction = {
+						"text": instructionText
+					}
+					instructions.push(instruction)
+				})
+				section.instructions = instructions
+				sections.push(section)
+			})
+			recipe.sections = sections
+			console.log(recipe)
+
+			$.ajax({
+				url : port + "api/recipes",
+				type : 'POST',
+				data :  JSON.stringify(recipe),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success : function(id_returned) {
+					let form_data = new FormData()
+					if (ins != 0){
+						for(let x = 0; x < ins; x++){
+							form_data.append("files[]", $('#recipeFile').prop('files')[x])
+						}
+						$.ajax({
+							type: 'POST',
+							url: 'python-flask-files-upload',
+							data: form_data,
+							dataType: 'json',
+							processData: false,
+							contentType: false,
+							success: function (response) {
+								window.location.href = "/";
+							}
+						})
+					} else {
+						window.location.href = "/";
+					}
+				}
+			})
+		}
+
+
+		let test = function () {
 			let source
 			if($("#sources").val() == 0){
 				source = 0
@@ -522,11 +652,6 @@
 			if ($("#recipeTitle").val() == null || $("#recipeTitle").val() == "" || $("#recipeNumber").val() == null || $("#recipeNumber").val() == ""){
 				alert("Champ non renseigné")
 			} else {
-				let new_recipe = {
-					"name": $("#recipeTitle").val(),
-					"nbr_person": parseInt($("#recipeNumber").val()),
-					"id_src": source
-				}
 				$.ajax({
 				url : port + "api/recipes",
 				type : 'POST',
@@ -595,11 +720,48 @@
                                                                     contentType: "application/json; charset=utf-8",
                                                                     dataType: "json",
                                                                     success : function(result) {
-                                                                        window.location.href = "/";
+
+																		let form_data = new FormData()
+																		let ins = $('#recipeFile').files.length
+
+																		for(let x = 0; x < ins; x++){
+																			form_data.append("files[]", $('#recipeFile').files[x])
+																		}
+
+																		if (ins != 0) {
+																			$.ajax({
+																				type: 'POST',
+																				url: 'python-flask-files-upload',
+																				data: form_data,
+																				dataType: 'json',
+																				processData: false,
+																				contentType: false,
+																				success: function (response) {
+																					for(let x = 0; x < ins; x++){
+																						let img = {
+																							"name": $("#recipeFile").files[x].filename,
+																							"id_recipe": id_recipe
+																						}
+																						$.ajax({
+																						type: 'POST',
+																						url: 'api/images',
+																						data: img,
+																						dataType: 'json',
+																						success: function (response) {
+																							window.location.href = "/";
+																						}
+																						})
+																					}
+																				}
+																			})
+																		} else {
+																			window.location.href = "/";
+																		}
                                                                     }
                                                                     })
                                                                 })
-                                                            }})
+                                                            }
+                                                            })
                                                         })
                                                     }
                                                     })

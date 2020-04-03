@@ -887,6 +887,31 @@ paths:
       responses:
         200:
           description: "Successfully deleted the source"
+  /tools/recipe/{id_recipe}:
+    get:
+      operationId: "restcontrollers.ToolsRestController.read_by_recipe"
+      tags:
+        - "Tools"
+      summary: "Les outils d'une recette"
+      description: "read tools of a recipe"
+      parameters:
+        - name: id_recipe
+          in: path
+          description: Id of the recipe
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_tool:
+                  type: "integer"
+                name:
+                  type: "string"
+
 
 # Paths for images
   /images:
@@ -1029,7 +1054,7 @@ paths:
                 id_src:
                   type: "integer"
     post:
-      operationId: "restcontrollers.RecipesRestController.create"
+      operationId: "restcontrollers.RecipesRestController.create_recipe"
       tags:
         - "Recipes"
       summary: "Création d'une recette"
@@ -1042,13 +1067,20 @@ paths:
           schema:
            type: object
            properties:
-             name:
+             name_recipe:
                 type: string
-                description: Name of the image
              nbr_person:
                 type: integer
+             images:
+               type: array
              id_src:
-                type: integer
+               type: integer
+             id_cats:
+               type: array
+             id_tools:
+               type: array
+             sections:
+               type: array
       responses:
        201:
         description: Successfully created recipe in list
