@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Bienvenue !</title>
+    <title>Recette</title>
     <link rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
@@ -10,15 +10,24 @@
     <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
     <style>
 		/* Header et nav*/
-        header {
-            color: wheat;
-            min-height: 300px;
-            background-color: brown;
-        }
-        header h1{
-            font-size: 100px;
-            margin: 10px 30px;
-        }
+		.topnav {
+			overflow: hidden;
+			background-color: #333;
+			position: relative;
+			color: white;
+			font-size: 40px;
+		}
+
+		#links {
+			display: none;
+		}
+
+		/* Style the hamburger menu */
+		.topnav .icon {
+			display: block;
+			color: white;
+		}
+
         a.nav-link {
             font-size: 50px;
             color: white;
@@ -32,7 +41,7 @@
 			color: wheat;
 		}
 
-        th{
+        th, #listIngredientsFull{
             font-size: 40px;
         }
 
@@ -50,34 +59,156 @@
 			border: black solid 1px;
 		}
 
+		.btn-edit {
+			display: none;
+		}
+
+		/*Pour les images*/
+		* {box-sizing: border-box}
+	body {font-family: Verdana, sans-serif; margin:0}
+	.MySlides {display: none}
+	img {
+		vertical-align: middle;
+		width: 100%;
+	}
+
+	/* Next & previous buttons */
+	.prev, .next {
+	  cursor: pointer;
+	  position: relative;
+	  top: 50%;
+	  width: auto;
+	  padding: 16px;
+	  margin-top: -22px;
+	  color: white;
+	  font-weight: bold;
+	  font-size: 30px;
+	  transition: 0.6s ease;
+	  border-radius: 0 3px 3px 0;
+	  user-select: none;
+	}
+
+	/* Position the "next button" to the right */
+	.next {
+	  right: 0;
+	  border-radius: 3px 0 0 3px;
+	}
+
+	/* On hover, add a black background color with a little bit see-through */
+	.prev:hover, .next:hover {
+	  background-color: rgba(0,0,0,0.8);
+	}
+
+	/* Caption text */
+	.text {
+	  color: #f2f2f2;
+	  font-size: 15px;
+	  padding: 8px 12px;
+	  position: absolute;
+	  bottom: 8px;
+	  width: 100%;
+	  text-align: center;
+	}
+
+	/* Number text (1/3 etc) */
+	.numbertext {
+	  color: #f2f2f2;
+	  font-size: 12px;
+	  padding: 8px 12px;
+	  position: absolute;
+	  top: 0;
+	}
+
+	/* The dots/bullets/indicators */
+	.dot {
+	  cursor: pointer;
+	  height: 15px;
+	  width: 15px;
+	  margin: 0 2px;
+	  background-color: #bbb;
+	  border-radius: 50%;
+	  display: inline-block;
+	  transition: background-color 0.6s ease;
+	}
+
+	.active, .dot:hover {
+	  background-color: #717171;
+	}
+
+	/* Fading animation */
+	.fade {
+	  -webkit-animation-name: fade;
+	  -webkit-animation-duration: 1.5s;
+	  animation-name: fade;
+	  animation-duration: 1.5s;
+	}
+
+	@-webkit-keyframes fade {
+	  from {opacity: .4}
+	  to {opacity: 1}
+	}
+
+	@keyframes fade {
+	  from {opacity: .4}
+	  to {opacity: 1}
+	}
+
+	/* On smaller screens, decrease text size */
+	@media only screen and (max-width: 300px) {
+	  .prev, .next,.text {font-size: 11px}
+	}
+
     </style>
     <script type="text/javascript" src="../static/js/script.js"></script>
 </head>
 <body class="container-fluid">
-    <header class="row">
-		<h1 class="col text-center">Liste des ingrédients</h1>
-    </header>
-    <nav class="row bg-dark text-white text-center">
-        <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="/">Recettes</a>
-        </div>
-        <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="/ingredient">Ingrédients</a>
-        </div>
-        <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="/nouvelleRecette">Ajout</a>
-        </div>
-    </nav>
+	<nav class="topnav row">
+		<div class="col">
+			<div class="row">
+				<div class="col-11">
+					<p class="col text-left navactive">Recette</p>
+				</div>
+				<div class="col-1 text-center">
+					<i class="fa fa-bars icon" id="hamburger"></i>
+				</div>
+			</div>
+			<div class="row bg-dark text-white text-center" id="links">
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/">Liste des recettes</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/ingredient">Ingrédients</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/nouvelleRecette">Ajouter une recette</a>
+				</div>
+			</div>
+		</div>
+	</nav>
     <main class="row">
          <div class="col-1"></div>
          <div class="col-10">
-			<h1 id="recipeTitle"></h1>
-			<h3 id="recipeSource"></h3>
-			<h3 id="recipeTools"></h3>
-			<h3 id="recipeNumber"></h3>
-			<div id="listIngredientsFull">
-
+			 <div id="listImages" class="text-center">
+			 </div>
+			 <div style="text-align:center">
+				 <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+				 <span class="dot" onclick="currentSlide(1)"></span>
+				 <span class="dot" onclick="currentSlide(2)"></span>
+				 <span class="dot" onclick="currentSlide(3)"></span>
+				 <a class="next" onclick="plusSlides(1)">&#10095;</a>
 			</div>
+			 <div class="text-center">
+
+				 <h1 id="recipeTitle"></h1>
+				 <button type="button" class="btn btn-warning" onclick="toggleEditOption()">Editer</button>
+				 <button type="button" class="btn btn-danger" onclick="toggleModalDelete('recipe', 0, 0)">Supprimer</button>
+				 <h3 id="recipeSource"></h3>
+				 <h3 id="recipeTools"></h3>
+				 <h3 id="recipeNumber"></h3>
+			 </div>
+			 <div id="listIngredientsFull">
+
+			 </div>
 			<article id="sections">
 
             </article>
@@ -120,13 +251,15 @@
 	</div>
 
     <!-- La modal de suppression -->
-    <div id="modalDeleteIngredient" class="modal fade" tabindex="-1" role="dialog"
+    <div id="modalDeleteItem" class="modal fade" tabindex="-1" role="dialog"
 		aria-labelledby="deleteModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
+					<h3>Suppression</h3>
+					<input type="hidden" id="type">
 					<input type="hidden" id="sectionIdforDelete">
-                    <input type="hidden" id="ingredientIdforDelete">
+                    <input type="hidden" id="itemIdforDelete">
 					<button type="button" class="close" data-dismiss="modal"
 						aria-label="Close">
 						<span aria-hidden="true"><i class='fas fa-times'></i></span>
@@ -136,7 +269,7 @@
 					<p>Êtes vous sûr ?</p>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-danger" onclick="deleteIngredient()">Oui</button>
+					<button type="button" class="btn btn-danger" onclick="deleteItem()">Oui</button>
 					<button type="button" class="btn btn-dark" data-dismiss="modal">Annuler</button>
 				</div>
 			</div>
@@ -169,6 +302,7 @@
 		</div>
 	</div>
 
+
 </body>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -181,8 +315,8 @@
             crossorigin="anonymous"></script>
 <script type="text/javascript">
 	let id_recipe = window.location.toString().split('/')[4]
+	let slideIndex = 1;
     window.onload = function(){
-		displayIngredientRecipe()
         $.getJSON(port + "api/recipes/"+id_recipe, function(data) {
             $("#recipeTitle").html(data.name)
 			$("#recipeNumber").html("Nombre de personnes : " + data.nbr_person)
@@ -191,6 +325,9 @@
 		})
         })
         $.getJSON(port + "api/sections/recipe/"+id_recipe, function(data) {
+        	if (data.length > 1) {
+				displayIngredientRecipe()
+			}
             $.each(data, function(key, val) {
                 let id_section = val.id
                 $("#sections").append($("<section>")
@@ -203,7 +340,25 @@
                 displayInstruction(id_section)
             })
         })
+		$.getJSON(port + "api/images/recipe/"+id_recipe, function(data) {
+			let image_number = data.length
+			$.each(data, function(key, val) {
+				let block_image = $("<div>").addClass("MySlides")
+				block_image.append($("<div>").addClass("numbertext").html(key+1 + " / " + image_number))
+				block_image.append($("<img>").attr("src","https://static1.purepeople.com/articles/8/37/02/68/@/5339399-baby-yoda-dans-la-serie-disney-the-ma-237x237-2.jpg")) /*"E:/Code/RecipeMarine3000/controllers/images/" + val.name)*/
+				$("#listImages").append(block_image)
+			})
+			showSlides(slideIndex);
+		})
     }
+
+    $("#hamburger").click(function () {
+		$("#links").toggle()
+	})
+    
+	let toggleEditOption = function(){
+		$(".btn-edit").toggle()
+	}
 
     let displayIngredient = function(id_section){
     	if ($("div.ingredients[section=" + id_section + "]").length) {
@@ -228,15 +383,15 @@
 				} else {
 					tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "unit"))
 				}
-				tr.append($("<td>").append($("<button>")
+				tr.append($("<td>").addClass("text-center").append($("<button>")
 						.attr("type", "button")
-						.addClass("btn btn-warning")
+						.addClass("btn btn-warning btn-edit")
 						.attr("onclick", "toggleModalEditIngredient(" + id_section + "," + val.id_ingredient + ")")
 						.html("<i class='fas fa-cog'></i>")))
-				tr.append($("<td>").append($("<button>")
+				tr.append($("<td>").addClass("text-center").append($("<button>")
 						.attr("type", "button")
-						.addClass("btn btn-danger")
-						.attr("onclick", "toggleModalDeleteIngredient(" + id_section + "," + val.id_ingredient + ")")
+						.addClass("btn btn-danger btn-edit")
+						.attr("onclick", "toggleModalDelete('ingredient', " + id_section + "," + val.id_ingredient + ")")
 						.html("<i class='fas fa-minus'></i>")))
 
 				$("#ingredients_section" + id_section).append(tr)
@@ -244,7 +399,7 @@
 			})
 			$("div.ingredients[section=" + id_section + "]").append($("<button>")
 										.attr("type","button")
-										.addClass("btn btn-success")
+										.addClass("btn btn-success btn-edit")
 										.attr("onclick","toggleModalEditIngredient(" + id_section + ", 0)")
 										.html("<i class='fas fa-plus'></i>"))
 		})
@@ -278,44 +433,38 @@
 			$.each(data, function(key, val) {
 				let tr = $("<tr>").attr("section", id_section).attr("instruction", val.id)
 				tr.append($("<td>").attr("section", id_section).attr("instruction", val.id).html(val.text_ins))
-				tr.append($("<td>").append($("<button>")
+				tr.append($("<td>").addClass("text-center").append($("<button>")
 						.attr("type", "button")
-						.addClass("btn btn-warning")
+						.addClass("btn btn-warning btn-edit")
 						.attr("onclick", "toggleModalEditInstruction(" + id_section + "," + val.id + ")")
 						.html("<i class='fas fa-cog'></i>")))
-				tr.append($("<td>").append($("<button>")
+				tr.append($("<td>").addClass("text-center").append($("<button>")
 						.attr("type", "button")
-						.addClass("btn btn-danger")
-						.attr("onclick", "toggleModalDeleteInstruction(" + id_section + "," + val.id + ")")
+						.addClass("btn btn-danger btn-edit")
+						.attr("onclick", "toggleModalDelete('instruction', " + id_section + "," + val.id + ")")
 						.html("<i class='fas fa-minus'></i>")))
 				$("#instructions_section"+id_section).append(tr)
 			})
 			$("div.instructions[section=" + id_section + "]").append($("<button>")
 										.attr("type","button")
-										.addClass("btn btn-success")
+										.addClass("btn btn-success btn-edit")
 										.attr("onclick","toggleModalEditInstruction(" + id_section + ", 0)")
 										.html("<i class='fas fa-plus'></i>"))
 		})
 	}
 
-    let toggleModalDeleteIngredient = function(id_section, id_ingredient) {
-        $("#modalDeleteIngredient").modal("show")
+
+	let toggleModalDelete = function(type, id_section, id_item) {
+		$("#modalDeleteItem").modal("show")
+		$("#type").val(type)
         $("#sectionIdforDelete").val(id_section)
-        $("#ingredientIdforDelete").val(id_ingredient)
-    }
+        $("#itemIdforDelete").val(id_item)
+	}
 
     let deleteIngredient = function() {
         let id_section = $("#sectionIdforDelete").val()
-        let id_ingredient = $("#ingredientIdforDelete").val()
-        $.ajax({
-				url : port + "api/sections/" + id_section + "/ingredient/" + id_ingredient,
-				type : 'DELETE',
-				success : function(result) {
-					displayIngredientRecipe()
-					displayIngredient(id_section)
-				}
-        })
-        $("#modalDeleteIngredient").modal("hide")
+        let id_ingredient = $("#itemIdforDelete").val()
+
     }
 
     let toggleModalEditIngredient = function(id_section, id_ingredient){
@@ -442,5 +591,71 @@
 		}
 		$("#modalEditInstruction").modal("hide")
 	}
+
+    let deleteItem = function(){
+		let id_section = $("#sectionIdforDelete").val()
+		let id_item = $("#itemIdforDelete").val()
+		switch ($("#type").val()) {
+			case "ingredient":
+				$.ajax({
+					url : port + "api/sections/" + id_section + "/ingredient/" + id_item,
+					type : 'DELETE',
+					success : function(result) {
+						displayIngredientRecipe()
+						displayIngredient(id_section)
+					}
+       			 })
+       			$("#modalDeleteItem").modal("hide")
+				break
+			case "instruction":
+				$.ajax({
+					url : port + "api/instructions/" + id_item,
+					type : 'DELETE',
+					success : function(result) {
+						displayInstruction(id_section)
+					}
+				})
+				$("#modalDeleteItem").modal("hide")
+				break
+			case "recipe":
+				$.ajax({
+					url : port + "api/recipes/" + id_item,
+					type : 'DELETE',
+					success : function(result) {
+						window.location.href = "/"
+					}
+				})
+				$("#modalDeleteItem").modal("hide")
+				break
+		}
+	}
+
+	/* Tous ce qui est image*/
+
+
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+	let i;
+	let slides = $(".MySlides")
+	let dots = $(".dot")
+	if (n > slides.length) {slideIndex = 1}
+	if (n < 1) {slideIndex = slides.length}
+	for (i = 0; i < slides.length; i++) {
+	  slides[i].style.display = "none";
+	}
+	for (i = 0; i < dots.length; i++) {
+	  dots[i].className = dots[i].className.replace(" active", "");
+	}
+	slides[slideIndex-1].style.display = "block";
+	dots[slideIndex-1].className += " active";
+}
+
 </script>
 </html>

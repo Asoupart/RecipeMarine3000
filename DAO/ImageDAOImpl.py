@@ -89,3 +89,14 @@ def deleteById(id_img):
         conn.commit()
     except sqlite3.Error as error:
         print(error.with_traceback())
+
+
+def deleteByRecipe(id_recipe):
+    conn = ConnectionDB().getConnection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('DELETE FROM images WHERE id_recipe = ?', (id_recipe,))
+        conn.commit()
+    except sqlite3.Error as error:
+        print(error.with_traceback())

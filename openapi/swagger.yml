@@ -1030,6 +1030,33 @@ paths:
         200:
           description: "Successfully deleted the image"
 
+  /images/recipe/{id_recipe}:
+    get:
+      operationId: "restcontrollers.ImagesRestController.read_by_recipe"
+      tags:
+        - "Images"
+      summary: "Liste des images"
+      description: "read the image list"
+      parameters:
+        - name: id_recipe
+          in: path
+          description: Id of the recipe
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_image:
+                  type: "integer"
+                name:
+                  type: "string"
+                id_recipe:
+                  type: "integer"
+
 # Paths for recipes
   /recipes:
     get:
@@ -1147,7 +1174,7 @@ paths:
           description: Successfully updated recipe in list
 
     delete:
-      operationId: "restcontrollers.RecipesRestController.delete"
+      operationId: "restcontrollers.RecipesRestController.delete_full"
       tags:
         - "Recipes"
       summary: Delete a recipe in the list

@@ -77,3 +77,13 @@ def deleteById(id_ins):
     except sqlite3.Error as error:
         print(error.with_traceback())
 
+
+def deleteBySection(id_section):
+    conn = ConnectionDB().getConnection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('DELETE FROM instructions WHERE id_section = ?', (id_section,))
+        conn.commit()
+    except sqlite3.Error as error:
+        print(error.with_traceback())

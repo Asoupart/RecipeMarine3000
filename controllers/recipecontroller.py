@@ -1,9 +1,11 @@
-from flask import (Flask, render_template, session, request, jsonify)
+import connexion
+import os
+from flask import (render_template, request, jsonify)
 from werkzeug.utils import secure_filename
-import connexion, os
 
 app = connexion.App(__name__, specification_dir='../openapi/')
-app.app.config['UPLOAD_FOLDER'] = 'E:/uploads'
+UPLOAD_FOLDER = 'E:/Code/RecipeMarine3000/controllers/images/'
+app.app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.add_api('swagger.yml')
 

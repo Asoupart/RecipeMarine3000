@@ -102,3 +102,25 @@ def addTool(id_recipe, id_tool):
         conn.commit()
     except sqlite3.Error as error:
         print(error.with_traceback())
+
+
+def eraseToolMapping(id_recipe):
+    conn = ConnectionDB().getConnection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('DELETE FROM map_recipe_tool WHERE id_recipe = ?', (id_recipe,))
+        conn.commit()
+    except sqlite3.Error as error:
+        print(error.with_traceback())
+
+
+def eraseCategoryMapping(id_recipe):
+    conn = ConnectionDB().getConnection()
+    cursor = conn.cursor()
+
+    try:
+        cursor.execute('DELETE FROM map_recipe_category WHERE id_recipe = ?', (id_recipe,))
+        conn.commit()
+    except sqlite3.Error as error:
+        print(error.with_traceback())

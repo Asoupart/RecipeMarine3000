@@ -1,4 +1,4 @@
-import json
+import json, os
 from flask import make_response, abort
 from DAO import RecipeDAOimpl, SectionDAOimpl, ImageDAOImpl, InstructionDAOimpl
 from models.Recipe import Recipe
@@ -71,6 +71,19 @@ def update(id_recipe, recipe):
 
 
 def delete(id_recipe):
+    RecipeDAOimpl.deleteById(id_recipe)
+
+
+def delete_full(id_recipe):
+    for section in SectionDAOimpl.findByRecipe(id_recipe):
+        InstructionDAOimpl.deleteBySection(section.id_sec)
+        SectionDAOimpl.eraseAllMappingBySection(section.id_sec)
+        SectionDAOimpl.deleteById(section.id_sec)
+    for image in ImageDAOImpl.findByRecipe(id_recipe):
+        os.remove('E:/uploads/' + image.name)
+    ImageDAOImpl.findByRecipe(id_recipe)
+    RecipeDAOimpl.eraseCategoryMapping(id_recipe)
+    RecipeDAOimpl.eraseToolMapping(id_recipe)
     RecipeDAOimpl.deleteById(id_recipe)
 
 
