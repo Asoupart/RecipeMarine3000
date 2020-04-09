@@ -42,6 +42,24 @@ def findOneByName(name):
         print(error.with_traceback())
 
 
+def findByIngredient(id_ingredient):
+    conn = ConnectionDB().getConnection()
+    cursor = conn.cursor()
+
+    try:
+        recipes = []
+        for row in cursor.execute('''
+            SELECT recipes.id, recipes.name, recipes.nbr_person, recipes.id_src FROM recipes
+            JOIN sections ON sections.id_recipe=recipes.id
+            JOIN map_section_ingredient ON sections.id=map_section_ingredient.id_section
+            WHERE map_section_ingredient.id_ingredient = ?
+                ''', (id_ingredient,)):
+            recipes.append(Recipe(row[0], row[1], row[2], row[3]))
+        return recipes
+    except sqlite3.Error as error:
+        print(error.with_traceback())
+
+
 def insert(recipe):
     conn = ConnectionDB().getConnection()
     cursor = conn.cursor()

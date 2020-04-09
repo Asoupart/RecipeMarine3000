@@ -1230,3 +1230,32 @@ paths:
       responses:
         200:
           description: Successfully inserted ingredient in section
+
+  /recipes/ingredient/{id_ingredient}:
+    get:
+      operationId: "restcontrollers.RecipesRestController.read_by_ingredient"
+      tags:
+        - "Recipes"
+      summary: "Toutes les recettes contenant un ingrédient"
+      description: "read recipes"
+      parameters:
+        - name: id_ingredient
+          in: path
+          description: Id of the ingredient
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_recipe:
+                  type: "integer"
+                name:
+                  type: "string"
+                nbr_person:
+                  type: "integer"
+                id_src:
+                  type: "integer"

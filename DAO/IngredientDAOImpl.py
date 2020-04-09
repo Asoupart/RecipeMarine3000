@@ -83,15 +83,15 @@ def findByRecipe(id_recipe):
 
 
 def insert(ingredient):
-    conn = ConnectionDB().getConnection()
-    cursor = conn.cursor()
+        conn = ConnectionDB().getConnection()
+        cursor = conn.cursor()
 
-    try:
-        cursor.execute('INSERT INTO ingredients (\'name\') VALUES (?)', (ingredient.name,))
-        conn.commit()
-        return cursor.lastrowid
-    except sqlite3.Error as error:
-        print(error.with_traceback())
+        try:
+            cursor.execute('INSERT INTO ingredients (\'name\') VALUES (?)', (ingredient.name,))
+            conn.commit()
+            return cursor.lastrowid
+        except sqlite3.Error as error:
+            print(error.with_traceback())
 
 
 def update(ingredient):
@@ -125,3 +125,4 @@ def deleteByName(name):
         conn.commit()
     except sqlite3.Error as error:
         print(error.with_traceback())
+

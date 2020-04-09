@@ -218,14 +218,21 @@
         })
 
         let deleteIngredient = function(){
-            $.ajax({
-				url : port + 'api/ingredients/' + $("#idIngredientToDelete").val(),
-				type : 'DELETE',
-				success : function(result) {
-				    $("#modalDelete").modal("hide")
-                    allIngredients()
-				}
-			})
+            let id_ingredient = $("#idIngredientToDelete").val()
+            $.getJSON(port + "api/recipe/ingredient/" + id_ingredient, function(data) {
+                if (data.length = 0){
+                    $.ajax({
+                        url : port + 'api/ingredients/' + id_ingredient,
+                        type : 'DELETE',
+                        success : function(result) {
+                            $("#modalDelete").modal("hide")
+                            allIngredients()
+                        }
+                    })
+                } else {
+                    alert("Cet ingrédient est dans une recette")
+                }
+            })
         }
 
         let toggleModalAdd = function(){

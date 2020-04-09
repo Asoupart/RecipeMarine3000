@@ -27,6 +27,14 @@ def read_one(id_recipe):
     return RecipeDAOimpl.findOneById(id_recipe).to_dict()
 
 
+def read_by_ingredient(id_ingredient):
+    recipes = []
+    for recipe in RecipeDAOimpl.findByIngredient(id_ingredient):
+        recipes.append(recipe.to_dict())
+    json.dumps(recipes)
+    return recipes
+
+
 def create(recipe):
     name = recipe.get("name", None)
     nbr_person = recipe.get("nbr_person", None)
