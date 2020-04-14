@@ -7,87 +7,73 @@
           href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
-     <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
-    <style>
-		/* Header et nav*/
-        header {
-            color: wheat;
-            min-height: 300px;
-            background-color: brown;
-        }
-        header h1{
-            font-size: 100px;
-            margin: 10px 30px;
-        }
-        a.nav-link {
-            font-size: 50px;
-            color: white;
-        }
+    <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="/css/nav.css" rel="stylesheet">
+    <link href="/css/home.css" rel="stylesheet">
 
-		a.nav-link:hover{
-			background-color: black;
-		}
 
-		a.nav-link:active {
-			color: wheat;
-		}
-
-        #ingredients {
-            display: none;
-            background-color: mediumaquamarine;
-        }
-
-        li {
-            list-style: none;
-        }
-
-        #listIngredients {
-            font-size: 50px;
-            column-count: 2;
-        }
-
-    </style>
 </head>
 <body class="container-fluid">
-    <header class="row">
-		<h1 class="col text-center">Liste des ingrédients</h1>
-    </header>
-    <nav class="row bg-dark text-white text-center">
-        <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="/">Recettes</a>
-        </div>
-        <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="/ingredients">Ingrédients</a>
-        </div>
-        <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="/nouvelleRecette">Ajout</a>
-        </div>
-    </nav>
+<nav class="topnav row">
+		<div class="col">
+			<div class="row">
+				<div class="col-11">
+					<p class="col text-left navactive">Accueil</p>
+				</div>
+				<div class="col-1 text-center">
+					<i class="fa fa-bars icon" id="hamburger"></i>
+				</div>
+			</div>
+			<div class="row bg-dark text-white text-center" id="links">
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/home">Liste des recettes</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/ingredients">Ingrédients</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/ajout">Ajouter une recette</a>
+				</div>
+			</div>
+		</div>
+	</nav>
     <main class="row">
         <div class="col-1"></div>
         <div class="col-10">
             <h2>
                 Liste des recettes
             </h2>
-            <form class="row">
+            <div class="row">
+                <button type="button" class="btn" id="btn-advanced">Recherche avancée</button>
+            </div>
+            <form id="search" class="row">
                 <div class="col">
                     <div class="row">
                         <input id="searchRecipeByName" type="text" class="form-control" placeholder="Rechercher une recette">
                     </div>
                     <div class="row">
                         <select id="sources">
-                            <option selected disabled>Filter par source</option>
+                            <option selected disabled value="-1">Filter par source</option>
                             <option value="0">Toutes</option>
                         </select>
                     </div>
-                    <div class="row" id="categories">
+                    <div class="row">
+                        <div class="col" id="categories"></div>
+                    </div>
+                    <div class="row ui-widget">
+                        <input id="searchIngredient" type="text" class="form-control col-8" placeholder="Rechercher un ingrédient">
+                        <div class="col-4">
+                            <button type="button" class="btn" id="addIngredient"><i class='fas fa-plus'></i></button>
+                        </div>
                     </div>
                     <div class="row">
-                        <button type="button" class="btn btn-primary" id="buttonIngredients">Trier par ingrédient</button>
+                        <div class="col" id="ingredientsToLookFor">
+
+                        </div>
                     </div>
-                    <div class="row text-center" id="ingredients">
-                        <ul id="listIngredients">
-                        </ul>
+                    <div class="row">
+                        <button type="button" class="btn" id="btn-clean">Réiniatilser</button>
                     </div>
                 </div>
             </form>
@@ -108,76 +94,119 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
-    <script type="text/javascript" src="../static/js/script.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script type="text/javascript">
+    let ingredients = []
+    let ids = []
     window.onload = function () {
-        $.getJSON(port + "api/recipes", function(data) {
+        $.getJSON("/api/recipes", function(data) {
             $.each(data, function(key, val) {
                 let li = $("<li>")
                 li.attr("recette", val.id).attr("source", val.id_src)
-                li.append($("<a>").attr("href","/recette/"+val.id).html(val.name))
+
+                $.getJSON("/api/images/recipe/" + val.id, function(data) {
+                    let link = $("<a>").attr("href","/recette/"+val.id).addClass("row")
+                    let img = ($("<img>").attr("src","/images/" + data[0].name).attr("height","100px").attr("width", "100px"))
+                    let title = $("<p>").addClass("recipe_title").html(val.name)
+                    link.append(img).append(title)
+                    li.append(link)
+                })
                 $("#listRecipes").append(li)
-                $.getJSON(port + "api/categories/recipe/" + val.id, function(data) {
+                $.getJSON("/api/categories/recipe/" + val.id, function(data) {
                     $.each(data, function(key, val) {
                         li.append($("<div>").attr("hidden", "hidden").attr("category", val.id))
                     })
                 })
-                $.getJSON(port + "api/ingredients/recipe/" + val.id, function(data) {
+                $.getJSON("/api/ingredients/recipe/" + val.id, function(data) {
                     $.each(data, function(key, val) {
                         li.append($("<div>").attr("hidden", "hidden").attr("ingredient", val.id_ingredient))
                     })
                 })
             })
         })
-        $.getJSON(port + "api/sources", function(data) {
+        $.getJSON("/api/sources", function(data) {
             $.each(data, function(key, val) {
                 $("#sources").append($("<option>").val(val.id).html(val.name))
             })
         })
-        $.getJSON(port + "api/categories", function(data) {
+        $.getJSON("/api/categories", function(data) {
             $.each(data, function(key, val) {
+                let div = $("<div>").addClass("row")
                 let label = $("<label>").attr("for", "category"+val.id).html(val.name)
                 let input = $("<input>").addClass("category")
                                         .attr("id", "category"+val.id)
                                         .attr("type", "checkbox").val(val.id)
                                         .attr("onclick", "filter_all()")
                                         .html(val.name)
-                $("#categories").append(label).append(input)
+                div.append(input).append(label)
+                $("#categories").append(div)
             })
         })
-        $.getJSON(port + "api/ingredients", function(data) {
+        $.getJSON("/api/ingredients", function(data) {
+            ingredients = []
+            ids = []
             $.each(data, function(key, val) {
-                let label = $("<label>").attr("for", "ingredient" + val.id).html(val.name)
-                let input = $("<input>").addClass("ingredient")
-                                        .attr("id", "ingredient" + val.id)
-                                        .attr("id", "ingredient"+val.id)
-                                        .attr("type", "checkbox").val(val.id)
-                                        .attr("onclick", "filter_all()")
-                                        .html(val.name)
-                let li = $("<li>").append(input).append(label).addClass("li_ingredient")
-                $("#listIngredients").append(li)
+                ingredients.push(val.name)
+                ids.push(val.id)
+            })
+            $("#searchIngredient").autocomplete({
+                source: ingredients
+            })
+            $("#searchIngredient").focus(function () {
+                $("#searchIngredient").css("background-color", "white")
             })
         })
     }
 
-    $("#buttonIngredients").click(function () {
-        $("#ingredients").toggle()
+    $("#addIngredient").click(function () {
+        if (ingredients.indexOf($("#searchIngredient").val()) == -1){
+            $("#searchIngredient").css("background-color", "tomato")
+        } else {
+            let id = ids[ingredients.indexOf($("#searchIngredient").val())]
+            let div = $("<div>").attr("ingredientToLookFor", $("#searchIngredient").val()).attr("id", id).addClass("row")
+            div.append($("<p>").addClass("ingredient").html($("#searchIngredient").val()))
+            div.append($("<button>").attr("type","button").addClass("btn btn-delete").html("<i class='fas fa-minus'></i>").click(function () {
+                    div.remove()
+                    filter_all()
+                })
+            )
+            $("#ingredientsToLookFor").append(div)
+            filter_all()
+            $("#searchIngredient").val(null)
+        }
+    })
+
+    $("#hamburger").click(function () {
+		$("#links").toggle()
+	})
+
+    $("#btn-advanced").click(function () {
+        $("#search").toggle()
+    })
+
+    $("#btn-clean").click(function () {
+        $("#searchRecipeByName").val(null)
+        $("#sources").val(-1)
+        $("input.category").each(function () {
+            $(this).prop("checked", false)
+        })
+        $("#ingredientsToLookFor").empty()
+        filter_all()
     })
 
     let filter_all = function(){
         let tag = $("#searchRecipeByName").val().toLowerCase()
         let source = $("#sources").val()
         let checked = []
-        let ingredients_checked = []
+        let ingredients_added = []
         $("input.category").each(function () {
             if ($(this).is(':checked')){
                 checked.push(parseInt($(this).val()))
             }
         })
-        $("input.ingredient").each(function () {
-            if ($(this).is(':checked')){
-                ingredients_checked.push(parseInt($(this).val()))
-            }
+
+        $("div[ingredientToLookFor]").each(function () {
+            ingredients_added.push($(this).attr("id"))
         })
 
         let recipes = $("li[recette]")
@@ -190,11 +219,11 @@
                 filtered_recipes.push($(this))
             }
         })
-        
+
         recipes = filtered_recipes
         filtered_recipes = []
 
-        if (source != null && source !=0){
+        if (source != null && source !=0 && source != -1){
             recipes.forEach(function (elem) {
                 if (elem.attr("source").toLowerCase().indexOf($("#sources").val()) > -1){
                     filtered_recipes.push(elem)
@@ -220,15 +249,15 @@
             filtered_recipes = []
         }
 
-        if (ingredients_checked.length != 0){
+        if (ingredients_added.length != 0) {
             recipes.forEach(function (recipe) {
                 let ingredients = []
                 let display = true
                 recipe.find("div[ingredient]").each(function () {
                     ingredients.push(parseInt($(this).attr("ingredient")))
                 })
-                ingredients_checked.forEach(function (elem) {
-                    if(ingredients.indexOf(elem) == -1) {
+                ingredients_added.forEach(function (elem) {
+                    if (ingredients.indexOf(parseInt(elem)) == -1) {
                         display = false
                     }
                 })
@@ -251,7 +280,6 @@
      $("#sources").change(function () {
       filter_all()
      })
-
     </script>
 </body>
 </html>

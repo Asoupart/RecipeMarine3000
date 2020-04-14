@@ -8,6 +8,7 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
     <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
+	<link href="/css/nav.css" rel="stylesheet">
     <style>
 		/* Header et nav*/
         header {
@@ -85,23 +86,31 @@
 		}
 
     </style>
-    <script type="text/javascript" src="static/js/script.js"></script>
 </head>
 <body class="container-fluid">
-    <header class="row">
-		<h1 class="col text-center">Liste des ingrédients</h1>
-    </header>
-    <nav class="row bg-dark text-white text-center">
-        <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="/">Recettes</a>
-        </div>
-        <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="/ingredient">Ingrédients</a>
-        </div>
-        <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="/nouvelleRecette">Ajout</a>
-        </div>
-    </nav>
+    <nav class="topnav row">
+		<div class="col">
+			<div class="row">
+				<div class="col-11">
+					<p class="col text-left navactive">Recette</p>
+				</div>
+				<div class="col-1 text-center">
+					<i class="fa fa-bars icon" id="hamburger"></i>
+				</div>
+			</div>
+			<div class="row bg-dark text-white text-center" id="links">
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/home">Liste des recettes</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/ingredients">Ingrédients</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/ajout">Ajouter une recette</a>
+				</div>
+			</div>
+		</div>
+	</nav>
     <main class="row">
         <div class="col-1"></div>
         <article class="col-10">
@@ -277,7 +286,7 @@
 			$("#sources").empty()
 			$("#sources").append($("<option>").attr("disabled", "disabled").attr("selected","selected").html("Choississez votre source"))
 			$("#sources").append($("<option>").val(0).html("Aucune"))
-			$.getJSON(port + "api/sources", function(data) {
+			$.getJSON("/api/sources", function(data) {
 				$.each(data, function(key, val) {
           	      $("#sources").append($("<option>").val(val.id).html(val.name))
             	})
@@ -286,7 +295,7 @@
 
 		let displayCategories = function(){
 			$("#categories").empty()
-			$.getJSON(port + "api/categories", function(data) {
+			$.getJSON("/api/categories", function(data) {
 				$.each(data, function(key, val) {
 					$("#categories").append($("<input>").attr("type", "checkbox").addClass("category").attr("id", "category"+val.id).val(val.id))
 					$("#categories").append($("<label>").attr("for", "category"+val.id).html(val.name))
@@ -297,7 +306,7 @@
 
 		let displayTools = function(){
 			$("#tools").empty()
-			$.getJSON(port + "api/tools", function(data) {
+			$.getJSON("/api/tools", function(data) {
 				$.each(data, function(key, val) {
 					$("#tools").append($("<input>").attr("type", "checkbox").addClass("toolRequired").attr("id", "tool"+val.id).val(val.id))
 					$("#tools").append($("<label>").attr("for", "tool"+val.id).html(val.name))
@@ -353,7 +362,7 @@
 		}
 
 		let displayIngredients = function(idSection){
-			$.getJSON(port + "api/ingredients", function(data) {
+			$.getJSON("/api/ingredients", function(data) {
 				$.each(data, function(key, val) {
 					$("#selectIngredient"+idSection).append($("<option>")
 							.attr("id", "section"+idSection+"ingredient"+val.id)
@@ -490,7 +499,7 @@
 				"name": $("#elemToBeAdded").val()
 			}
 			$.ajax({
-				url : port + "api/"+$("#elemType").val(),
+				url : "/api/"+$("#elemType").val(),
 				type : 'POST',
 				data :  JSON.stringify(elemToBeAdded),
 				contentType: "application/json; charset=utf-8",
@@ -611,7 +620,7 @@
 			console.log(recipe)
 
 			$.ajax({
-				url : port + "api/recipes",
+				url : "/api/recipes",
 				type : 'POST',
 				data :  JSON.stringify(recipe),
 				contentType: "application/json; charset=utf-8",

@@ -19,24 +19,24 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-@app.route('/')
-def home():
-    return render_template('home.html')
+#@app.route('/')
+#def home():
+#    return render_template('home.html')
 
 
-@app.route('/ingredients')
-def ingredients():
-    return render_template('ingredients.html')
+#@app.route('/ingredients')
+#def ingredients():
+#    return render_template('ingredients.html')
 
 
-@app.route('/nouvelleRecette')
-def new_recipe():
-    return render_template('ajoutRecette.html')
+#@app.route('/nouvelleRecette')
+#def new_recipe():
+#    return render_template('ajoutRecette.html')
 
 
-@app.route('/recette/<id_recipe>')
-def page_recipe(id_recipe):
-    return render_template('pageRecipe.html')
+#@app.route('/recette/<id_recipe>')
+#def page_recipe(id_recipe):
+#    return render_template('pageRecipe.html')
 
 
 @app.route('/python-flask-files-upload', methods=['POST'])

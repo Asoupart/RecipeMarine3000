@@ -45,7 +45,6 @@
             min-width: 350px;
         }
     </style>
-    <script type="text/javascript" src="static/js/script.js"></script>
 </head>
 <body class="container-fluid">
     <header class="row">
@@ -55,13 +54,13 @@
     </header>
     <nav class="row bg-dark text-white text-center">
         <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="/">Recettes</a>
+            <a class="nav-link" href="/home">Recettes</a>
         </div>
         <div class="col-lg-4 col-sm-12 menu">
             <a class="nav-link" href="/ingredients">Ingrédients</a>
         </div>
         <div class="col-lg-4 col-sm-12 menu">
-            <a class="nav-link" href="/nouvelleRecette">Ajout</a>
+            <a class="nav-link" href="/ajout">Ajout</a>
         </div>
     </nav>
     <main class="row">
@@ -180,7 +179,7 @@
         })
 
         let allIngredients = function(){
-            $.getJSON(port + "api/ingredients", function(data) {
+            $.getJSON("/api/ingredients", function(data) {
                 displayIngredients(data)
             })
         }
@@ -191,7 +190,7 @@
             }
             if($("#ingredientId").val() > 0){
                 $.ajax({
-                    url : port + "api/ingredients/" + $("#ingredientId").val(),
+                    url : "/api/ingredients/" + $("#ingredientId").val(),
                     type : 'PUT',
                     data :  JSON.stringify(ingredient),
                     contentType: "application/json; charset=utf-8",
@@ -203,7 +202,7 @@
 
             } else {
                 $.ajax({
-                    url : port + "api/ingredients",
+                    url : "/api/ingredients",
                     type : 'POST',
                     data :  JSON.stringify(ingredient),
                     contentType: "application/json; charset=utf-8",
@@ -219,10 +218,10 @@
 
         let deleteIngredient = function(){
             let id_ingredient = $("#idIngredientToDelete").val()
-            $.getJSON(port + "api/recipe/ingredient/" + id_ingredient, function(data) {
-                if (data.length = 0){
+            $.getJSON("/api/recipes/ingredient/" + id_ingredient, function(data) {
+                if (data.length == 0){
                     $.ajax({
-                        url : port + 'api/ingredients/' + id_ingredient,
+                        url : '/api/ingredients/' + id_ingredient,
                         type : 'DELETE',
                         success : function(result) {
                             $("#modalDelete").modal("hide")
@@ -248,7 +247,7 @@
         let editIngredient = function(id){
             toggleModalAdd()
             $("#ingredientId").val(id)
-            $.getJSON(port + "api/ingredients/" + id, function(data) {
+            $.getJSON("/api/ingredients/" + id, function(data) {
                 $("#ingredientName").val(data.name)
             })
         }
