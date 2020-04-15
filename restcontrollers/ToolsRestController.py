@@ -12,9 +12,9 @@ def read_all():
     return tools
 
 
-def read_by_recipe():
+def read_by_recipe(id_recipe):
     tools = []
-    for tool in ToolDAOImpl.findByRecipe():
+    for tool in ToolDAOImpl.findByRecipe(id_recipe):
         tools.append(tool.to_dict())
     json.dumps(tools)
     return tools

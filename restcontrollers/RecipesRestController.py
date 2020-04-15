@@ -17,7 +17,23 @@ def read_all():
 
 def read_by_source(id_src):
     recipes = []
-    for recipe in RecipeDAOimpl.findByRecipe(id_src):
+    for recipe in RecipeDAOimpl.findBySource(id_src):
+        recipes.append(recipe.to_dict())
+    json.dumps(recipes)
+    return recipes
+
+
+def read_by_category(id_category):
+    recipes = []
+    for recipe in RecipeDAOimpl.findByCategory(id_category):
+        recipes.append(recipe.to_dict())
+    json.dumps(recipes)
+    return recipes
+
+
+def read_by_tool(id_tool):
+    recipes = []
+    for recipe in RecipeDAOimpl.findByTool(id_tool):
         recipes.append(recipe.to_dict())
     json.dumps(recipes)
     return recipes

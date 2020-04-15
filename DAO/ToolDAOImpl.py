@@ -24,7 +24,7 @@ def findByRecipe(id_recipe):
     try:
         tools = []
         for row in cursor.execute('''SELECT tools.id, tools.name FROM tools JOIN map_recipe_tool ON 
-                            tools.id = map_recipe_tool.id_recipe WHERE map_recipe_tool.id_recipe = ?''', (id_recipe,)):
+                            tools.id = map_recipe_tool.id_tool WHERE map_recipe_tool.id_recipe = ?''', (id_recipe,)):
             tools.append(Tool(row[0], row[1]))
         return tools
     except sqlite3.Error as error:

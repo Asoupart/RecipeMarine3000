@@ -60,6 +60,53 @@ def findByIngredient(id_ingredient):
         print(error.with_traceback())
 
 
+def findByCategory(id_category):
+    conn = ConnectionDB().getConnection()
+    cursor = conn.cursor()
+
+    try:
+        recipes = []
+        for row in cursor.execute('''
+            SELECT recipes.id, recipes.name, recipes.nbr_person, recipes.id_src FROM recipes
+            JOIN map_recipe_category on recipes.id=map_recipe_category.id_recipe
+            WHERE map_recipe_category.id_category = ?
+                ''', (id_category,)):
+            recipes.append(Recipe(row[0], row[1], row[2], row[3]))
+        return recipes
+    except sqlite3.Error as error:
+        print(error.with_traceback())
+
+
+def findByTool(id_tool):
+    conn = ConnectionDB().getConnection()
+    cursor = conn.cursor()
+
+    try:
+        recipes = []
+        for row in cursor.execute('''
+            SELECT recipes.id, recipes.name, recipes.nbr_person, recipes.id_src FROM recipes
+            JOIN map_recipe_tool on recipes.id=map_recipe_tool.id_recipe
+            WHERE map_recipe_tool.id_tool = ?
+                ''', (id_tool,)):
+            recipes.append(Recipe(row[0], row[1], row[2], row[3]))
+        return recipes
+    except sqlite3.Error as error:
+        print(error.with_traceback())
+
+
+def findBySource(id_source):
+    conn = ConnectionDB().getConnection()
+    cursor = conn.cursor()
+
+    try:
+        recipes = []
+        for row in cursor.execute("SELECT * FROM recipes WHERE recipes.id_src = ?", (id_source,)):
+            recipes.append(Recipe(row[0], row[1], row[2], row[3]))
+        return recipes
+    except sqlite3.Error as error:
+        print(error.with_traceback())
+
+
 def insert(recipe):
     conn = ConnectionDB().getConnection()
     cursor = conn.cursor()

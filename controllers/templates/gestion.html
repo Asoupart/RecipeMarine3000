@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
+    <link href="/css/nav.css" rel="stylesheet">
+    <link href="/css/gestion.css" rel="stylesheet">
+
+</head>
+<body class="container-fluid">
+   <nav class="topnav row">
+		<div class="col">
+			<div class="row">
+				<div class="col-11">
+					<p class="col text-left navactive">Gestion</p>
+				</div>
+				<div class="col-1 text-center">
+					<i class="fa fa-bars icon" id="hamburger"></i>
+				</div>
+			</div>
+			<div class="row bg-dark text-white text-center" id="links">
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/home">Liste des recettes</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/gestion">Gestion</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/ajout">Ajouter une recette</a>
+				</div>
+			</div>
+		</div>
+   </nav>
+   <main class="row">
+        <div class="col-1"></div>
+        <section class="col-10">
+            <div class="row">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary active">
+                        <input type="radio" name="options" id="radio_ingredients" autocomplete="off" checked value="1"> Ingredients
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" id="radio_categories" autocomplete="off" value="2"> Catégories
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" id="radio_sources" autocomplete="off" value="3"> Sources
+                    </label>
+                    <label class="btn btn-secondary">
+                        <input type="radio" name="options" id="radio_tools" autocomplete="off" value="4"> Matériel
+                    </label>
+                </div>
+            </div>
+            <form class="row">
+                <div class="col-10">
+                    <input id="searchItem" type="text" class="form-control" placeholder="Rechercher un ingrédient">
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-lg btn-success" onclick="addItem()"><i class='fas fa-plus'></i></button>
+                </div>
+            </form>
+            <div class="row">
+                <table class="col table">
+                    <tbody id="listToDisplay">
+
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <div class="col-1"></div>
+   </main>
+
+   <!--La modal d'ajout et d'edit-->
+   <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+                    <h1 id="h1Modal">
+                        Ajouter un ingrédient
+                    </h1>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
+					</button>
+				</div>
+				<div class="modal-body mx-3 row">
+					<div class="col">
+						<form action="" method="post">
+							<input type="hidden" id="itemID">
+                            <input type="hidden" id="itemType">
+							<label for="itemName">Nom</label>
+							<br>
+							<input type="text" id="itemName" name="name" size="15"/>
+							<br>
+							<button id="btn-submit" class="btn btn-warning" type="submit">Ok</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+   </div>
+
+   <!-- La modal de suppression -->
+   <div id="modalDelete" class="modal fade" tabindex="-1" role="dialog"
+		aria-labelledby="deleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<p hidden id="itemToDelete"></p>
+	    			<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>Êtes vous sûr ?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" onclick="deleteItem()">Oui</button>
+					<button type="button" class="btn btn-dark" data-dismiss="modal">Annuler</button>
+				</div>
+			</div>
+		</div>
+   </div>
+
+   <!-- Tous les scripts -->
+   <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+   <script type="text/javascript">
+        $("#hamburger").click(function () {
+		    $("#links").toggle()
+	    })
+
+        $("input[type=radio]").change(function () {
+            switch (parseInt($(this).val())) {
+                case 1:
+                    allIngredients()
+                    $("#searchItem").attr("placeholder","Rechercher un ingrédient")
+                    break
+                case 2:
+                    allCategories()
+                    $("#searchItem").attr("placeholder","Rechercher une catégorie")
+                    break
+                case 3:
+                    allSources()
+                    $("#searchItem").attr("placeholder","Rechercher une source")
+                    break
+                case 4:
+                    allTools()
+                    $("#searchItem").attr("placeholder","Rechercher un outil")
+                    break
+            }
+        })
+
+        let displayData = function(data){
+            $.each(data, function(key, val) {
+                let tr = $("<tr>")
+                $("#listToDisplay").append(tr.addClass("text-left").attr("item", val.id))
+                tr.append($("<td>").html(val.name).addClass("itemName"))
+                tr.append($("<td>").append(
+                    $("<button>")
+                        .attr("type", "button")
+                        .attr("onclick","editItem(" + val.id + ", '" + val.name + "')")
+                        .addClass("btn btn-warning btn-lg")
+                        .html("<i class='fas fa-cog'></i>")
+                ))
+                tr.append($("<td>").append(
+                    $("<button>")
+                        .attr("type", "button")
+                        .attr("onclick","toggleModalDelete(" + val.id + ")")
+                        .addClass("btn btn-danger btn-lg")
+                        .html("<i class='fas fa-times'></i>")
+                ))
+            });
+        }
+
+        let allIngredients = function(){
+            $("#listToDisplay").empty()
+            $.getJSON("/api/ingredients", function(data) {
+                displayData(data)
+            })
+        }
+
+        let allCategories = function(){
+            $("#listToDisplay").empty()
+            $.getJSON("/api/categories", function(data) {
+                displayData(data)
+            })
+        }
+
+        let allSources = function(){
+            $("#listToDisplay").empty()
+            $.getJSON("/api/sources", function(data) {
+                displayData(data)
+            })
+        }
+
+        let allTools = function(){
+            $("#listToDisplay").empty()
+            $.getJSON("/api/tools", function(data) {
+                displayData(data)
+            })
+        }
+
+        $("#searchItem").keyup(function () {
+            let tag = $("#searchItem").val().toLowerCase()
+            $("tr[item]").filter(function () {
+                $(this).toggle($(this).find("td.itemName").text().toLowerCase().indexOf(tag) > -1)
+            })
+        })
+
+        $("#modalAdd").submit(function (event) {
+            let type
+            switch (parseInt($("input[type=radio]:checked").val())) {
+                case 1:
+                    type = "ingredients"
+                    break
+                case 2:
+                    type = "categories"
+                    break
+                case 3:
+                    type = "sources"
+                    break
+                case 4:
+                    type = "tools"
+                    break
+            }
+
+            let item = {
+                "name": $("#itemName").val()
+            }
+
+            if($("#itemID").val() > 0){
+                $.ajax({
+                    url : "/api/" + type + "/" + $("#itemID").val(),
+                    type : 'PUT',
+                    data :  JSON.stringify(item),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success : function(result) {
+                        switch (parseInt($("input[type=radio]:checked").val())) {
+                            case 1:
+                                allIngredients()
+                                break
+                            case 2:
+                                allCategories()
+                                break
+                            case 3:
+                                allSources()
+                                break
+                            case 4:
+                                allTools()
+                                break
+                        }
+                    }
+                });
+
+            } else {
+                $.ajax({
+                    url : "/api/" + type,
+                    type : 'POST',
+                    data :  JSON.stringify(item),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success : function(result) {
+                        switch (parseInt($("input[type=radio]:checked").val())) {
+                            case 1:
+                                allIngredients()
+                                break
+                            case 2:
+                                allCategories()
+                                break
+                            case 3:
+                                allSources()
+                                break
+                            case 4:
+                                allTools()
+                                break
+                        }
+                    }
+                });
+            }
+            event.preventDefault()
+            $("#modalAdd").modal("hide")
+        })
+
+        let deleteItem = function(){
+            let type
+            switch (parseInt($("input[type=radio]:checked").val())) {
+                case 1:
+                    type = "ingredient"
+                    break
+                case 2:
+                    type = "category"
+                    break
+                case 3:
+                    type = "source"
+                    break
+                case 4:
+                    type = "tool"
+                    break
+            }
+
+            let id_item = $("#itemToDelete").val()
+            $.getJSON("/api/recipes/" + type + "/" + id_item, function(data) {
+                if (data.length == 0){
+                    $.ajax({
+                        url : '/api/' + type +'s/' + id_item,
+                        type : 'DELETE',
+                        success : function(result) {
+                            $("#modalDelete").modal("hide")
+                            switch (parseInt($("input[type=radio]:checked").val())) {
+                                case 1:
+                                    allIngredients()
+                                    break
+                                case 2:
+                                    allCategories()
+                                    break
+                                case 3:
+                                    allSources()
+                                    break
+                                case 4:
+                                    allTools()
+                                    break
+                            }
+                        }
+                    })
+                } else {
+                    alert("Cet élément est dans une recette")
+                }
+            })
+        }
+
+        let toggleModalAdd = function(){
+            $("#modalAdd").modal("show")
+        }
+
+        let addItem = function(){
+            switch (parseInt($("input[type=radio]:checked").val())) {
+                case 1:
+                    $("#h1Modal").html("Ajouter un ingrédient")
+                    break
+                case 2:
+                    $("#h1Modal").html("Ajouter une catégorie")
+                    break
+                case 3:
+                    $("#h1Modal").html("Ajouter une source")
+                    break
+                case 4:
+                    $("#h1Modal").html("Ajouter un outil")
+                    break
+            }
+            $("#itemID").val(null)
+            $("#itemName").val(null)
+            toggleModalAdd()
+        }
+
+        let editItem = function(id, name){
+            switch (parseInt($("input[type=radio]:checked").val())) {
+                case 1:
+                    $("#h1Modal").html("Editer un ingrédient")
+                    break
+                case 2:
+                    $("#h1Modal").html("Editer une catégorie")
+                    break
+                case 3:
+                    $("#h1Modal").html("Editer une source")
+                    break
+                case 4:
+                    $("#h1Modal").html("Editer un outil")
+                    break
+            }
+            toggleModalAdd()
+            $("#itemID").val(id)
+            $("#itemName").val(name)
+        }
+
+        let toggleModalDelete = function(id){
+            $("#modalDelete").modal("show")
+            $("#itemToDelete").val(id)
+        }
+
+        window.onload = allIngredients();
+    </script>
+</body>

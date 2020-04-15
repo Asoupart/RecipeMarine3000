@@ -30,7 +30,7 @@
 					<a class="nav-link" href="/home">Liste des recettes</a>
 				</div>
 				<div class="col-lg-4 col-sm-12 menu">
-					<a class="nav-link" href="/ingredients">Ingrédients</a>
+					<a class="nav-link" href="/gestion">Gestion</a>
 				</div>
 				<div class="col-lg-4 col-sm-12 menu">
 					<a class="nav-link" href="/ajout">Ajouter une recette</a>
@@ -52,15 +52,23 @@
                     <div class="row">
                         <input id="searchRecipeByName" type="text" class="form-control" placeholder="Rechercher une recette">
                     </div>
+                    <h3>Sources</h3>
                     <div class="row">
                         <select id="sources">
                             <option selected disabled value="-1">Filter par source</option>
                             <option value="0">Toutes</option>
                         </select>
                     </div>
+                    <h3>Catégories</h3>
                     <div class="row">
                         <div class="col" id="categories"></div>
                     </div>
+                    <h3>Matériel</h3>
+                    <p>Sélectionner les outils à exclure de la recherche </p>
+                    <div class="row">
+                        <div class="col" id="tools"></div>
+                    </div>
+                    <h3>Ingrédients</h3>
                     <div class="row ui-widget">
                         <input id="searchIngredient" type="text" class="form-control col-8" placeholder="Rechercher un ingrédient">
                         <div class="col-4">
@@ -73,7 +81,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <button type="button" class="btn" id="btn-clean">Réiniatilser</button>
+                        <button type="button" class="btn" id="btn-clean">Réinitialiser</button>
                     </div>
                 </div>
             </form>
@@ -122,11 +130,30 @@
                         li.append($("<div>").attr("hidden", "hidden").attr("ingredient", val.id_ingredient))
                     })
                 })
+                $.getJSON("/api/tools/recipe/" + val.id, function(data) {
+                    $.each(data, function(key, val) {
+                        li.append($("<div>").attr("hidden", "hidden").attr("tool", val.id))
+                    })
+                })
+
             })
         })
         $.getJSON("/api/sources", function(data) {
             $.each(data, function(key, val) {
                 $("#sources").append($("<option>").val(val.id).html(val.name))
+            })
+        })
+        $.getJSON("/api/tools", function(data) {
+            $.each(data, function(key, val) {
+                let div = $("<div>").addClass("row")
+                let label = $("<label>").attr("for", "tool"+val.id).html(val.name)
+                let input = $("<input>").addClass("tool")
+                                        .attr("id", "tool"+val.id)
+                                        .attr("type", "checkbox").val(val.id)
+                                        .attr("onclick", "filter_all()")
+                                        .html(val.name)
+                div.append(input).append(label)
+                $("#tools").append(div)
             })
         })
         $.getJSON("/api/categories", function(data) {
@@ -198,7 +225,15 @@
         let tag = $("#searchRecipeByName").val().toLowerCase()
         let source = $("#sources").val()
         let checked = []
+        let tools_checked = []
         let ingredients_added = []
+
+        $("input.tool").each(function () {
+            if ($(this).is(":checked")) {
+                tools_checked.push(parseInt($(this).val()))
+            }
+        })
+
         $("input.category").each(function () {
             if ($(this).is(':checked')){
                 checked.push(parseInt($(this).val()))
@@ -227,6 +262,26 @@
             recipes.forEach(function (elem) {
                 if (elem.attr("source").toLowerCase().indexOf($("#sources").val()) > -1){
                     filtered_recipes.push(elem)
+                }
+            })
+            recipes = filtered_recipes
+            filtered_recipes = []
+        }
+
+        if (tools_checked.length != 0) {
+            recipes.forEach(function (recipe) {
+                let tools = []
+                recipe.find("div[tool]").each(function(){
+                    tools.push(parseInt($(this).attr("tool")))
+                })
+                if (tools.length >0 ){
+                    tools.forEach(function (elem) {
+                        if(tools_checked.indexOf(elem) == -1 && filtered_recipes.indexOf(recipe) == -1){
+                            filtered_recipes.push(recipe)
+                        }
+                    })
+                } else {
+                    filtered_recipes.push(recipe)
                 }
             })
             recipes = filtered_recipes

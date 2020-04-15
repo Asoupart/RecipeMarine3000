@@ -26,7 +26,7 @@ def allowed_file(filename):
 
 #@app.route('/ingredients')
 #def ingredients():
-#    return render_template('ingredients.html')
+#    return render_template('gestion.html')
 
 
 #@app.route('/nouvelleRecette')
@@ -39,7 +39,7 @@ def allowed_file(filename):
 #    return render_template('pageRecipe.html')
 
 
-@app.route('/python-flask-files-upload', methods=['POST'])
+@app.route('/ajout/python-flask-files-upload', methods=['POST'])
 def upload_file():
     if 'files[]' not in request.files:
         resp = jsonify({'message': 'No file part in the request'})

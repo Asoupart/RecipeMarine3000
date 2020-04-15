@@ -1259,3 +1259,87 @@ paths:
                   type: "integer"
                 id_src:
                   type: "integer"
+  /recipes/category/{id_category}:
+    get:
+      operationId: "restcontrollers.RecipesRestController.read_by_category"
+      tags:
+        - "Recipes"
+      summary: "Toutes les recettes d'une catégorie"
+      description: "read recipes"
+      parameters:
+        - name: id_category
+          in: path
+          description: Id of the category
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_recipe:
+                  type: "integer"
+                name:
+                  type: "string"
+                nbr_person:
+                  type: "integer"
+                id_src:
+                  type: "integer"
+  /recipes/source/{id_src}:
+    get:
+      operationId: "restcontrollers.RecipesRestController.read_by_source"
+      tags:
+        - "Recipes"
+      summary: "Toutes les recettes d'une source"
+      description: "read recipes"
+      parameters:
+        - name: id_src
+          in: path
+          description: Id of the source
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_recipe:
+                  type: "integer"
+                name:
+                  type: "string"
+                nbr_person:
+                  type: "integer"
+                id_src:
+                  type: "integer"
+  /recipes/tool/{id_tool}:
+    get:
+      operationId: "restcontrollers.RecipesRestController.read_by_tool"
+      tags:
+        - "Recipes"
+      summary: "Toutes les recettes contenant un outil"
+      description: "read recipes"
+      parameters:
+        - name: id_tool
+          in: path
+          description: Id of the tool
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_recipe:
+                  type: "integer"
+                name:
+                  type: "string"
+                nbr_person:
+                  type: "integer"
+                id_src:
+                  type: "integer"

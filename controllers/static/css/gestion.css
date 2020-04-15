@@ -1,0 +1,43 @@
+        td {
+            font-size: 40px;
+        }
+        form {
+            margin: 30px;
+        }
+        input[type=text], label {
+            font-size: 40px;
+        }
+
+        #searchItem {
+            min-width: 350px;
+            margin: 5px 0;
+        }
+
+        .btn {
+            font-size: 40px;
+            font-weight: bold;
+            margin: 5px 15px;
+        }
+
+        .btn-warning {
+            background-color: wheat;
+        }
+
+        .btn-danger {
+            background-color: tomato;
+        }
+
+        .btn-secondary {
+            margin: 0;
+            background-color: wheat;
+            border-color: burlywood;
+        }
+
+        .btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active, .show>.btn-secondary.dropdown-toggle{
+            background-color: burlywood !important;
+            border-color: burlywood;
+        }
+
+        #btn-submit{
+            margin-top: 10px;
+        }
