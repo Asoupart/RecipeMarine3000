@@ -34,9 +34,9 @@ def allowed_file(filename):
 #    return render_template('ajoutRecette.html')
 
 
-#@app.route('/recette/<id_recipe>')
-#def page_recipe(id_recipe):
-#    return render_template('pageRecipe.html')
+@app.route('/recette/<id_recipe>')
+def page_recipe(id_recipe):
+    return render_template('pageRecipe.html')
 
 
 @app.route('/ajout/python-flask-files-upload', methods=['POST'])

@@ -9,90 +9,14 @@
           crossorigin="anonymous">
     <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
 	<link href="/css/nav.css" rel="stylesheet">
-    <style>
-		/* Header et nav*/
-        header {
-            color: wheat;
-            min-height: 300px;
-            background-color: brown;
-        }
-        header h1{
-            font-size: 100px;
-            margin: 10px 30px;
-        }
-        a.nav-link {
-            font-size: 50px;
-            color: white;
-        }
-
-		a.nav-link:hover{
-			background-color: black;
-		}
-
-		a.nav-link:active {
-			color: wheat;
-		}
-
-		main h1 {
-			font-size: 50px;
-			font-weight: bold;
-			margin-top: 15px;
-		}
-
-        form {
-            margin: 0px;
-        }
-        input[type=text], input[type=number], input[type=file], label, select, h2 {
-            font-size: 40px;
-			margin: 10px !important;
-        }
-
-		input[type=number] {
-			width: 120px;
-		}
-
-		input[type=checkbox] {
-			margin: 0px 20px 0 10px;
-			height: 1.4em;
-			width: 1.4em;
-		}
-
-		select {
-			margin-right: 30px;
-		}
-
-		td {
-            font-size: 50px;
-        }
-
-		textarea {
-			margin-top: 20px;
-			font-size: 40px;
-		}
-
-        .btn {
-			margin: 20px 0px;
-            padding: 20px 40px;
-            font-size: 25px;
-        }
-
-		p {
-			font-size: 30px;
-		}
-
-		section {
-			margin-top: 20px;
-			border: black solid 1px;
-		}
-
-    </style>
+	<link href="/css/ajout.css" rel="stylesheet">
 </head>
 <body class="container-fluid">
     <nav class="topnav row">
 		<div class="col">
 			<div class="row">
 				<div class="col-11">
-					<p class="col text-left navactive">Recette</p>
+					<p class="col text-left navactive">Nouvelle recette</p>
 				</div>
 				<div class="col-1 text-center">
 					<i class="fa fa-bars icon" id="hamburger"></i>
@@ -114,9 +38,6 @@
     <main class="row">
         <div class="col-1"></div>
         <article class="col-10">
-			<h1>
-				Nouvelle recette
-			</h1>
 			<form>
 				<section class="row">
 					<div class="col-12">
@@ -149,7 +70,7 @@
 						</select>
 					</div>
 					<div class="col-3">
-						<button type="button" class="btn btn-success" onclick="addElem('sources')">NEW</button>
+						<button type="button" class="btn btn-success" onclick="addElem('sources')"><i class='fas fa-plus'></i></button>
 					</div>
 				</section>
 				<section class="row">
@@ -159,7 +80,7 @@
 							<div class="col-9" id="categories">
 							</div>
 							<div class="col-3">
-								<button type="button" class="btn btn-success" onclick="addElem('categories')">NEW</button>
+								<button type="button" class="btn btn-success" onclick="addElem('categories')"><i class='fas fa-plus'></i></button>
 							</div>
 						</div>
 					</div>
@@ -171,7 +92,7 @@
 							<div class="col-9" id="tools">
 							</div>
 							<div class="col-3">
-								<button type="button" class="btn btn-success" onclick="addElem('tools')">NEW</button>
+								<button type="button" class="btn btn-success" onclick="addElem('tools')"><i class='fas fa-plus'></i></button>
 							</div>
 						</div>
 					</div>
@@ -282,6 +203,10 @@
 			displayTools()
 		}
 
+		$("#hamburger").click(function () {
+			$("#links").toggle()
+		})
+
 		let displaySources = function(){
 			$("#sources").empty()
 			$("#sources").append($("<option>").attr("disabled", "disabled").attr("selected","selected").html("Choississez votre source"))
@@ -325,7 +250,7 @@
 					.attr("onclick","addIngredient("+ i +")")
 					.html("Ajouter ingrédient")
 			)
-			divAddIngredient.append($("<button>").attr("type", "button").addClass("btn btn-success").attr("onclick","addElem('ingredients', "+ i + ")").html("NEW"))
+			divAddIngredient.append($("<button>").attr("type", "button").addClass("btn btn-success").attr("onclick","addElem('ingredients', "+ i + ")").html("<i class='fas fa-plus'></i>"))
 			divAddIngredient.append($("<br>"))
 
 			let divAddInstruction = $("<div>").attr("id","instructions"+i)
@@ -639,11 +564,11 @@
 							processData: false,
 							contentType: false,
 							success: function (response) {
-								window.location.href = "/";
+								window.location.href = "/home";
 							}
 						})
 					} else {
-						window.location.href = "/";
+						window.location.href = "/home";
 					}
 				}
 			})

@@ -9,6 +9,7 @@
           crossorigin="anonymous">
     <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+	<link href="/css/nav.css" rel="stylesheet">
 	<link href="/css/recipe.css" rel="stylesheet">
 
 </head>
@@ -41,12 +42,10 @@
          <div class="col-10">
 			 <div id="listImages" class="text-center">
 			 </div>
-			 <div style="text-align:center">
-				 <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-				 <span class="dot" onclick="currentSlide(1)"></span>
-				 <span class="dot" onclick="currentSlide(2)"></span>
-				 <span class="dot" onclick="currentSlide(3)"></span>
-				 <a class="next" onclick="plusSlides(1)">&#10095;</a>
+			 <div style="text-align:center" class="text-nowrap">
+				 <div id="dotsForSlides">
+
+				 </div>
 			</div>
 			 <div class="text-center" id="headerRecipe">
 				 <h1 id="recipeTitle"></h1>
@@ -54,7 +53,7 @@
 				 <button type="button" class="btn btn-danger" onclick="toggleModalDelete('recipe', 0, 0)">Supprimer</button>
 				 <h3 id="recipeSource"></h3>
 				 <div id="categories"></div>
-				 <h3 id="recipeTools"></h3>
+				 <div id="tools"></div>
 				 <h3 id="recipeNumber"></h3>
 			 </div>
 			 <div id="listIngredientsFull">
@@ -179,9 +178,9 @@
         })
         $.getJSON("/api/sections/recipe/"+id_recipe, function(data) {
 			displayCategories()
-        	if (data.length > 1) {
-				displayIngredientRecipe()
-			}
+			displayTools()
+			displayIngredientRecipe()
+
             $.each(data, function(key, val) {
                 let id_section = val.id
                 $("#sections").append($("<section>")
@@ -196,6 +195,13 @@
         })
 		$.getJSON("/api/images/recipe/"+id_recipe, function(data) {
 			let image_number = data.length
+
+			$("#dotsForSlides").append($("<a>").addClass("prev").attr("onclick", "plusSlides(-1)").html("&#10094;"))
+			for (let i = 0; i < image_number; i++) {
+				$("#dotsForSlides").append($("<span>").addClass("dot").attr("onclick", "currentSlide(" + (i + 1) + ")"))
+			}
+			$("#dotsForSlides").append($("<a>").addClass("prev").attr("onclick", "plusSlides(1)").html("&#10095;"))
+
 			$.each(data, function(key, val) {
 				let block_image = $("<div>").addClass("MySlides")
 				block_image.append($("<div>").addClass("numbertext").html(key+1 + " / " + image_number))
@@ -260,16 +266,18 @@
 	}
 
 	let displayIngredientRecipe = function(){
-    	$("#listIngredientsFull").empty()
-		$.getJSON("/api/ingredients/recipe/"+ id_recipe, function(data) {
-			$.each(data, function(key, val) {
-				if (val.unit != "nounit") {
-					$("#listIngredientsFull").append($("<p>").html(val.name + " : <span class='ing_quantity'>" + val.quantity + "</span> " + val.unit))
-				} else {
-					$("#listIngredientsFull").append($("<p>").html(val.name + " : " + val.quantity))
-				}
+    	if ($("section").length > 1) {
+			$("#listIngredientsFull").empty()
+			$.getJSON("/api/ingredients/recipe/"+ id_recipe, function(data) {
+				$.each(data, function(key, val) {
+					if (val.unit != "nounit") {
+						$("#listIngredientsFull").append($("<p>").html(val.name + " : <span class='ing_quantity'>" + val.quantity + "</span> " + val.unit))
+					} else {
+						$("#listIngredientsFull").append($("<p>").html(val.name + " : " + val.quantity))
+					}
+				})
 			})
-		})
+		}
 	}
 
 	let displayCategories = function() {
@@ -279,6 +287,16 @@
 				$("#categories").append($("<h3>").addClass("category_recipe").html(val.name))
 			})
 		})
+	}
+
+	let displayTools = function() {
+    	$("#tools").empty()
+		$.getJSON("/api/tools/recipe/"+ id_recipe, function(data) {
+			$.each(data, function(key, val) {
+				$("#tools").append($("<h3>").addClass("tool_recipe").html(val.name))
+			})
+		})
+
 	}
 
 	let displayInstruction = function(id_section){
@@ -337,12 +355,16 @@
         $("#ingredientIdforEdit").val(id_ingredient)
         $.getJSON("/api/ingredients", function(data) {
 				$.each(data, function(key, val) {
-					$("#listIngredientsModal").append($("<option>")
-							.attr("id", "ingredient"+val.id)
+					let option = $("<option>").attr("id", "ingredient"+val.id)
 							.attr("value", val.id)
-							.html(val.name))
+							.html(val.name)
+					if( id_ingredient == val.id){
+						option.attr("selected", "selected")
+					}
+					$("#listIngredientsModal").append(option)
 				})
 			})
+		$("#listIngredientsModal").val(id_ingredient)
     }
 
     let editIngredient = function () {
@@ -406,6 +428,7 @@
 				})
 			}
 			$("#modalEditIngredient").modal("hide")
+			$(".btn-edit").css("display", "none")
 		}
 	}
 
@@ -456,6 +479,7 @@
 			})
 		}
 		$("#modalEditInstruction").modal("hide")
+		$(".btn-edit").css("display", "none")
 	}
 
     let deleteItem = function(){
@@ -485,15 +509,16 @@
 				break
 			case "recipe":
 				$.ajax({
-					url : "/api/recipes/" + id_item,
+					url : "/api/recipes/" + id_recipe,
 					type : 'DELETE',
 					success : function(result) {
-						window.location.href = "/"
+						window.location.href = "/home"
 					}
 				})
 				$("#modalDeleteItem").modal("hide")
 				break
 		}
+		$(".btn-edit").css("display", "none")
 	}
 
 	/* Tous ce qui est image*/

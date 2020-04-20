@@ -36,40 +36,4 @@
         color: wheat;
     }
 
-    /*En tete recette*/
-    #headerRecipe h1 {
-        font-size: 70px;
-        font-weight: bold;
-        margin: 10px 0 20px 0;
-    }
-
-    #headerRecipe button {
-        font-size: 30px;
-        font-weight: bold;
-        margin: 5px 15px;
-    }
-
-    #headerRecipe .btn-danger {
-        background-color: tomato;
-    }
-
-    #headerRecipe .btn-warning {
-        background-color: wheat;
-    }
-
-    #headerRecipe h3 {
-        font-size: 40px;
-        margin: 10px 0;
-    }
-
-    #headerRecipe #categories {
-        display: flex;
-        justify-content: center;
-    }
-
-    #headerRecipe .category_recipe {
-        min-width: 200px;
-        padding: 10px;
-        background-color: lightskyblue;
-    }
 }

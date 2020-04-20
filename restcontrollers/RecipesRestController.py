@@ -104,7 +104,9 @@ def delete_full(id_recipe):
         SectionDAOimpl.eraseAllMappingBySection(section.id_sec)
         SectionDAOimpl.deleteById(section.id_sec)
     for image in ImageDAOImpl.findByRecipe(id_recipe):
-        os.remove('E:/uploads/' + image.name)
+        if os.path.exists('E:/Code/RecipeMarine3000/controllers/images/' + image.name):
+            os.remove('E:/Code/RecipeMarine3000/controllers/images/' + image.name)
+
     ImageDAOImpl.findByRecipe(id_recipe)
     RecipeDAOimpl.eraseCategoryMapping(id_recipe)
     RecipeDAOimpl.eraseToolMapping(id_recipe)
