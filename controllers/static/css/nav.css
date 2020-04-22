@@ -2,38 +2,49 @@
     font-family: 'Poppins', sans-serif;
 }
 
-@media only screen and (max-width: 1500px) {
-    /*Bandeau top avec menu*/
-    .topnav {
-        overflow: hidden;
-        background-color: #333;
-        position: relative;
-        color: white;
-        font-size: 50px;
-    }
+/*Bandeau top avec menu*/
+.topnav {
+    overflow: hidden;
+    background-color: #333;
+    position: relative;
+    color: white;
+    font-size: 50px;
+    padding-top: 10px;
+}
 
-    #links {
-        display: none;
-        background-color: #333;
-    }
+#links {
+    display: none;
+    background-color: #333;
+}
 
-    .topnav .icon {
-        display: block;
-        color: white;
-        margin-top: 15px;
-    }
+.topnav .icon {
+    display: block;
+    color: white;
+    margin-top: 15px;
+}
 
-    a.nav-link {
-        font-size: 50px;
-        color: white;
-    }
+a.nav-link {
+    font-size: 50px;
+    color: white;
+    padding: 0;
+}
 
-    a.nav-link:hover {
-        background-color: black;
-    }
+.col-lg-4 {
+    padding: 0;
+    margin: 0;
+}
 
-    a.nav-link:active {
-        color: wheat;
-    }
+a.nav-link:hover {
+    background-color: black;
+}
 
+a.nav-link:active {
+    color: wheat;
+}
+
+@media only screen and (min-width: 1500px) {
+
+    .topnav, a.nav-link {
+        font-size: 25px;
+    }
 }

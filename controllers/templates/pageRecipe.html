@@ -40,11 +40,12 @@
     <main class="row">
          <div class="col-1"></div>
          <div class="col-10">
-			 <div id="listImages" class="text-center">
+			 <div class="text-center row">
+				 <div id="listImages">
+				 </div>
 			 </div>
 			 <div style="text-align:center" class="text-nowrap">
 				 <div id="dotsForSlides">
-
 				 </div>
 			</div>
 			 <div class="text-center" id="headerRecipe">
@@ -203,17 +204,21 @@
 			$("#dotsForSlides").append($("<a>").addClass("prev").attr("onclick", "plusSlides(1)").html("&#10095;"))
 
 			$.each(data, function(key, val) {
-				let block_image = $("<div>").addClass("MySlides")
+				let block_image = $("<div>").addClass("MySlides text-center col")
 				block_image.append($("<div>").addClass("numbertext").html(key+1 + " / " + image_number))
-				block_image.append($("<img>").attr("src","/images/" + val.name).attr("onclick", "plusSlides(1)"))
+				block_image.append($("<img>").addClass("text-center").attr("src","/images/" + val.name).attr("onclick", "plusSlides(1)"))
 				$("#listImages").append(block_image)
 			})
 			showSlides(slideIndex);
 		})
     }
 
-    $("#hamburger").click(function () {
-		$("#links").toggle()
+	$("#hamburger").click(function () {
+		if ($("#links").css("display") === "none") {
+		    $("#links").css("display", "flex")
+        } else {
+		    $("#links").css("display", "none")
+        }
 	})
     
 	let toggleEditOption = function(){
@@ -544,7 +549,7 @@ function showSlides(n) {
 	for (i = 0; i < dots.length; i++) {
 	  dots[i].className = dots[i].className.replace(" active", "");
 	}
-	slides[slideIndex-1].style.display = "block";
+	slides[slideIndex-1].style.display = "flex";
 	dots[slideIndex-1].className += " active";
 }
 

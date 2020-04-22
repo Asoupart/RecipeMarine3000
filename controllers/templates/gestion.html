@@ -40,7 +40,7 @@
         <div class="col-1"></div>
         <section class="col-10">
             <div class="row">
-                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <div class="btn-group btn-group-toggle col text-center" data-toggle="buttons">
                     <label class="btn btn-secondary active">
                         <input type="radio" name="options" id="radio_ingredients" autocomplete="off" checked value="1"> Ingredients
                     </label>
@@ -141,8 +141,12 @@
 
    <script type="text/javascript">
         $("#hamburger").click(function () {
-		    $("#links").toggle()
-	    })
+			if ($("#links").css("display") === "none") {
+				$("#links").css("display", "flex")
+			} else {
+				$("#links").css("display", "none")
+			}
+		})
 
         $("input[type=radio]").change(function () {
             switch (parseInt($(this).val())) {
@@ -170,14 +174,14 @@
                 let tr = $("<tr>")
                 $("#listToDisplay").append(tr.addClass("text-left").attr("item", val.id))
                 tr.append($("<td>").html(val.name).addClass("itemName"))
-                tr.append($("<td>").append(
+                tr.append($("<td>").addClass("text-center").append(
                     $("<button>")
                         .attr("type", "button")
                         .attr("onclick","editItem(" + val.id + ", '" + val.name + "')")
                         .addClass("btn btn-warning btn-lg")
                         .html("<i class='fas fa-cog'></i>")
                 ))
-                tr.append($("<td>").append(
+                tr.append($("<td>").addClass("text-center").append(
                     $("<button>")
                         .attr("type", "button")
                         .attr("onclick","toggleModalDelete(" + val.id + ")")

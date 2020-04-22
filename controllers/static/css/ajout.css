@@ -1,59 +1,74 @@
-		main h1 {
-			font-size: 50px;
-			font-weight: bold;
-			margin-top: 15px;
-		}
+main h1 {
+	font-size: 50px;
+	font-weight: bold;
+	margin-top: 15px;
+}
 
-        form {
-            margin: 0px;
-        }
-        input[type=text], input[type=number], input[type=file], label, select, h2 {
-            font-size: 40px;
-			margin: 15px 0 !important;
-        }
+form {
+	margin: 0px;
+}
+input[type=text], input[type=number], input[type=file], label, select, h2 {
+	font-size: 40px;
+	margin: 15px 0 !important;
+}
 
-        select {
-            padding: 10px;
-        }
+select {
+	padding: 10px;
+}
 
-		input[type=number] {
-			width: 120px;
-		}
+input[type=number] {
+	width: 120px;
+}
 
-		input[type=checkbox] {
-			margin: 0px 20px 0 10px;
-			height: 1.4em;
-			width: 1.4em;
-		}
+input[type=checkbox] {
+	margin: 0px 20px 0 10px;
+	height: 1.4em;
+	width: 1.4em;
+}
 
-		td {
-            font-size: 50px;
-        }
+td {
+	font-size: 50px;
+}
 
-		textarea {
-			margin-top: 20px;
-			font-size: 40px;
-		}
+textarea {
+	margin-top: 20px;
+	font-size: 40px;
+}
 
-        .btn {
-            font-size: 30px;
-            font-weight: bold;
-            margin: 5px 15px;
-        }
+.btn {
+	font-size: 30px;
+	font-weight: bold;
+	margin: 5px 15px;
+}
 
-        .btn-danger {
-            background-color: tomato;
-        }
+.btn-danger {
+	background-color: tomato;
+}
 
-        .btn-warning {
-            background-color: wheat;
-        }
+.btn-warning {
+	background-color: wheat;
+}
 
-		main p {
-			font-size: 30px;
-		}
+main p {
+	font-size: 30px;
+}
 
-		section {
-			margin-top: 20px;
-			border: black solid 1px;
-		}
+section {
+	margin-top: 20px;
+	border: black solid 1px;
+}
+
+@media only screen and (min-width: 1500px) {
+
+	main h1, td {
+		font-size: 25px;
+	}
+
+	input[type=text], input[type=number], input[type=file], label, select, main h2, textarea {
+		font-size: 20px;
+	}
+
+	.btn, main p {
+		font-size: 15px;
+	}
+}

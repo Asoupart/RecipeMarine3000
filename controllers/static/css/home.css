@@ -1,101 +1,129 @@
-@media only screen and (max-width: 1500px) {
+#search {
+    display: none;
+}
+
+main h2 {
+    font-size: 50px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+main h3 {
+    font-size: 40px;
+    font-weight: bold;
+    color: burlywood;
+}
+
+main p {
+    font-size: 25px;
+}
+
+.btn {
+    font-size: 40px;
+    font-weight: bold;
+    margin: 5px 15px;
+    background-color: wheat;
+}
+
+
+input[type=text], select{
+    margin: 15px 0;
+    font-size: 40px;
+}
+
+.ui-widget, .ingredient {
+    font-size: 40px;
+}
+
+.ingredient {
+    padding: 3px 0;
+    margin: 0;
+}
+
+#addIngredient {
+    margin: 15px 0;
+}
+
+.btn-delete {
+    background-color: tomato;
+}
+
+select {
+    padding: 10px;
+}
+
+option {
+    font-size: 40px !important;
+}
+
+input[type=checkbox] {
+    height: 30px;
+    width: 30px;
+    margin: 15px 10px 15px 0;
+}
+
+label {
+    font-size: 40px;
+}
+
+#ingredients {
+    display: none;
+}
+
+#listIngredients {
+    column-count: 2;
+    background-color: beige;
+}
+
+ul {
+    padding: 0;
+}
+
+li {
+    margin: 5px 0;
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+a:active {
+    text-decoration: none;
+    color: wheat;
+}
+
+.recipe_title {
+    font-size: 40px;
+    margin: 20px;
+}
+
+@media only screen and (min-width: 1500px) {
+
     main h2 {
-        font-size: 50px;
-        font-weight: bold;
-        margin: 10px 0;
-    }
-
-    main h3 {
-        font-size: 40px;
-        font-weight: bold;
-        color: burlywood;
-    }
-
-    main p {
         font-size: 25px;
     }
 
-    .btn {
-        font-size: 40px;
-        font-weight: bold;
-        margin: 5px 15px;
-        background-color: wheat;
+
+    main h3, .btn, input[type=text], select, .ui-widget, .ingredient, option, label, .recipe_title {
+        font-size: 20px;
     }
 
-    #search {
-        display: none;
-    }
-
-    input[type=text], select{
-        margin: 15px 0;
-        font-size: 40px;
-    }
-
-    .ui-widget, .ingredient {
-        font-size: 40px;
-    }
-
-    .ingredient {
-        padding: 3px 0;
-        margin: 0;
-    }
-
-    #addIngredient {
-        margin: 15px 0;
-    }
-
-    .btn-delete {
-        background-color: tomato;
-    }
-
-    select {
-        padding: 10px;
-    }
-
-    option {
-        font-size: 40px !important;
-    }
-
-    input[type=checkbox] {
-        height: 30px;
-        width: 30px;
-        margin: 15px 10px 15px 0;
-    }
-
-    label {
-        font-size: 40px;
-    }
-
-    #ingredients {
-        display: none;
-    }
-
-    #listIngredients {
-        column-count: 2;
-        background-color: beige;
-    }
-
-    ul {
-        padding: 0;
-    }
-
-    li {
-        margin: 5px 0;
-        list-style: none;
-    }
-
-    a {
-        text-decoration: none;
-        color: black;
-    }
-
-    a:active {
-        text-decoration: none;
-        color: wheat;
+    main p {
+        font-size: 12px;
     }
 
     .recipe_title {
-        font-size: 40px;
-        margin: 20px;
+        margin: 30px;
     }
+
+    label {
+        margin: 15px 0;
+    }
+
+    .ingredient {
+        margin: 5px 0;
+    }
+
 }

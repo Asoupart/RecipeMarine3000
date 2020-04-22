@@ -204,7 +204,11 @@
     })
 
     $("#hamburger").click(function () {
-		$("#links").toggle()
+		if ($("#links").css("display") === "none") {
+		    $("#links").css("display", "flex")
+        } else {
+		    $("#links").css("display", "none")
+        }
 	})
 
     $("#btn-advanced").click(function () {
