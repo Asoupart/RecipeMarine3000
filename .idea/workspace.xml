@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="f20009d9-a9df-462e-8f1c-61e2ea5af290" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/controllers/static/css/home.css" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/static/css/home.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/static/css/recipe.css" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/static/css/recipe.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/controllers/templates/pageRecipe.html" beforeDir="false" afterPath="$PROJECT_DIR$/controllers/templates/pageRecipe.html" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+        <option value="CSS File" />
+        <option value="Python Script" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1ZWdNvMmriZ7qIEUVdPHv9nKGH7" />
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/controllers/static/css" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Code\projetMarine\controllers" />
+      <recent name="E:\Code\projetMarine\controllers\templates" />
+      <recent name="E:\Code\projetMarine" />
+      <recent name="E:\Code\projetMarine\static" />
+      <recent name="E:\Code\projetMarine\restcontrollers" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Code\RecipeMarine3000\controllers\static\css" />
+      <recent name="E:\Code\RecipeMarine3000\controllers\images" />
+      <recent name="E:\Code\RecipeMarine3000\controllers\static\js" />
+      <recent name="E:\Code\RecipeMarine3000\controllers\templates" />
+      <recent name="E:\Code\projetMarine\controllers\templates" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.recipecontroller">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="projetMarine" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="E:\Code\projetMarine\controllers\main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="recipecontroller" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="projetMarine" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/controllers" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/controllers/recipecontroller.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.recipecontroller" />
+        <item itemvalue="Python.main" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f20009d9-a9df-462e-8f1c-61e2ea5af290" name="Default Changelist" comment="" />
+      <created>1584958747641</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1584958747641</updated>
+      <workItem from="1584958755873" duration="8138000" />
+      <workItem from="1584968175650" duration="10006000" />
+      <workItem from="1584981294932" duration="1039000" />
+      <workItem from="1584987188697" duration="5998000" />
+      <workItem from="1585056466368" duration="27231000" />
+      <workItem from="1585145895806" duration="15724000" />
+      <workItem from="1585222593795" duration="25382000" />
+      <workItem from="1585254084000" duration="702000" />
+      <workItem from="1585322860167" duration="19210000" />
+      <workItem from="1585402511584" duration="7559000" />
+      <workItem from="1585416278670" duration="995000" />
+      <workItem from="1585479125408" duration="12263000" />
+      <workItem from="1585560474483" duration="18540000" />
+      <workItem from="1585646263985" duration="13536000" />
+      <workItem from="1585744547781" duration="12822000" />
+      <workItem from="1585821911214" duration="12199000" />
+      <workItem from="1585901026393" duration="21090000" />
+      <workItem from="1586192565675" duration="10372000" />
+      <workItem from="1586253486960" duration="8293000" />
+      <workItem from="1586349262232" duration="8453000" />
+      <workItem from="1586445951481" duration="8915000" />
+      <workItem from="1586540996333" duration="3496000" />
+      <workItem from="1586597589354" duration="612000" />
+      <workItem from="1586776211568" duration="16839000" />
+      <workItem from="1586795796081" duration="1038000" />
+      <workItem from="1586851527367" duration="13893000" />
+      <workItem from="1586948223189" duration="10937000" />
+      <workItem from="1587375805183" duration="6504000" />
+      <workItem from="1587549908145" duration="9380000" />
+      <workItem from="1587639870060" duration="625000" />
+      <workItem from="1587657118143" duration="1922000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/projetMarine$recipecontroller.coverage" NAME="recipecontroller Coverage Results" MODIFIED="1585235254447" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/controllers" />
+    <SUITE FILE_PATH="coverage/projetMarine$main.coverage" NAME="main Coverage Results" MODIFIED="1585064569261" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/RecipeMarine3000$recipecontroller.coverage" NAME="recipecontroller Coverage Results" MODIFIED="1587657127633" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/controllers" />
+  </component>
+</project>
