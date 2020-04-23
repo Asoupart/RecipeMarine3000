@@ -94,6 +94,11 @@ a:active {
     color: wheat;
 }
 
+a:hover{
+    text-decoration: none;
+    color: wheat;
+}
+
 .recipe_title {
     font-size: 40px;
     margin: 20px;

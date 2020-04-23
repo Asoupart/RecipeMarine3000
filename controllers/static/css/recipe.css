@@ -74,6 +74,10 @@ td[instruction]{
     min-width: 400px;
 }
 
+td.row {
+    min-width: 400px;
+}
+
 section {
     margin-top: 20px;
     border: black solid 1px;
@@ -99,6 +103,16 @@ input[type=number] {
     max-width: 200px;
 }
 
+#listImages{
+    text-align: center;
+}
+
+.MySlides {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 @media only screen and (min-width: 1500px) {
 
     #headerRecipe h1 {
@@ -119,6 +133,10 @@ input[type=number] {
 
     #headerRecipe h3, #listIngredientsFull p, #sections td, .modal {
         font-size: 20px;
+    }
+
+    .MySlides {
+        max-width: 400px;
     }
 }
 
