@@ -8,5 +8,5 @@ wordDocs/~$vre de recettes Marine.docx
 # database
 recipebook.db
 # non-generated resources
-controller/images/*
-!controller/images/favicon.ico
+controllers/images/*
+!controllers/images/favicon.ico
