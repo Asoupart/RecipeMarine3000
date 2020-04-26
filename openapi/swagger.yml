@@ -1,0 +1,1345 @@
+swagger: "2.0"
+info:
+  description: This is the swagger file that goes with our server code
+  version: "1.0.0"
+  title: Swagger REST Article
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+
+basePath: "/api"
+
+# Paths supported by the server application
+paths:
+# Paths for ingredients
+  /ingredients:
+    get:
+      operationId: "restcontrollers.IngredientsRestController.read_all"
+      tags:
+        - "Ingredients"
+      summary: "Liste des ingrédients"
+      description: "read the ingredient list"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_ing:
+                  type: "integer"
+                name:
+                  type: "string"
+    post:
+      operationId: "restcontrollers.IngredientsRestController.create"
+      tags:
+        - "Ingredients"
+      summary: "Création d'un ingrédient"
+      description: "create an ingredient"
+      parameters:
+        - name: ingredient
+          in: body
+          description: Ingredient to create
+          required: True
+          schema:
+           type: object
+           properties:
+             name:
+                type: string
+                description: Name of the ingredient
+      responses:
+       201:
+        description: Successfully created ingredient in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_ing:
+                type: "integer"
+
+  /ingredients/{id_ing}:
+    get:
+      operationId: "restcontrollers.IngredientsRestController.read_one"
+      tags:
+        - "Ingredients"
+      summary: "Un ingrédient"
+      description: "read one ingredient"
+      parameters:
+        - name: id_ing
+          in: path
+          description: Id of the ingredient
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_ing:
+                  type: "integer"
+                name:
+                  type: "string"
+    put:
+      operationId: "restcontrollers.IngredientsRestController.update"
+      tags:
+        - "Ingredients"
+      summary: Update an ingredient in the list
+      description: Update an ingredient in the list
+      parameters:
+        - name: id_ing
+          in: path
+          description: Id of the ingredient
+          type: integer
+          required: True
+        - name: ingredient
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+      responses:
+        200:
+          description: Successfully updated ingredient in list
+
+    delete:
+      operationId: "restcontrollers.IngredientsRestController.delete"
+      tags:
+        - "Ingredients"
+      summary: Delete an ingredient in the list
+      description: Delete an ingredient in the list
+      parameters:
+        - name: id_ing
+          in: path
+          description: Id of the ingredient
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Successfully deleted the ingredient"
+  /ingredients/{tag}:
+    get:
+      operationId: "restcontrollers.IngredientsRestController.read_by_tag"
+      tags:
+        - "Ingredients"
+      summary: "Un ingrédient comportant la chaine de caractères recherchée"
+      description: "read one ingredient"
+      parameters:
+        - name: tag
+          in: path
+          description: string to look for in the ingredient name
+          type: string
+          required: True
+      responses:
+         200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_ing:
+                  type: "integer"
+                name:
+                  type: "string"
+  /ingredients/section/{id_section}:
+    get:
+      operationId: "restcontrollers.IngredientsRestController.read_by_section"
+      tags:
+        - "Ingredients"
+      summary: "Ingrédients dans la section recherchée"
+      description: "read ingredients by section"
+      parameters:
+        - name: id_section
+          in: path
+          description: id of a section
+          type: "integer"
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_ing:
+                  type: "integer"
+                name:
+                  type: "string"
+                quantity:
+                  type: "integer"
+                unit:
+                  type: "string"
+  /ingredients/recipe/{id_recipe}:
+      get:
+        operationId: "restcontrollers.IngredientsRestController.read_by_recipe"
+        tags:
+          - "Ingredients"
+        summary: "Ingrédients dans la recette recherchée"
+        description: "read ingredients by recipe"
+        parameters:
+          - name: id_recipe
+            in: path
+            description: id of a recipe
+            type: "integer"
+            required: True
+        responses:
+          200:
+            description: "Success"
+            schema:
+              type: "array"
+              items:
+                properties:
+                  id_ing:
+                    type: "integer"
+                  name:
+                    type: "string"
+                  quantity:
+                    type: "integer"
+                  unit:
+                    type: "string"
+
+
+# Paths for categories
+  /categories:
+    get:
+      operationId: "restcontrollers.CategoriesRestController.read_all"
+      tags:
+        - "Categories"
+      summary: "Liste des catégories"
+      description: "read the category list"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_cat:
+                  type: "integer"
+                name:
+                  type: "string"
+    post:
+      operationId: "restcontrollers.CategoriesRestController.create"
+      tags:
+        - "Categories"
+      summary: "Création d'une catégorie"
+      description: "create a category"
+      parameters:
+        - name: category
+          in: body
+          description: Category to create
+          required: True
+          schema:
+           type: object
+           properties:
+             name:
+                type: string
+                description: Name of the category
+      responses:
+       201:
+        description: Successfully created category in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_cat:
+                type: "integer"
+
+  /categories/{id_cat}:
+    get:
+      operationId: "restcontrollers.CategoriesRestController.read_one"
+      tags:
+        - "Categories"
+      summary: "Une catégorie"
+      description: "read one category"
+      parameters:
+        - name: id_cat
+          in: path
+          description: Id of the category
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_cat:
+                  type: "integer"
+                name:
+                  type: "string"
+    put:
+      operationId: "restcontrollers.CategoriesRestController.update"
+      tags:
+        - "Categories"
+      summary: Update a category in the list
+      description: Update a category in the list
+      parameters:
+        - name: id_cat
+          in: path
+          description: Id of the category
+          type: integer
+          required: True
+        - name: category
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+      responses:
+        200:
+          description: Successfully updated category in list
+
+    delete:
+      operationId: "restcontrollers.CategoriesRestController.delete"
+      tags:
+        - "Categories"
+      summary: Delete a category in the list
+      description: Delete a category in the list
+      parameters:
+        - name: id_cat
+          in: path
+          description: Id of the category
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Successfully deleted the category"
+  /categories/recipe/{id_recipe}:
+      get:
+        operationId: "restcontrollers.CategoriesRestController.read_by_recipe"
+        tags:
+          - "Categories"
+        summary: "Les catégories d'une recette"
+        description: "read categories of a recipe"
+        parameters:
+          - name: id_recipe
+            in: path
+            description: Id of the recipe
+            type: integer
+            required: True
+        responses:
+          200:
+            description: "Success"
+            schema:
+              type: "array"
+              items:
+                properties:
+                  id_cat:
+                    type: "integer"
+                  name:
+                    type: "string"
+
+# Paths for sources
+  /sources:
+    get:
+      operationId: "restcontrollers.SourcesRestController.read_all"
+      tags:
+        - "Sources"
+      summary: "Liste des sources"
+      description: "read the source list"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_src:
+                  type: "integer"
+                name:
+                  type: "string"
+    post:
+      operationId: "restcontrollers.SourcesRestController.create"
+      tags:
+        - "Sources"
+      summary: "Création d'une source"
+      description: "create a source"
+      parameters:
+        - name: source
+          in: body
+          description: Source to create
+          required: True
+          schema:
+           type: object
+           properties:
+             name:
+                type: string
+                description: Name of the source
+      responses:
+       201:
+        description: Successfully created source in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_src:
+                type: "integer"
+
+  /sources/{id_src}:
+    get:
+      operationId: "restcontrollers.SourcesRestController.read_one"
+      tags:
+        - "Sources"
+      summary: "Une source"
+      description: "read one source"
+      parameters:
+        - name: id_src
+          in: path
+          description: Id of the source
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_src:
+                  type: "integer"
+                name:
+                  type: "string"
+    put:
+      operationId: "restcontrollers.SourcesRestController.update"
+      tags:
+        - "Sources"
+      summary: Update a source in the list
+      description: Update a source in the list
+      parameters:
+        - name: id_src
+          in: path
+          description: Id of the source
+          type: integer
+          required: True
+        - name: source
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+      responses:
+        200:
+          description: Successfully updated source in list
+
+    delete:
+      operationId: "restcontrollers.SourcesRestController.delete"
+      tags:
+        - "Sources"
+      summary: Delete a source in the list
+      description: Delete a source in the list
+      parameters:
+        - name: id_src
+          in: path
+          description: Id of the source
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Successfully deleted the source"
+
+# Paths for instructions
+  /instructions:
+    get:
+      operationId: "restcontrollers.InstructionsRestController.read_all"
+      tags:
+        - "Instructions"
+      summary: "Liste des instructions"
+      description: "read the instruction list"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_ins:
+                  type: "integer"
+                text:
+                  type: "string"
+                id_section:
+                  type: "integer"
+    post:
+      operationId: "restcontrollers.InstructionsRestController.create"
+      tags:
+        - "Instructions"
+      summary: "Création d'une instruction"
+      description: "create a instruction"
+      parameters:
+        - name: instruction
+          in: body
+          description: Instruction to create
+          required: True
+          schema:
+           type: object
+           properties:
+             text:
+                type: string
+                description: Name of the instruction
+             id_section:
+                type : integer
+      responses:
+       201:
+        description: Successfully created instruction in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_ins:
+                type: "integer"
+
+  /instructions/{id_ins}:
+    get:
+      operationId: "restcontrollers.InstructionsRestController.read_one"
+      tags:
+        - "Instructions"
+      summary: "Une instruction"
+      description: "read one instruction"
+      parameters:
+        - name: id_ins
+          in: path
+          description: Id of the source
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_ins:
+                  type: "integer"
+                text:
+                  type: "string"
+                id_section:
+                  type: "integer"
+    put:
+      operationId: "restcontrollers.InstructionsRestController.update"
+      tags:
+        - "Instructions"
+      summary: Update a instruction in the list
+      description: Update a instruction in the list
+      parameters:
+        - name: id_ins
+          in: path
+          description: Id of the instruction
+          type: integer
+          required: True
+        - name: instruction
+          in: body
+          schema:
+            type: object
+            properties:
+              text:
+                type: string
+              id_section:
+                type: integer
+      responses:
+        200:
+          description: Successfully updated instruction in list
+    delete:
+      operationId: "restcontrollers.InstructionsRestController.delete"
+      tags:
+        - "Instructions"
+      summary: Delete an instruction in the list
+      description: Delete an instruction in the list
+      parameters:
+        - name: id_ins
+          in: path
+          description: Id of the instruction
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Successfully deleted the instruction"
+  /instructions/section/{id_section}:
+      get:
+        operationId: "restcontrollers.InstructionsRestController.read_by_section"
+        tags:
+          - "Instructions"
+        summary: "Instructions appartenant à la section recherchée"
+        description: "read instructions of the section"
+        parameters:
+          - name: id_section
+            in: path
+            description: id of the section
+            type: integer
+            required: True
+        responses:
+           200:
+            description: "Success"
+            schema:
+              type: "array"
+              items:
+                properties:
+                  id_ins:
+                    type: "integer"
+                  text:
+                    type: "string"
+                  id_section:
+                    type: "integer"
+
+# Paths for sections
+  /sections:
+    get:
+      operationId: "restcontrollers.SectionsRestController.read_all"
+      tags:
+        - "Sections"
+      summary: "Liste des sections"
+      description: "read the section list"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_sec:
+                  type: "integer"
+                text:
+                  type: "string"
+                id_recipe:
+                  type: "integer"
+    post:
+      operationId: "restcontrollers.SectionsRestController.create"
+      tags:
+        - "Sections"
+      summary: "Création d'une section"
+      description: "create a section"
+      parameters:
+        - name: section
+          in: body
+          description: Section to create
+          required: True
+          schema:
+           type: object
+           properties:
+             name:
+                type: string
+                description: Name of the section
+             id_recipe:
+                type: integer
+      responses:
+       201:
+        description: Successfully created section in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_sec:
+                type: "integer"
+
+  /sections/{id_sec}:
+    get:
+      operationId: "restcontrollers.SectionsRestController.read_one"
+      tags:
+        - "Sections"
+      summary: "Une section"
+      description: "read one section"
+      parameters:
+        - name: id_sec
+          in: path
+          description: Id of the section
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_sec:
+                  type: "integer"
+                text:
+                  type: "string"
+                id_recipe:
+                  type: "integer"
+    put:
+      operationId: "restcontrollers.SectionsRestController.update"
+      tags:
+        - "Sections"
+      summary: Update a section in the list
+      description: Update a section in the list
+      parameters:
+        - name: id_sec
+          in: path
+          description: Id of the section
+          type: integer
+          required: True
+        - name: section
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              id_recipe:
+                type: integer
+      responses:
+        200:
+          description: Successfully updated section in list
+    delete:
+      operationId: "restcontrollers.SectionsRestController.delete"
+      tags:
+        - "Sections"
+      summary: Delete an section in the list
+      description: Delete an section in the list
+      parameters:
+        - name: id_sec
+          in: path
+          description: Id of the section
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Successfully deleted the section"
+  /sections/recipe/{id_recipe}:
+      get:
+        operationId: "restcontrollers.SectionsRestController.read_by_recipe"
+        tags:
+          - "Sections"
+        summary: "Sections appartenant à la recette recherchée"
+        description: "read sections of the recipe"
+        parameters:
+          - name: id_recipe
+            in: path
+            description: id of the recipe
+            type: integer
+            required: True
+        responses:
+           200:
+            description: "Success"
+            schema:
+              type: "array"
+              items:
+                properties:
+                  id_sec:
+                    type: "integer"
+                  name:
+                    type: "string"
+                  id_recipe:
+                    type: "integer"
+  /sections/{id_sec}/ingredient/{id_ing}:
+    post:
+      operationId: "restcontrollers.SectionsRestController.set_ingredient"
+      tags:
+        - "Sections"
+      summary: Put an ingredient in a section
+      description: Put an ingredient in a section
+      parameters:
+        - name: id_ing
+          in: path
+          description: Id of the ingredient
+          type: integer
+          required: True
+        - name: id_sec
+          in: path
+          description: Id of the section
+          type: integer
+          required: True
+        - name: properties
+          in: body
+          schema:
+            type: object
+            properties:
+              quantity:
+                type: integer
+              unit:
+                type: string
+      responses:
+        200:
+          description: Successfully inserted ingredient in section
+
+    delete:
+      operationId: "restcontrollers.SectionsRestController.delete_mapping"
+      tags:
+        - "Sections"
+      summary: Delete a mapping in the list
+      description: Delete a mapping in the list
+      parameters:
+        - name: id_ing
+          in: path
+          description: Id of the ingredient
+          type: integer
+          required: True
+        - name: id_sec
+          in: path
+          description: Id of the section
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Successfully deleted the section"
+
+# Paths for tools
+  /tools:
+    get:
+      operationId: "restcontrollers.ToolsRestController.read_all"
+      tags:
+        - "Tools"
+      summary: "Liste du matériel"
+      description: "read the tool list"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_tool:
+                  type: "integer"
+                name:
+                  type: "string"
+    post:
+      operationId: "restcontrollers.ToolsRestController.create"
+      tags:
+        - "Tools"
+      summary: "Création d'un outil"
+      description: "create a tool"
+      parameters:
+        - name: tool
+          in: body
+          description: Tool to create
+          required: True
+          schema:
+           type: object
+           properties:
+             name:
+                type: string
+                description: Name of the tool
+      responses:
+       201:
+        description: Successfully created source in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_tool:
+                type: "integer"
+
+  /tools/{id_tool}:
+    get:
+      operationId: "restcontrollers.ToolsRestController.read_one"
+      tags:
+        - "Tools"
+      summary: "Un outil"
+      description: "read one tool"
+      parameters:
+        - name: id_tool
+          in: path
+          description: Id of the tool
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_tool:
+                  type: "integer"
+                name:
+                  type: "string"
+    put:
+      operationId: "restcontrollers.ToolsRestController.update"
+      tags:
+        - "Tools"
+      summary: Update a tool in the list
+      description: Update a tool in the list
+      parameters:
+        - name: id_tool
+          in: path
+          description: Id of the tool
+          type: integer
+          required: True
+        - name: tool
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+      responses:
+        200:
+          description: Successfully updated tool in list
+
+    delete:
+      operationId: "restcontrollers.ToolsRestController.delete"
+      tags:
+        - "Tools"
+      summary: Delete a tool in the list
+      description: Delete a tool in the list
+      parameters:
+        - name: id_tool
+          in: path
+          description: Id of the tool
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Successfully deleted the source"
+  /tools/recipe/{id_recipe}:
+    get:
+      operationId: "restcontrollers.ToolsRestController.read_by_recipe"
+      tags:
+        - "Tools"
+      summary: "Les outils d'une recette"
+      description: "read tools of a recipe"
+      parameters:
+        - name: id_recipe
+          in: path
+          description: Id of the recipe
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_tool:
+                  type: "integer"
+                name:
+                  type: "string"
+
+
+# Paths for images
+  /images:
+    get:
+      operationId: "restcontrollers.ImagesRestController.read_all"
+      tags:
+        - "Images"
+      summary: "Liste des images"
+      description: "read the image list"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_image:
+                  type: "integer"
+                name:
+                  type: "string"
+                id_recipe:
+                  type: "integer"
+    post:
+      operationId: "restcontrollers.ImagesRestController.create"
+      tags:
+        - "Images"
+      summary: "Création d'une image"
+      description: "create an image"
+      parameters:
+        - name: image
+          in: body
+          description: Image to create
+          required: True
+          schema:
+           type: object
+           properties:
+             name:
+                type: string
+                description: Name of the image
+             id_recipe:
+                type: integer
+      responses:
+       201:
+        description: Successfully created image in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_img:
+                type: "integer"
+
+  /images/{id_img}:
+    get:
+      operationId: "restcontrollers.ImagesRestController.read_one"
+      tags:
+        - "Images"
+      summary: "Une image"
+      description: "read one image"
+      parameters:
+        - name: id_img
+          in: path
+          description: Id of the image
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_img:
+                  type: "integer"
+                name:
+                  type: "string"
+                id_recipe:
+                  type: "integer"
+    put:
+      operationId: "restcontrollers.ImagesRestController.update"
+      tags:
+        - "Images"
+      summary: Update an image in the list
+      description: Update an image in the list
+      parameters:
+        - name: id_img
+          in: path
+          description: Id of the image
+          type: integer
+          required: True
+        - name: image
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: "string"
+              id_recipe:
+                type: "integer"
+      responses:
+        200:
+          description: Successfully updated image in list
+
+    delete:
+      operationId: "restcontrollers.ImagesRestController.delete"
+      tags:
+        - "Images"
+      summary: Delete an image in the list
+      description: Delete an image in the list
+      parameters:
+        - name: id_img
+          in: path
+          description: Id of the image
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Successfully deleted the image"
+
+  /images/recipe/{id_recipe}:
+    get:
+      operationId: "restcontrollers.ImagesRestController.read_by_recipe"
+      tags:
+        - "Images"
+      summary: "Liste des images"
+      description: "read the image list"
+      parameters:
+        - name: id_recipe
+          in: path
+          description: Id of the recipe
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_image:
+                  type: "integer"
+                name:
+                  type: "string"
+                id_recipe:
+                  type: "integer"
+
+# Paths for recipes
+  /recipes:
+    get:
+      operationId: "restcontrollers.RecipesRestController.read_all"
+      tags:
+        - "Recipes"
+      summary: "Liste des recettes"
+      description: "read the recipe list"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_recipe:
+                  type: "integer"
+                name:
+                  type: "string"
+                nbr_person:
+                  type: "integer"
+                id_src:
+                  type: "integer"
+    post:
+      operationId: "restcontrollers.RecipesRestController.create_recipe"
+      tags:
+        - "Recipes"
+      summary: "Création d'une recette"
+      description: "create an recipe"
+      parameters:
+        - name: recipe
+          in: body
+          description: recipe to create
+          required: True
+          schema:
+           type: object
+           properties:
+             name_recipe:
+                type: string
+             nbr_person:
+                type: integer
+             images:
+               type: array
+             id_src:
+               type: integer
+             id_cats:
+               type: array
+             id_tools:
+               type: array
+             sections:
+               type: array
+      responses:
+       201:
+        description: Successfully created recipe in list
+        schema:
+          type: "array"
+          items:
+            properties:
+              id_recipe:
+                type: "integer"
+
+  /recipes/{id_recipe}:
+    get:
+      operationId: "restcontrollers.RecipesRestController.read_one"
+      tags:
+        - "Recipes"
+      summary: "Une recette"
+      description: "read one recipe"
+      parameters:
+        - name: id_recipe
+          in: path
+          description: Id of the recipe
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_recipe:
+                  type: "integer"
+                name:
+                  type: "string"
+                nbr_person:
+                  type: "integer"
+                id_src:
+                  type: "integer"
+    put:
+      operationId: "restcontrollers.RecipesRestController.update"
+      tags:
+        - "Recipes"
+      summary: Update a recipe in the list
+      description: Update a recipe in the list
+      parameters:
+        - name: id_recipe
+          in: path
+          description: Id of the recipe
+          type: integer
+          required: True
+        - name: recipe
+          in: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: "string"
+              nbr_person:
+                type: "integer"
+              id_src:
+                type: "integer"
+      responses:
+        200:
+          description: Successfully updated recipe in list
+
+    delete:
+      operationId: "restcontrollers.RecipesRestController.delete_full"
+      tags:
+        - "Recipes"
+      summary: Delete a recipe in the list
+      description: Delete a recipe in the list
+      parameters:
+        - name: id_recipe
+          in: path
+          description: Id of the recipe
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Successfully deleted the recipe"
+  /recipes/{id_recipe}/tool/{id_tool}:
+    post:
+      operationId: "restcontrollers.RecipesRestController.set_tool"
+      tags:
+        - "Recipes"
+      summary: Associate a tool with a recipe
+      description: Associate a tool with a recipe
+      parameters:
+        - name: id_recipe
+          in: path
+          description: Id of the recipe
+          type: integer
+          required: True
+        - name: id_tool
+          in: path
+          description: Id of the tool
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully inserted ingredient in section
+  /recipes/{id_recipe}/category/{id_cat}:
+    post:
+      operationId: "restcontrollers.RecipesRestController.set_category"
+      tags:
+        - "Recipes"
+      summary: Associate a category with a recipe
+      description: Associate a category with a recipe
+      parameters:
+        - name: id_recipe
+          in: path
+          description: Id of the recipe
+          type: integer
+          required: True
+        - name: id_cat
+          in: path
+          description: Id of the category
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully inserted ingredient in section
+
+  /recipes/ingredient/{id_ingredient}:
+    get:
+      operationId: "restcontrollers.RecipesRestController.read_by_ingredient"
+      tags:
+        - "Recipes"
+      summary: "Toutes les recettes contenant un ingrédient"
+      description: "read recipes"
+      parameters:
+        - name: id_ingredient
+          in: path
+          description: Id of the ingredient
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_recipe:
+                  type: "integer"
+                name:
+                  type: "string"
+                nbr_person:
+                  type: "integer"
+                id_src:
+                  type: "integer"
+  /recipes/category/{id_category}:
+    get:
+      operationId: "restcontrollers.RecipesRestController.read_by_category"
+      tags:
+        - "Recipes"
+      summary: "Toutes les recettes d'une catégorie"
+      description: "read recipes"
+      parameters:
+        - name: id_category
+          in: path
+          description: Id of the category
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_recipe:
+                  type: "integer"
+                name:
+                  type: "string"
+                nbr_person:
+                  type: "integer"
+                id_src:
+                  type: "integer"
+  /recipes/source/{id_src}:
+    get:
+      operationId: "restcontrollers.RecipesRestController.read_by_source"
+      tags:
+        - "Recipes"
+      summary: "Toutes les recettes d'une source"
+      description: "read recipes"
+      parameters:
+        - name: id_src
+          in: path
+          description: Id of the source
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_recipe:
+                  type: "integer"
+                name:
+                  type: "string"
+                nbr_person:
+                  type: "integer"
+                id_src:
+                  type: "integer"
+  /recipes/tool/{id_tool}:
+    get:
+      operationId: "restcontrollers.RecipesRestController.read_by_tool"
+      tags:
+        - "Recipes"
+      summary: "Toutes les recettes contenant un outil"
+      description: "read recipes"
+      parameters:
+        - name: id_tool
+          in: path
+          description: Id of the tool
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "array"
+            items:
+              properties:
+                id_recipe:
+                  type: "integer"
+                name:
+                  type: "string"
+                nbr_person:
+                  type: "integer"
+                id_src:
+                  type: "integer"

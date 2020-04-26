@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Recette</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+	<link rel="icon" href="/images/favicon.ico"/>
+    <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+	<link href="/css/nav.css" rel="stylesheet">
+	<link href="/css/recipe.css" rel="stylesheet">
+
+</head>
+<body class="container-fluid">
+	<nav class="topnav row">
+		<div class="col">
+			<div class="row">
+				<div class="col-11">
+					<p class="col text-left navactive">Recette</p>
+				</div>
+				<div class="col-1 text-center">
+					<i class="fa fa-bars icon" id="hamburger"></i>
+				</div>
+			</div>
+			<div class="row bg-dark text-white text-center" id="links">
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/home">Liste des recettes</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/gestion">Gestion</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/ajout">Ajouter une recette</a>
+				</div>
+			</div>
+		</div>
+	</nav>
+    <main class="row">
+         <div class="col-1"></div>
+         <div class="col-10">
+			 <div class="text-center row">
+				 <div id="listImages" class="col">
+				 </div>
+			 </div>
+			 <div style="text-align:center" class="text-nowrap">
+				 <div id="dotsForSlides">
+				 </div>
+			</div>
+			 <div class="text-center" id="headerRecipe">
+				 <h1 id="recipeTitle"></h1>
+				 <button type="button" class="btn btn-warning" onclick="toggleEditOption()">Editer</button>
+				 <button type="button" class="btn btn-danger" onclick="toggleModalDelete('recipe', 0, 0)">Supprimer</button>
+				 <h3 id="recipeSource"></h3>
+				 <div id="categories"></div>
+				 <div id="tools"></div>
+				 <h3 id="recipeNumber"></h3>
+			 </div>
+			 <div id="listIngredientsFull">
+
+			 </div>
+			<article id="sections">
+
+            </article>
+         </div>
+         <div class="col-1"></div>
+    </main>
+
+	 <!--La modal d'edit d'ingrédient-->
+	 <div class="modal fade" id="modalEditIngredient" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+					<h3 id="ingredient_modal_title"></h3>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
+					</button>
+				</div>
+				<div class="modal-body mx-3 row">
+					<div class="col">
+						<form action="" method="post">
+							<input type="hidden" id="sectionIdforEdit">
+							<input type="hidden" id="ingredientIdforEdit">
+							<select id="listIngredientsModal">
+
+                            </select>
+							<br>
+							<input type="number" id="editQuantity"/>
+							<br>
+                            <select id="editUnit">
+                                <option value="g">g</option>
+                                <option value="nounit">Sans unité</option>
+                            </select>
+							<button type="button" class="btn btn-primary" onclick="editIngredient()">Ok</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- La modal de suppression -->
+    <div id="modalDeleteItem" class="modal fade" tabindex="-1" role="dialog"
+		aria-labelledby="deleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3>Suppression</h3>
+					<input type="hidden" id="type">
+					<input type="hidden" id="sectionIdforDelete">
+                    <input type="hidden" id="itemIdforDelete">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>Êtes vous sûr ?</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" onclick="deleteItem()">Oui</button>
+					<button type="button" class="btn btn-dark" data-dismiss="modal">Annuler</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	 <!--La modal d'edit d'instruction-->
+	 <div class="modal fade" id="modalEditInstruction" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+					<h3 id="instruction_modal_title"></h3>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
+					</button>
+				</div>
+				<div class="modal-body mx-3 row">
+					<div class="col">
+						<form action="" method="post">
+							<input type="hidden" id="section2IdforEdit">
+							<input type="hidden" id="instructionIdforEdit">
+							<textarea id="instructionText"></textarea>
+							<br>
+							<button type="button" class="btn btn-primary" onclick="editInstruction()">Ok</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</body>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+<script type="text/javascript">
+	let id_recipe = window.location.toString().split('/')[4]
+	let slideIndex = 1;
+    window.onload = function(){
+        $.getJSON("/api/recipes/"+id_recipe, function(data) {
+            $("#recipeTitle").html(data.name)
+			$("#recipeNumber").html("Nombre de personnes : " + data.nbr_person)
+		$.getJSON("/api/sources/" + data.id_src, function (source) {
+			$("#recipeSource").html("Source : " + source.name)
+		})
+        })
+        $.getJSON("/api/sections/recipe/"+id_recipe, function(data) {
+			displayCategories()
+			displayTools()
+			displayIngredientRecipe()
+
+            $.each(data, function(key, val) {
+                let id_section = val.id
+                $("#sections").append($("<section>")
+                    .attr("id","section"+id_section)
+                    .append($("<h2>")
+                        .html(val.name)))
+				$("#section" + id_section).append($("<div>").addClass("ingredients").attr("section",id_section))
+				displayIngredient(id_section)
+				$("#section" + id_section).append($("<div>").addClass("instructions").attr("section",id_section))
+                displayInstruction(id_section)
+            })
+        })
+		$.getJSON("/api/images/recipe/"+id_recipe, function(data) {
+			let image_number = data.length
+
+			$("#dotsForSlides").append($("<a>").addClass("prev").attr("onclick", "plusSlides(-1)").html("&#10094;"))
+			for (let i = 0; i < image_number; i++) {
+				$("#dotsForSlides").append($("<span>").addClass("dot").attr("onclick", "currentSlide(" + (i + 1) + ")"))
+			}
+			$("#dotsForSlides").append($("<a>").addClass("prev").attr("onclick", "plusSlides(1)").html("&#10095;"))
+
+			$.each(data, function(key, val) {
+				let block_image = $("<div>").addClass("MySlides text-center")
+				block_image.append($("<div>").addClass("numbertext").html(key+1 + " / " + image_number))
+				block_image.append($("<img>").addClass("text-center").attr("src","/images/" + val.name).attr("onclick", "plusSlides(1)"))
+				$("#listImages").append(block_image)
+			})
+			showSlides(slideIndex);
+		})
+    }
+
+	$("#hamburger").click(function () {
+		if ($("#links").css("display") === "none") {
+		    $("#links").css("display", "flex")
+        } else {
+		    $("#links").css("display", "none")
+        }
+	})
+    
+	let toggleEditOption = function(){
+		$(".btn-edit").toggle()
+	}
+
+    let displayIngredient = function(id_section){
+    	if ($("div.ingredients[section=" + id_section + "]").length) {
+    		$("div.ingredients[section=" + id_section + "]").empty()
+		}
+    	$.getJSON("/api/ingredients/section/"+id_section, function(data) {
+			$("div.ingredients[section=" + id_section + "]").append($("<table>")
+					.append($("<thead>")
+							.append($("<th>").html("Ingredients"))
+							.append($("<th>"))
+							.append($("<th>"))
+							.append($("<th>"))
+							.append($("<th>")))
+					.append($("<tbody>")
+							.attr("id", "ingredients_section" + id_section)))
+			$.each(data, function (key, val) {
+				let tr = $("<tr>").attr("section", id_section).attr("ingredient", val.id_ingredient)
+				tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "name").html(val.name + " : "))
+				tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "quantity").html("<span class='ing_quantity'>" + val.quantity + "</span>"))
+				if (val.unit != "nounit") {
+					tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "unit").html(val.unit))
+				} else {
+					tr.append($("<td>").attr("section", id_section).attr("ingredient", val.id_ingredient).attr("field", "unit"))
+				}
+				tr.append($("<td>").addClass("text-center").append($("<button>")
+						.attr("type", "button")
+						.addClass("btn btn-warning btn-edit")
+						.attr("onclick", "toggleModalEditIngredient(" + id_section + "," + val.id_ingredient + ")")
+						.html("<i class='fas fa-cog'></i>")))
+				tr.append($("<td>").addClass("text-center").append($("<button>")
+						.attr("type", "button")
+						.addClass("btn btn-danger btn-edit")
+						.attr("onclick", "toggleModalDelete('ingredient', " + id_section + "," + val.id_ingredient + ")")
+						.html("<i class='fas fa-minus'></i>")))
+
+				$("#ingredients_section" + id_section).append(tr)
+
+			})
+			$("div.ingredients[section=" + id_section + "]").append($("<button>")
+										.attr("type","button")
+										.addClass("btn btn-success btn-edit")
+										.attr("onclick","toggleModalEditIngredient(" + id_section + ", 0)")
+										.html("<i class='fas fa-plus'></i>"))
+		})
+	}
+
+	let displayIngredientRecipe = function(){
+    	if ($("section").length > 1) {
+			$("#listIngredientsFull").empty()
+			$.getJSON("/api/ingredients/recipe/"+ id_recipe, function(data) {
+				$.each(data, function(key, val) {
+					if (val.unit != "nounit") {
+						$("#listIngredientsFull").append($("<p>").html(val.name + " : <span class='ing_quantity'>" + val.quantity + "</span> " + val.unit))
+					} else {
+						$("#listIngredientsFull").append($("<p>").html(val.name + " : " + val.quantity))
+					}
+				})
+			})
+		}
+	}
+
+	let displayCategories = function() {
+    	$("#categories").empty()
+		$.getJSON("/api/categories/recipe/"+ id_recipe, function(data) {
+			$.each(data, function(key, val) {
+				$("#categories").append($("<h3>").addClass("category_recipe").html(val.name))
+			})
+		})
+	}
+
+	let displayTools = function() {
+    	$("#tools").empty()
+		$.getJSON("/api/tools/recipe/"+ id_recipe, function(data) {
+			$.each(data, function(key, val) {
+				$("#tools").append($("<h3>").addClass("tool_recipe").html(val.name))
+			})
+		})
+
+	}
+
+	let displayInstruction = function(id_section){
+		if ($("div.instructions[section=" + id_section + "]").length) {
+    		$("div.instructions[section=" + id_section + "]").empty()
+		}
+		$.getJSON("/api/instructions/section/"+id_section, function(data) {
+			$("div.instructions[section=" + id_section + "]").append($("<table>")
+											.append($("<thead>")
+													.append($("<th>").html("Instructions"))
+													.append($("<th>"))
+													.append($("<th>")))
+											.append($("<tbody>")
+												.attr("id", "instructions_section"+id_section)))
+			$.each(data, function(key, val) {
+				let tr = $("<tr>").attr("section", id_section).attr("instruction", val.id)
+				tr.append($("<td>").addClass("row").append($("<p>").addClass("col-1 num_instruction").html(key + 1))
+						.append($("<p>").addClass("col-11").attr("section", id_section).attr("instruction", val.id).html(val.text_ins)))
+				tr.append($("<td>").addClass("text-center").append($("<button>")
+						.attr("type", "button")
+						.addClass("btn btn-warning btn-edit")
+						.attr("onclick", "toggleModalEditInstruction(" + id_section + "," + val.id + ")")
+						.html("<i class='fas fa-cog'></i>")))
+				tr.append($("<td>").addClass("text-center").append($("<button>")
+						.attr("type", "button")
+						.addClass("btn btn-danger btn-edit")
+						.attr("onclick", "toggleModalDelete('instruction', " + id_section + "," + val.id + ")")
+						.html("<i class='fas fa-minus'></i>")))
+				$("#instructions_section"+id_section).append(tr)
+			})
+			$("div.instructions[section=" + id_section + "]").append($("<button>")
+										.attr("type","button")
+										.addClass("btn btn-success btn-edit")
+										.attr("onclick","toggleModalEditInstruction(" + id_section + ", 0)")
+										.html("<i class='fas fa-plus'></i>"))
+		})
+	}
+
+
+	let toggleModalDelete = function(type, id_section, id_item) {
+		$("#modalDeleteItem").modal("show")
+		$("#type").val(type)
+        $("#sectionIdforDelete").val(id_section)
+        $("#itemIdforDelete").val(id_item)
+	}
+
+    let deleteIngredient = function() {
+        let id_section = $("#sectionIdforDelete").val()
+        let id_ingredient = $("#itemIdforDelete").val()
+
+    }
+
+    let toggleModalEditIngredient = function(id_section, id_ingredient){
+        $("#modalEditIngredient").modal("show")
+        $("#sectionIdforEdit").val(id_section)
+        $("#ingredientIdforEdit").val(id_ingredient)
+        $.getJSON("/api/ingredients", function(data) {
+				$.each(data, function(key, val) {
+					let option = $("<option>").attr("id", "ingredient"+val.id)
+							.attr("value", val.id)
+							.html(val.name)
+					if( id_ingredient == val.id){
+						option.attr("selected", "selected")
+					}
+					$("#listIngredientsModal").append(option)
+				})
+			})
+		$("#listIngredientsModal").val(id_ingredient)
+    }
+
+    let editIngredient = function () {
+		let id_section = $("#sectionIdforEdit").val()
+		let id_ingredient_to_edit = $("#ingredientIdforEdit").val()
+		let id_new_ingredient = $("#listIngredientsModal option:selected").val()
+		let quantity = $("#editQuantity").val()
+		let unit = $("#editUnit").val()
+		let list_ingredient = []
+
+		$("tr[ingredient][section=" + id_section + "]").each(function () {
+			list_ingredient.push($(this).attr("ingredient"))
+		})
+		if (list_ingredient.indexOf(id_new_ingredient) >= 0 && id_new_ingredient != id_ingredient_to_edit) {
+			alert("Ingrédient déjà dans la liste !")
+		} else {
+			let mapping = {
+				"quantity": parseInt(quantity),
+				"unit": unit
+			}
+			if (id_ingredient_to_edit > 0) {
+				$("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='name']").html($("#listIngredientsModal option:selected").text())
+				$("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='quantity']").html(quantity)
+
+				if ($("#editUnit") != "nounit") {
+					$("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='unit']").html(unit)
+				} else {
+					$("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "][field='unit']").empty()
+				}
+
+				$("[section=" + id_section + "][ingredient=" + id_ingredient_to_edit + "]").attr("ingredient", id_new_ingredient)
+
+				$.ajax({
+					url: "/api/sections/" + id_section + "/ingredient/" + id_ingredient_to_edit,
+					type: 'DELETE',
+					success: function (result) {
+						$.ajax({
+							url: "/api/sections/" + id_section + "/ingredient/" + id_new_ingredient,
+							type: 'POST',
+							data: JSON.stringify(mapping),
+							contentType: "application/json; charset=utf-8",
+							dataType: "json",
+							success: function (result) {
+								displayIngredientRecipe()
+								displayIngredient(id_section)
+							}
+						})
+					}
+				})
+			} else {
+				$.ajax({
+					url: "/api/sections/" + id_section + "/ingredient/" + id_new_ingredient,
+					type: 'POST',
+					data: JSON.stringify(mapping),
+					contentType: "application/json; charset=utf-8",
+					dataType: "json",
+					success: function (result) {
+						displayIngredientRecipe()
+						displayIngredient(id_section)
+					}
+				})
+			}
+			$("#modalEditIngredient").modal("hide")
+			$(".btn-edit").css("display", "none")
+		}
+	}
+
+	let toggleModalEditInstruction = function(id_section, id_instruction){
+        $("#modalEditInstruction").modal("show")
+        $("#section2IdforEdit").val(id_section)
+        $("#instructionIdforEdit").val(id_instruction)
+		if (id_instruction > 0 ){
+			$("#instruction_modal_title").html("Editer l'instruction")
+			$("#instructionText").html($("p[section=" + id_section + "][instruction=" + id_instruction + "]").html())
+		} else {
+			$("#instruction_modal_title").html("Ajouter une instruction")
+			$("#instructionText").empty()
+		}
+    }
+
+    let editInstruction = function () {
+		let id_section = parseInt($("#section2IdforEdit").val())
+		let id_instruction = $("#instructionIdforEdit").val()
+		let text_instruction = $("#instructionText").val()
+
+		let instruction = {
+			"text": text_instruction,
+			"id_section": id_section
+		}
+
+		if (id_instruction > 0 ) {
+			$.ajax({
+				url: "/api/instructions/" + id_instruction,
+				type: 'PUT',
+				data: JSON.stringify(instruction),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success: function (result) {
+					displayInstruction(id_section)
+				}
+			})
+		} else {
+			$.ajax({
+				url: "/api/instructions",
+				type: 'POST',
+				data: JSON.stringify(instruction),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success: function (result) {
+					displayInstruction(id_section)
+				}
+			})
+		}
+		$("#modalEditInstruction").modal("hide")
+		$(".btn-edit").css("display", "none")
+	}
+
+    let deleteItem = function(){
+		let id_section = $("#sectionIdforDelete").val()
+		let id_item = $("#itemIdforDelete").val()
+		switch ($("#type").val()) {
+			case "ingredient":
+				$.ajax({
+					url : "/api/sections/" + id_section + "/ingredient/" + id_item,
+					type : 'DELETE',
+					success : function(result) {
+						displayIngredientRecipe()
+						displayIngredient(id_section)
+					}
+       			 })
+       			$("#modalDeleteItem").modal("hide")
+				break
+			case "instruction":
+				$.ajax({
+					url : "/api/instructions/" + id_item,
+					type : 'DELETE',
+					success : function(result) {
+						displayInstruction(id_section)
+					}
+				})
+				$("#modalDeleteItem").modal("hide")
+				break
+			case "recipe":
+				$.ajax({
+					url : "/api/recipes/" + id_recipe,
+					type : 'DELETE',
+					success : function(result) {
+						window.location.href = "/home"
+					}
+				})
+				$("#modalDeleteItem").modal("hide")
+				break
+		}
+		$(".btn-edit").css("display", "none")
+	}
+
+	/* Tous ce qui est image*/
+
+
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+	let i;
+	let slides = $(".MySlides")
+	let dots = $(".dot")
+	if (n > slides.length) {slideIndex = 1}
+	if (n < 1) {slideIndex = slides.length}
+	for (i = 0; i < slides.length; i++) {
+	  slides[i].style.display = "none";
+	}
+	for (i = 0; i < dots.length; i++) {
+	  dots[i].className = dots[i].className.replace(" active", "");
+	}
+	slides[slideIndex-1].style.display = "flex";
+	dots[slideIndex-1].className += " active";
+}
+
+</script>
+</html>

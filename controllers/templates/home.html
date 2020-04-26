@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Bienvenue !</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+    <link rel="icon" href="/images/favicon.ico"/>
+    <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="/css/nav.css" rel="stylesheet">
+    <link href="/css/home.css" rel="stylesheet">
+
+
+</head>
+<body class="container-fluid">
+<nav class="topnav row">
+		<div class="col">
+			<div class="row">
+				<div class="col-11">
+					<p class="col text-left navactive">Accueil</p>
+				</div>
+				<div class="col-1 text-center">
+					<i class="fa fa-bars icon" id="hamburger"></i>
+				</div>
+			</div>
+			<div class="row bg-dark text-white text-center" id="links">
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/home">Liste des recettes</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/gestion">Gestion</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/ajout">Ajouter une recette</a>
+				</div>
+			</div>
+		</div>
+	</nav>
+    <main class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <h2>
+                Liste des recettes
+            </h2>
+            <div class="row">
+                <button type="button" class="btn" id="btn-advanced">Recherche avancée</button>
+            </div>
+            <form id="search" class="row">
+                <div class="col">
+                    <div class="row">
+                        <input id="searchRecipeByName" type="text" class="form-control" placeholder="Rechercher une recette">
+                    </div>
+                    <h3>Sources</h3>
+                    <div class="row">
+                        <select id="sources">
+                            <option selected disabled value="-1">Filter par source</option>
+                            <option value="0">Toutes</option>
+                        </select>
+                    </div>
+                    <h3>Catégories</h3>
+                    <div class="row">
+                        <div class="col" id="categories"></div>
+                    </div>
+                    <h3>Matériel</h3>
+                    <p>Sélectionner les outils à exclure de la recherche </p>
+                    <div class="row">
+                        <div class="col" id="tools"></div>
+                    </div>
+                    <h3>Ingrédients</h3>
+                    <div class="row ui-widget">
+                        <input id="searchIngredient" type="text" class="form-control col-8" placeholder="Rechercher un ingrédient">
+                        <div class="col-4">
+                            <button type="button" class="btn" id="addIngredient"><i class='fas fa-plus'></i></button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col" id="ingredientsToLookFor">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button type="button" class="btn" id="btn-clean">Réinitialiser</button>
+                    </div>
+                </div>
+            </form>
+            <div class="col">
+                <ul id="listRecipes">
+                </ul>
+            </div>
+
+        </div>
+         <div class="col-1"></div>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+    let ingredients = []
+    let ids = []
+    window.onload = function () {
+        $.getJSON("/api/recipes", function(data) {
+            $.each(data, function(key, val) {
+                let li = $("<li>")
+                li.attr("recette", val.id).attr("source", val.id_src)
+
+                $.getJSON("/api/images/recipe/" + val.id, function(data) {
+                    let link = $("<a>").attr("href","/recette/"+val.id).addClass("row")
+                    let img = ($("<img>").attr("src","/images/" + data[0].name).attr("height","100px").attr("width", "100px"))
+                    let title = $("<p>").addClass("recipe_title").html(val.name)
+                    link.append(img).append(title)
+                    li.append(link)
+                })
+                $("#listRecipes").append(li)
+                $.getJSON("/api/categories/recipe/" + val.id, function(data) {
+                    $.each(data, function(key, val) {
+                        li.append($("<div>").attr("hidden", "hidden").attr("category", val.id))
+                    })
+                })
+                $.getJSON("/api/ingredients/recipe/" + val.id, function(data) {
+                    $.each(data, function(key, val) {
+                        li.append($("<div>").attr("hidden", "hidden").attr("ingredient", val.id_ingredient))
+                    })
+                })
+                $.getJSON("/api/tools/recipe/" + val.id, function(data) {
+                    $.each(data, function(key, val) {
+                        li.append($("<div>").attr("hidden", "hidden").attr("tool", val.id))
+                    })
+                })
+
+            })
+        })
+        $.getJSON("/api/sources", function(data) {
+            $.each(data, function(key, val) {
+                $("#sources").append($("<option>").val(val.id).html(val.name))
+            })
+        })
+        $.getJSON("/api/tools", function(data) {
+            $.each(data, function(key, val) {
+                let div = $("<div>").addClass("row")
+                let label = $("<label>").attr("for", "tool"+val.id).html(val.name)
+                let input = $("<input>").addClass("tool")
+                                        .attr("id", "tool"+val.id)
+                                        .attr("type", "checkbox").val(val.id)
+                                        .attr("onclick", "filter_all()")
+                                        .html(val.name)
+                div.append(input).append(label)
+                $("#tools").append(div)
+            })
+        })
+        $.getJSON("/api/categories", function(data) {
+            $.each(data, function(key, val) {
+                let div = $("<div>").addClass("row")
+                let label = $("<label>").attr("for", "category"+val.id).html(val.name)
+                let input = $("<input>").addClass("category")
+                                        .attr("id", "category"+val.id)
+                                        .attr("type", "checkbox").val(val.id)
+                                        .attr("onclick", "filter_all()")
+                                        .html(val.name)
+                div.append(input).append(label)
+                $("#categories").append(div)
+            })
+        })
+        $.getJSON("/api/ingredients", function(data) {
+            ingredients = []
+            ids = []
+            $.each(data, function(key, val) {
+                ingredients.push(val.name)
+                ids.push(val.id)
+            })
+            $("#searchIngredient").autocomplete({
+                source: ingredients
+            })
+            $("#searchIngredient").focus(function () {
+                $("#searchIngredient").css("background-color", "white")
+            })
+        })
+    }
+
+    $("#addIngredient").click(function () {
+        if (ingredients.indexOf($("#searchIngredient").val()) == -1){
+            $("#searchIngredient").css("background-color", "tomato")
+        } else {
+            let id = ids[ingredients.indexOf($("#searchIngredient").val())]
+            let div = $("<div>").attr("ingredientToLookFor", $("#searchIngredient").val()).attr("id", id).addClass("row")
+            div.append($("<p>").addClass("ingredient").html($("#searchIngredient").val()))
+            div.append($("<button>").attr("type","button").addClass("btn btn-delete").html("<i class='fas fa-minus'></i>").click(function () {
+                    div.remove()
+                    filter_all()
+                })
+            )
+            $("#ingredientsToLookFor").append(div)
+            filter_all()
+            $("#searchIngredient").val(null)
+        }
+    })
+
+    $("#hamburger").click(function () {
+		if ($("#links").css("display") === "none") {
+		    $("#links").css("display", "flex")
+        } else {
+		    $("#links").css("display", "none")
+        }
+	})
+
+    $("#btn-advanced").click(function () {
+        $("#search").toggle()
+    })
+
+    $("#btn-clean").click(function () {
+        $("#searchRecipeByName").val(null)
+        $("#sources").val(-1)
+        $("input.category").each(function () {
+            $(this).prop("checked", false)
+        })
+        $("#ingredientsToLookFor").empty()
+        filter_all()
+    })
+
+    let filter_all = function(){
+        let tag = $("#searchRecipeByName").val().toLowerCase()
+        let source = $("#sources").val()
+        let checked = []
+        let tools_checked = []
+        let ingredients_added = []
+
+        $("input.tool").each(function () {
+            if ($(this).is(":checked")) {
+                tools_checked.push(parseInt($(this).val()))
+            }
+        })
+
+        $("input.category").each(function () {
+            if ($(this).is(':checked')){
+                checked.push(parseInt($(this).val()))
+            }
+        })
+
+        $("div[ingredientToLookFor]").each(function () {
+            ingredients_added.push($(this).attr("id"))
+        })
+
+        let recipes = $("li[recette]")
+        recipes.each(function () {
+            $(this).hide()
+        })
+        let filtered_recipes = []
+        recipes.each(function () {
+            if ($(this).text().toLowerCase().indexOf(tag) > -1){
+                filtered_recipes.push($(this))
+            }
+        })
+
+        recipes = filtered_recipes
+        filtered_recipes = []
+
+        if (source != null && source !=0 && source != -1){
+            recipes.forEach(function (elem) {
+                if (elem.attr("source").toLowerCase().indexOf($("#sources").val()) > -1){
+                    filtered_recipes.push(elem)
+                }
+            })
+            recipes = filtered_recipes
+            filtered_recipes = []
+        }
+
+        if (tools_checked.length != 0) {
+            recipes.forEach(function (recipe) {
+                let tools = []
+                recipe.find("div[tool]").each(function(){
+                    tools.push(parseInt($(this).attr("tool")))
+                })
+                if (tools.length >0 ){
+                    tools.forEach(function (elem) {
+                        if(tools_checked.indexOf(elem) == -1 && filtered_recipes.indexOf(recipe) == -1){
+                            filtered_recipes.push(recipe)
+                        }
+                    })
+                } else {
+                    filtered_recipes.push(recipe)
+                }
+            })
+            recipes = filtered_recipes
+            filtered_recipes = []
+        }
+
+        if (checked.length != 0) {
+            recipes.forEach(function (recipe) {
+                let categories = []
+                recipe.find("div[category]").each(function(){
+                    categories.push(parseInt($(this).attr("category")))
+                })
+                categories.forEach(function (elem) {
+                    if(checked.indexOf(elem) > -1 && filtered_recipes.indexOf(recipe) == -1){
+                        filtered_recipes.push(recipe)
+                    }
+                })
+            })
+            recipes = filtered_recipes
+            filtered_recipes = []
+        }
+
+        if (ingredients_added.length != 0) {
+            recipes.forEach(function (recipe) {
+                let ingredients = []
+                let display = true
+                recipe.find("div[ingredient]").each(function () {
+                    ingredients.push(parseInt($(this).attr("ingredient")))
+                })
+                ingredients_added.forEach(function (elem) {
+                    if (ingredients.indexOf(parseInt(elem)) == -1) {
+                        display = false
+                    }
+                })
+                if (display && filtered_recipes.indexOf(recipe) == -1){
+                    filtered_recipes.push(recipe)
+                }
+            })
+            recipes = filtered_recipes
+            filtered_recipes = []
+        }
+
+        recipes.forEach(function (recipe) {
+            recipe.show()
+        })
+    }
+
+    $("#searchRecipeByName").keyup(function () {
+      filter_all()
+    })
+     $("#sources").change(function () {
+      filter_all()
+     })
+    </script>
+</body>
+</html>

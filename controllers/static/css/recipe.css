@@ -1,0 +1,225 @@
+
+* {
+    font-family: 'Poppins', sans-serif;
+}
+
+/*En tete recette*/
+#headerRecipe h1 {
+    font-size: 70px;
+    font-weight: bold;
+    margin: 10px 0 20px 0;
+}
+
+#headerRecipe button {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 5px 15px;
+}
+
+.btn-danger {
+    background-color: tomato;
+}
+
+.btn-warning {
+    background-color: wheat;
+}
+
+#headerRecipe h3 {
+    font-size: 40px;
+    margin: 10px 0;
+}
+
+#headerRecipe #categories, #headerRecipe #tools {
+    display: flex;
+    justify-content: center;
+}
+
+#headerRecipe .category_recipe {
+    min-width: 200px;
+    padding: 10px;
+    margin: 5px;
+    background-color: lightskyblue;
+}
+
+#headerRecipe .tool_recipe {
+    min-width: 200px;
+    padding: 10px;
+    margin: 5px;
+    background-color: aquamarine;
+}
+
+#listIngredientsFull p {
+    font-size: 40px;
+}
+
+#sections h2 {
+    font-size: 50px;
+    font-weight: bold;
+    margin: 10px 0 10px 15px;
+}
+
+#sections th {
+    font-size: 45px;
+    font-weight: normal;
+    padding-left: 20px;
+}
+
+#sections td {
+    font-size: 40px;
+    padding: 0 0 20px 25px;
+    text-align: justify;
+}
+
+td[instruction]{
+    min-width: 400px;
+}
+
+td.row {
+    min-width: 400px;
+}
+
+section {
+    margin-top: 20px;
+    border: black solid 1px;
+}
+
+.ing_quantity, .num_instruction {
+    font-weight: bold;
+    color: dodgerblue;
+}
+
+.btn-edit {
+    display: none;
+    margin: 10px;
+}
+
+.modal {
+    font-size: 40px;
+    width: available;
+    position: center;
+}
+
+input[type=number] {
+    max-width: 200px;
+}
+
+#listImages{
+    text-align: center;
+}
+
+.MySlides {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media only screen and (min-width: 1500px) {
+
+    #headerRecipe h1 {
+        font-size: 35px;
+    }
+
+    #headerRecipe button {
+        font-size: 15px;
+    }
+
+    #sections h2 {
+        font-size: 25px;
+    }
+
+    #sections th {
+        font-size: 22px;
+    }
+
+    #headerRecipe h3, #listIngredientsFull p, #sections td, .modal {
+        font-size: 20px;
+    }
+
+    .MySlides {
+        max-width: 400px;
+    }
+}
+
+/*Pour les images*/
+* {box-sizing: border-box}
+.MySlides {display: none}
+
+img {
+	vertical-align: middle;
+	width: 100%;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+  cursor: pointer;
+  position: relative;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -22px;
+  color: white;
+  font-weight: bold;
+  font-size: 30px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover, .next:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+/* Number text (1/3 etc) */
+.numbertext {
+  color: #f2f2f2;
+  font-size: 40px;
+  padding: 8px 12px;
+  position: absolute;
+  top: 0;
+}
+
+/* The dots/bullets/indicators */
+.dot {
+  cursor: pointer;
+  height: 15px;
+  width: 15px;
+  margin: 0 2px;
+  background-color: #bbb;
+  border-radius: 50%;
+  display: inline-block;
+  transition: background-color 0.6s ease;
+}
+
+.active, .dot:hover {
+  background-color: #717171;
+}
+
+/* Fading animation */
+.fade {
+  -webkit-animation-name: fade;
+  -webkit-animation-duration: 1.5s;
+  animation-name: fade;
+  animation-duration: 1.5s;
+}
+
+@-webkit-keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+@keyframes fade {
+  from {opacity: .4}
+  to {opacity: 1}
+}
+
+/* On smaller screens, decrease text size */
+@media only screen and (max-width: 300px) {
+  .prev, .next,.text {font-size: 11px}
+}

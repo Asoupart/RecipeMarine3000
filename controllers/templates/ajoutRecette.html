@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>La recette</title>
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+	<link rel="icon" href="/images/favicon.ico"/>
+    <link href="https://use.fontawesome.com/releases/v5.0.7/css/all.css" rel="stylesheet">
+	<link href="/css/nav.css" rel="stylesheet">
+	<link href="/css/ajout.css" rel="stylesheet">
+</head>
+<body class="container-fluid">
+    <nav class="topnav row">
+		<div class="col">
+			<div class="row">
+				<div class="col-11">
+					<p class="col text-left navactive">Nouvelle recette</p>
+				</div>
+				<div class="col-1 text-center">
+					<i class="fa fa-bars icon" id="hamburger"></i>
+				</div>
+			</div>
+			<div class="row bg-dark text-white text-center" id="links">
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/home">Liste des recettes</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/gestion">Gestion</a>
+				</div>
+				<div class="col-lg-4 col-sm-12 menu">
+					<a class="nav-link" href="/ajout">Ajouter une recette</a>
+				</div>
+			</div>
+		</div>
+	</nav>
+    <main class="row">
+        <div class="col-1"></div>
+        <article class="col-10">
+			<form>
+				<section class="row">
+					<div class="col-12">
+						<p id="error_msg"></p>
+						<label for="recipeTitle">Nom de la recette</label>
+						<input type="text" id="recipeTitle" class="form-control" placeholder="J'aime le piment d'espelette" required="required">
+					</div>
+				</section>
+			</form>
+				<section class="row">
+					<div class="col-12">
+						<form id="formImage" method="post" action="">
+							<label for="recipeFile">Images</label>
+							<input type="file" class="form-control-file" id="recipeFile" name="files[]" multiple="multiple">
+						</form>
+					</div>
+				</section>
+			<form>
+				<section class="row">
+					<div class="col-12">
+						<label for="recipeNumber">Nombre de personnes</label>
+						<input type="number" id="recipeNumber" class="form-control">
+					</div>
+				</section>
+				<section class="row">
+					<div class="col-9">
+						<label for="sources">Source</label><br>
+						<select id="sources">
+
+						</select>
+					</div>
+					<div class="col-3">
+						<button type="button" class="btn btn-success" onclick="addElem('sources')"><i class='fas fa-plus'></i></button>
+					</div>
+				</section>
+				<section class="row">
+					<div class="col">
+						<h2 class="row">Catégories</h2>
+						<div class="row">
+							<div class="col-9" id="categories">
+							</div>
+							<div class="col-3">
+								<button type="button" class="btn btn-success" onclick="addElem('categories')"><i class='fas fa-plus'></i></button>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="row">
+					<div class="col">
+						<h2 class="row">Outils</h2>
+						<div class="row">
+							<div class="col-9" id="tools">
+							</div>
+							<div class="col-3">
+								<button type="button" class="btn btn-success" onclick="addElem('tools')"><i class='fas fa-plus'></i></button>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="row" id="sections">
+				</section>
+				<button type="button" class="btn btn-success" onclick="addSection()">Ajouter section</button>
+				<button type="button" class="btn btn-primary" onclick="submitForm()">Créer la recette</button>
+			</form>
+        </article>
+        <div class="col-1"></div>
+    </main>
+
+    <!--La modal d'ajout-->
+    <div class="modal fade" id="modalAdd" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
+					</button>
+				</div>
+				<div class="modal-body mx-3 row">
+					<div class="col">
+						<form action="" method="post">
+							<input type="hidden" id="elemType">
+							<input type="hidden" id="sectionId">
+							<label for="elemToBeAdded" id="labelForElemToBeAdded">Nom</label>
+							<br>
+							<input type="text" id="elemToBeAdded" name="name" size="15"/>
+							<br>
+							<button id="btn-submit" class="btn btn-warning" type="submit">Ok</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	 <!--La modal d'edit d'instruction-->
+	 <div class="modal fade" id="modalEdit" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header text-center">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
+					</button>
+				</div>
+				<div class="modal-body mx-3 row">
+					<div class="col">
+						<form action="" method="post">
+							<input type="hidden" id="sectionIdforEdit">
+							<input type="hidden" id="instructionIdforEdit">
+							<label for="instructionToBeEdited">Nom</label>
+							<br>
+							<input type="text" id="instructionToBeEdited" name="name" size="15"/>
+							<br>
+							<button type="submit" class="btn btn-warning">Ok</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- La modal de suppression -->
+    <div id="modalDelete" class="modal fade" tabindex="-1" role="dialog"
+		aria-labelledby="deleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<p hidden id="idIngredientToDelete"></p>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true"><i class='fas fa-times'></i></span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<h3>Êtes vous sûr ?</h3>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" onclick="deleteIngredient()">Oui</button>
+					<button type="button" class="btn btn-dark" data-dismiss="modal">Annuler</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+    <!-- Tous les scripts -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+		window.onload = function () {
+			displaySources()
+			displayCategories()
+			displayTools()
+		}
+
+		$("#hamburger").click(function () {
+			if ($("#links").css("display") === "none") {
+				$("#links").css("display", "flex")
+			} else {
+				$("#links").css("display", "none")
+			}
+		})
+
+		let displaySources = function(){
+			$("#sources").empty()
+			$("#sources").append($("<option>").attr("disabled", "disabled").attr("selected","selected").html("Choississez votre source"))
+			$("#sources").append($("<option>").val(0).html("Aucune"))
+			$.getJSON("/api/sources", function(data) {
+				$.each(data, function(key, val) {
+          	      $("#sources").append($("<option>").val(val.id).html(val.name))
+            	})
+			})
+		}
+
+		let displayCategories = function(){
+			$("#categories").empty()
+			$.getJSON("/api/categories", function(data) {
+				$.each(data, function(key, val) {
+					$("#categories").append($("<input>").attr("type", "checkbox").addClass("category").attr("id", "category"+val.id).val(val.id))
+					$("#categories").append($("<label>").attr("for", "category"+val.id).html(val.name))
+					$("#categories").append($("<br>"))
+				})
+			})
+		}
+
+		let displayTools = function(){
+			$("#tools").empty()
+			$.getJSON("/api/tools", function(data) {
+				$.each(data, function(key, val) {
+					$("#tools").append($("<input>").attr("type", "checkbox").addClass("toolRequired").attr("id", "tool"+val.id).val(val.id))
+					$("#tools").append($("<label>").attr("for", "tool"+val.id).html(val.name))
+					$("#tools").append($("<br>"))
+				})
+			})
+		}
+
+		let i = 1
+		let addSection = function(){
+			let divAddIngredient = $("<div>").attr("id","ingredients"+i)
+			divAddIngredient.append($("<button>")
+					.attr("id", "buttonIngredient"+i)
+					.attr("type", "button")
+					.addClass("btn btn-primary")
+					.attr("onclick","addIngredient("+ i +")")
+					.html("Ajouter ingrédient")
+			)
+			divAddIngredient.append($("<button>").attr("type", "button").addClass("btn btn-success").attr("onclick","addElem('ingredients', "+ i + ")").html("<i class='fas fa-plus'></i>"))
+			divAddIngredient.append($("<br>"))
+
+			let divAddInstruction = $("<div>").attr("id","instructions"+i)
+			divAddInstruction.append($("<button>")
+					.attr("id", "buttonInstruction"+i)
+					.attr("type", "button")
+					.addClass("btn btn-primary")
+					.attr("onclick","addInstruction("+ i +")")
+					.html("Ajouter instruction")
+			)
+			divAddInstruction.append($("<br>"))
+
+			let div = $("<div>").attr("id", "section"+i).addClass("col-12 sectionRecipe").attr("sectionId", i)
+			div.append($("<button>")
+					.attr("type", "button")
+					.addClass("btn btn-danger")
+					.attr("onclick","removeSection("+i+")")
+					.html("Supprimer cette section"))
+			div.append($("<br>"))
+			div.append($("<input>")
+					.attr("type", "text")
+					.addClass("form-control sectionTitle")
+					.attr("id", "sectionTitle"+i)
+					.attr("placeholder","Titre de la section"))
+			div.append($("<br>"))
+			div.append(divAddIngredient)
+			div.append(divAddInstruction)
+			$("#sections").append(div)
+			i++
+		}
+
+		let removeSection = function(idSection){
+			$("#section"+idSection).remove()
+		}
+
+		let displayIngredients = function(idSection){
+			$.getJSON("/api/ingredients", function(data) {
+				$.each(data, function(key, val) {
+					$("#selectIngredient"+idSection).append($("<option>")
+							.attr("id", "section"+idSection+"ingredient"+val.id)
+							.attr("value", val.id)
+							.html(val.name))
+				})
+			})
+		}
+
+		let addIngredient = function (idSection){
+			$("#buttonIngredient"+idSection).attr("disabled", "disabled")
+			let selectIngredient = $("<select>").attr("id","selectIngredient"+idSection)
+			let table = $("<table>").attr("id", "listIngredients"+i)
+			selectIngredient.append($("<option>").attr("disabled","disabled").attr("selected","selected").html("Ingrédient"))
+			displayIngredients(idSection)
+
+			$("#ingredients"+idSection).append(selectIngredient)
+			$("#ingredients"+idSection).append($("<button>")
+					.attr("type","button")
+					.addClass("btn btn-primary")
+					.html("<i class='fas fa-plus'></i>")
+					.click(function () {
+						if(selectIngredient.val() != null && selectIngredient.val() != 0){
+							let tr = $("<tr>")
+							tr.attr("sectionId", idSection)
+							tr.addClass("ingredientsSection")
+							tr.append($("<td>")
+									.attr("value", selectIngredient.val())
+									.html($("#section"+idSection+"ingredient"+selectIngredient.val()).html()))
+							tr.append($("<td>")
+									.append($("<input>")
+											.attr("type", "number")
+											.attr("id", "quantityIngredient"+selectIngredient.val())
+									))
+							tr.append($("<td>")
+									.append($("<select>")
+											.append($("<option>").attr("id","unitIngredient"+selectIngredient.val()).html("Sans unité").val("nounit"))
+											.append($("<option>").attr("id","unitIngredient"+selectIngredient.val()).html("g").val("g"))
+									)
+							)
+							tr.append($("<td>")
+									.append($("<button>").attr("type", "button").addClass("btn btn-danger").html("<i class='fas fa-minus'></i>").click(function () {
+									tr.remove()
+									}
+							)))
+							table.append(tr)
+						}
+					})
+					)
+			$("#ingredients"+idSection).append(table)
+		}
+
+		let j = 1
+		let addInstruction = function(idSection){
+			$("#buttonInstruction"+idSection).attr("disabled", "disabled")
+			let textarea = $("<textarea>").attr("id","insertInstruction"+idSection).addClass("col-12").attr("placeholder", "Ecrivez votre instruction")
+			$("#instructions"+idSection).append(textarea)
+			$("#instructions"+idSection).append($("<br>"))
+			$("#instructions"+idSection).append($("<button>")
+					.attr("type","button")
+					.addClass("btn btn-success")
+					.html("<i class='fas fa-plus'></i>")
+					.attr("onclick", "displayInstruction(" + idSection + ")")
+			)
+		}
+
+		let displayInstruction = function(idSection){
+			let instruction = $("<div>").addClass("row section" + idSection + "instructions").attr("id","section"+idSection+"instruction"+j)
+					.append($("<p>")
+							.addClass("col-8")
+							.html($("#insertInstruction"+idSection).val()))
+					.append($("<div>").addClass("col-2")
+							.append($("<button>")
+							.addClass("btn btn-warning")
+							.attr("type","button")
+							.html("<i class='fas fa-cog'></i>")
+							.attr("onclick","editInstruction(" + idSection + "," + j + ")")
+							)
+					)
+					.append($("<div>").addClass("col-2")
+						.append($("<button>")
+							.addClass("btn btn-danger")
+							.attr("type","button")
+							.html("<i class='fas fa-minus'></i>")
+							.attr("onclick", "removeInstruction("+ idSection + "," + j +")")
+						)
+					)
+			$("#instructions"+idSection).append(instruction)
+			$("#insertInstruction"+idSection).val(null)
+			j++
+		}
+
+		let removeInstruction = function(idSection, idInstruction){
+			$("#section"+idSection+"instruction"+idInstruction).remove()
+		}
+
+		let editInstruction = function(idSection, idInstruction){
+			$("#modalEdit").modal("show")
+			$("#sectionIdforEdit").val(idSection)
+			$("#instructionIdforEdit").val(idInstruction)
+			$("#instructionToBeEdited").val($("#section"+idSection+"instruction"+idInstruction).find("p").html())
+		}
+
+		$("#modalEdit").submit(function (event) {
+			let idSection = $("#sectionIdforEdit").val()
+			let idInstruction = $("#instructionIdforEdit").val()
+			$("#section"+idSection+"instruction"+idInstruction).find("p").html($("#instructionToBeEdited").val())
+			event.preventDefault()
+            $("#modalEdit").modal("hide")
+		})
+
+		let addElem = function(elem, idSection){
+			$("#modalAdd").modal("show")
+			$("#elemType").val(elem)
+			$("#sectionId").val(idSection)
+			switch (elem) {
+				case "sources":
+					$("#labelForElemToBeAdded").html("Nouvelle source")
+					break
+				case "categories":
+					$("#labelForElemToBeAdded").html("Nouvelle catégorie")
+					break
+				case "tools":
+					$("#labelForElemToBeAdded").html("Nouvel outil")
+					break
+				case "ingredients":
+					$("#labelForElemToBeAdded").html("Nouvel ingrédient")
+					break
+			}
+		}
+
+		$("#modalAdd").submit(function (event) {
+			let elemToBeAdded = {
+				"name": $("#elemToBeAdded").val()
+			}
+			$.ajax({
+				url : "/api/"+$("#elemType").val(),
+				type : 'POST',
+				data :  JSON.stringify(elemToBeAdded),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success : function(result) {
+					switch ($("#elemType").val()) {
+						case "sources":
+							displaySources()
+							break
+						case "categories":
+							displayCategories()
+							break
+						case "tools":
+							displayTools()
+							break
+						case "ingredients":
+							displayIngredients($("#sectionId").val())
+							break
+					}
+				}
+			});
+			event.preventDefault()
+            $("#modalAdd").modal("hide")
+		})
+
+		/*La fonction de création de recette
+		* D'abord crée la recette avec name, nbr_person et id_src
+		* Puis map la recette avec ses catégories
+		* Puis map la recette avec ses outils requis
+		* */
+
+		let submitForm = function () {
+			let source
+			if($("#sources").val() == 0){
+				source = 0
+			} else {
+				source = parseInt($("#sources").val())
+			}
+
+			let recipe = {
+ 				   "name_recipe": $("#recipeTitle").val(),
+    				"nbr_person": parseInt($("#recipeNumber").val()),
+					"images": [],
+    				"id_src": source,
+    				"id_cats": [],
+    				"id_tools": [],
+    				"sections": []
+				}
+
+			let ins = $('#recipeFile').prop('files').length
+			let images = []
+			for(let x = 0; x < ins; x++) {
+				let img = {
+					"name": $("#recipeFile").prop('files')[x].name
+				}
+				images.push(img)
+			}
+			recipe.images = images
+
+			let categories = []
+			$(".category").each(function () {
+				if(this.checked == true){
+					categories.push(this.value)
+				}
+			})
+			recipe.id_cats = categories
+
+			let tools = []
+			$(".toolRequired").each(function () {
+				if (this.checked == true) {
+					tools.push(this.value)
+				}
+			})
+			recipe.id_tools = tools
+
+			let sections = []
+			$(".sectionRecipe").each(function () {
+				let sectionId = $(this).attr("sectionId")
+				let title = $(this).find("input").val()
+				if (title == null || title == ""){
+					alert("Titre de section manquant !")
+					return
+				}
+
+				let section = {
+					"name": title,
+					"ingredients": [],
+					"instructions": []
+				}
+
+				let ingredients = []
+				$("tr[sectionId =" + sectionId +"]").each(function () {
+					let columns = $(this).find("td")
+					let id_ingredient = columns[0].getAttribute("value")
+					let quantity = parseInt(columns[1].firstElementChild.value)
+					let unit = columns[2].firstElementChild.value
+					let ingredient = {
+						"id_ingredient": id_ingredient,
+						"quantity": quantity,
+						"unit": unit
+					}
+					ingredients.push(ingredient)
+				})
+				section.ingredients = ingredients
+
+				let instructions = []
+				$(".section" + sectionId + "instructions").each(function () {
+					let instructionText = $(this).find("p").html()
+					let instruction = {
+						"text": instructionText
+					}
+					instructions.push(instruction)
+				})
+				section.instructions = instructions
+				sections.push(section)
+			})
+			recipe.sections = sections
+			console.log(recipe)
+
+			$.ajax({
+				url : "/api/recipes",
+				type : 'POST',
+				data :  JSON.stringify(recipe),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success : function(id_returned) {
+					let form_data = new FormData()
+					if (ins != 0){
+						for(let x = 0; x < ins; x++){
+							form_data.append("files[]", $('#recipeFile').prop('files')[x])
+						}
+						$.ajax({
+							type: 'POST',
+							url: 'python-flask-files-upload',
+							data: form_data,
+							dataType: 'json',
+							processData: false,
+							contentType: false,
+							success: function (response) {
+								window.location.href = "/home";
+							}
+						})
+					} else {
+						window.location.href = "/home";
+					}
+				}
+			})
+		}
+    </script>
+</body>
