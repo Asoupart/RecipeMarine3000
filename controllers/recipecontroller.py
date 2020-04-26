@@ -39,7 +39,7 @@ def page_recipe(id_recipe):
     return render_template('pageRecipe.html')
 
 
-@app.route('/ajout/python-flask-files-upload', methods=['POST'])
+@app.route('/api/python-flask-files-upload', methods=['POST'])
 def upload_file():
     if 'files[]' not in request.files:
         resp = jsonify({'message': 'No file part in the request'})
