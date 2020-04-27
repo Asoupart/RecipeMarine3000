@@ -1,7 +1,14 @@
 import json
+import configparser
+import os
 from flask import make_response, abort
 from DAO import ImageDAOImpl
 from models.Image import Image
+
+
+config_api = configparser.ConfigParser()
+config_api.read('config.ini')
+folder = config_api['UPLOAD_FOLDER']['Folder']
 
 
 def read_all():
@@ -41,4 +48,8 @@ def update(id_img, image):
 
 
 def delete(id_img):
+    image = ImageDAOImpl.findOneById(id_img)
+    if os.path.exists(folder + image.name):
+        os.remove(folder + image.name)
     ImageDAOImpl.deleteById(id_img)
+

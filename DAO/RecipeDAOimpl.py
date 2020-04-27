@@ -127,8 +127,8 @@ def update(recipe):
     cursor = conn.cursor()
 
     try:
-        cursor.execute('UPDATE recipes SET name = ? AND nbr_person WHERE id = ?',
-                       (recipe.name, recipe.nbr_person, recipe.id_recipe))
+        cursor.execute('UPDATE recipes SET name = ?, nbr_person = ?, id_src = ? WHERE id = ?',
+                       (recipe.name, recipe.nbr_person, recipe.id_src, recipe.id_recipe))
         conn.commit()
     except sqlite3.Error as error:
         print(error.with_traceback())

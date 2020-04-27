@@ -1,7 +1,9 @@
 import json
 from flask import make_response, abort
 from DAO import SectionDAOimpl
+from DAO import InstructionDAOimpl
 from models.Section import Section
+from models.Instruction import Instruction
 
 
 def read_all():
@@ -33,6 +35,16 @@ def create(section):
     return id_section
 
 
+def add_section(id_recipe, section):
+    section_to_insert = Section(None, section.get("name", None), id_recipe)
+    id_section = SectionDAOimpl.insert(section_to_insert)
+    for ingredient in section.get("ingredients", None):
+        SectionDAOimpl.addIngredientToDB(id_section, ingredient.get("id_ingredient", None),
+                                         ingredient.get("quantity", None), ingredient.get("unit", None))
+    for instruction in section.get("instructions", None):
+        InstructionDAOimpl.insert(Instruction(None, instruction.get("text", None), id_section))
+
+
 def update(id_sec, section):
     name = section.get("name", None)
     id_recipe = section.get("id_recipe", None)
@@ -41,6 +53,8 @@ def update(id_sec, section):
 
 
 def delete(id_sec):
+    InstructionDAOimpl.deleteBySection(id_sec)
+    SectionDAOimpl.eraseAllMappingBySection(id_sec)
     SectionDAOimpl.deleteById(id_sec)
 
 

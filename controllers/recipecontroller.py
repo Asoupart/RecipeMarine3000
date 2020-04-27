@@ -1,16 +1,19 @@
 import connexion
 import os
+import configparser
 from flask import (render_template, request, jsonify)
 from werkzeug.utils import secure_filename
 
 app = connexion.App(__name__, specification_dir='../openapi/')
-UPLOAD_FOLDER = 'E:/Code/RecipeMarine3000/controllers/images/'
-app.app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+config_api = configparser.ConfigParser()
+config_api.read('config.ini')
+app.app.config['UPLOAD_FOLDER'] = config_api['UPLOAD_FOLDER']['Folder']
+#app.app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.add_api('swagger.yml')
 
 # app.secret_key = '?\x91\xa7\x11\x0b\xb9.\x1e\x05n\x05\xa8\xb4\xab\xee6\xa2\x1e?\x96\xae\xe1\xedB'
-version = "0.0.1"
+version = "1.0"
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 

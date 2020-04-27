@@ -727,6 +727,34 @@ paths:
                     type: "string"
                   id_recipe:
                     type: "integer"
+      post:
+        operationId: "restcontrollers.SectionsRestController.add_section"
+        tags:
+          - "Sections"
+        summary: "ajout d'une section à une recette"
+        description: "add a section"
+        parameters:
+          - name: id_recipe
+            in: path
+            description: id of the recipe
+            type: integer
+            required: True
+          - name: section
+            in: body
+            schema:
+              type: "object"
+              items:
+                properties:
+                  name:
+                    type: "string"
+                  instructions:
+                    type: "array"
+                  ingredients:
+                    type: "array"
+        responses:
+           200:
+            description: "Success"
+
   /sections/{id_sec}/ingredient/{id_ing}:
     post:
       operationId: "restcontrollers.SectionsRestController.set_ingredient"
@@ -1343,3 +1371,35 @@ paths:
                   type: "integer"
                 id_src:
                   type: "integer"
+  /recipes/{id_recipe}/categories:
+    delete:
+      operationId: "restcontrollers.RecipesRestController.delete_category_mapping"
+      tags:
+        - "Recipes"
+      summary: "Supprimes les catégories d'une recette"
+      description: "delete mapping between a recipe and its categories"
+      parameters:
+        - name: id_recipe
+          in: path
+          description: Id of the recipe
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
+  /recipes/{id_recipe}/tools:
+    delete:
+      operationId: "restcontrollers.RecipesRestController.delete_tool_mapping"
+      tags:
+        - "Recipes"
+      summary: "Supprimes les outils d'une recette"
+      description: "delete mapping between a recipe and its tools"
+      parameters:
+        - name: id_recipe
+          in: path
+          description: Id of the recipe
+          type: integer
+          required: True
+      responses:
+        200:
+          description: "Success"
