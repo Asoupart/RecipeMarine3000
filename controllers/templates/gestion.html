@@ -321,6 +321,9 @@
 
             let id_item = $("#itemToDelete").val()
             $.getJSON("/api/recipes/" + type + "/" + id_item, function(data) {
+            	if (type == "category") {
+            		type = "categorie"
+				}
                 if (data.length == 0){
                     $.ajax({
                         url : '/api/' + type +'s/' + id_item,
