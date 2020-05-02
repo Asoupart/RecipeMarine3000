@@ -1,13 +1,14 @@
 import connexion
 import os
 import configparser
+import sys
 from flask import (render_template, request, jsonify)
 from werkzeug.utils import secure_filename
 
 app = connexion.App(__name__, specification_dir='../openapi/')
 
 config_api = configparser.ConfigParser()
-config_api.read('config.ini')
+config_api.read(sys.argv[1])
 app.app.config['UPLOAD_FOLDER'] = config_api['UPLOAD_FOLDER']['Folder']
 #app.app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.add_api('swagger.yml')
