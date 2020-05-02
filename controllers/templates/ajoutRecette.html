@@ -100,8 +100,14 @@
 				</section>
 				<section class="row" id="sections">
 				</section>
-				<button type="button" class="btn btn-success" onclick="addSection()">Ajouter section</button>
-				<button type="button" class="btn btn-primary" onclick="submitForm()">Créer la recette</button>
+				<div class="row">
+					<button type="button" class="btn btn-success" onclick="addSection()">Ajouter section</button>
+				</div>
+				<div class="row" id="alertBox">
+				</div>
+				<div class="row">
+					<button type="button" class="btn btn-primary" onclick="submitForm()">Créer la recette</button>
+				</div>
 			</form>
         </article>
         <div class="col-1"></div>
@@ -215,7 +221,6 @@
 		let displaySources = function(){
 			$("#sources").empty()
 			$("#sources").append($("<option>").attr("disabled", "disabled").attr("selected","selected").html("Choississez votre source"))
-			$("#sources").append($("<option>").val(0).html("Aucune"))
 			$.getJSON("/api/sources", function(data) {
 				$.each(data, function(key, val) {
           	      $("#sources").append($("<option>").val(val.id).html(val.name))
@@ -292,6 +297,7 @@
 		}
 
 		let displayIngredients = function(idSection){
+			$("#selectIngredient"+idSection).empty()
 			$.getJSON("/api/ingredients", function(data) {
 				$.each(data, function(key, val) {
 					$("#selectIngredient"+idSection).append($("<option>")
@@ -406,6 +412,7 @@
 
 		let addElem = function(elem, idSection){
 			$("#modalAdd").modal("show")
+			$("#elemToBeAdded").val(null)
 			$("#elemType").val(elem)
 			$("#sectionId").val(idSection)
 			switch (elem) {
@@ -462,12 +469,21 @@
 		* */
 
 		let submitForm = function () {
+			$("#alertBox").empty()
+
+			if ($("#recipeTitle").val() == null) {
+				$("#alertBox").append($("<p>").html("Entrer un titre pour la recette"))
+				return
+			}
+
 			let source
-			if($("#sources").val() == 0){
-				source = 0
+			if($("#sources").val() == null){
+				$("#alertBox").append($("<p>").html("Aucune source sélectionnée"))
+				return
 			} else {
 				source = parseInt($("#sources").val())
 			}
+
 
 			let recipe = {
  				   "name_recipe": $("#recipeTitle").val(),
@@ -481,9 +497,16 @@
 
 			let ins = $('#recipeFile').prop('files').length
 			let images = []
+			let name_images = []
 			for(let x = 0; x < ins; x++) {
+				let parsed_name = $("#recipeFile").prop('files')[x].name.split('.')
+				let extension = parsed_name[parsed_name.length-1]
+
+				let id = generateId(20) + Date.now() + '.' + extension
+				name_images.push(id)
 				let img = {
-					"name": $("#recipeFile").prop('files')[x].name
+					"name": id
+					/*"name": $("#recipeFile").prop('files')[x].name*/
 				}
 				images.push(img)
 			}
@@ -495,6 +518,10 @@
 					categories.push(this.value)
 				}
 			})
+			if (categories.length == 0) {
+				$("#alertBox").append($("<p>").html("Aucune catégorie sélectionnée"))
+				return
+			}
 			recipe.id_cats = categories
 
 			let tools = []
@@ -506,12 +533,13 @@
 			recipe.id_tools = tools
 
 			let sections = []
+			let valid_section = true
+			let valid_ingredient = true
 			$(".sectionRecipe").each(function () {
 				let sectionId = $(this).attr("sectionId")
 				let title = $(this).find("input").val()
 				if (title == null || title == ""){
-					alert("Titre de section manquant !")
-					return
+					valid_section = false
 				}
 
 				let section = {
@@ -525,6 +553,11 @@
 					let columns = $(this).find("td")
 					let id_ingredient = columns[0].getAttribute("value")
 					let quantity = parseInt(columns[1].firstElementChild.value)
+
+					if (columns[1].firstElementChild.value == null || columns[1].firstElementChild.value == ""){
+						valid_ingredient = false
+					}
+
 					let unit = columns[2].firstElementChild.value
 					let ingredient = {
 						"id_ingredient": id_ingredient,
@@ -547,7 +580,14 @@
 				sections.push(section)
 			})
 			recipe.sections = sections
-			console.log(recipe)
+
+			if (valid_section == false) {
+				$("#alertBox").append($("<p>").html("Titre de section manquant"))
+				return;
+			} else if (valid_ingredient == false) {
+				$("#alertBox").append($("<p>").html("Quantité manquante"))
+				return;
+			}
 
 			$.ajax({
 				url : "/api/recipes",
@@ -559,7 +599,7 @@
 					let form_data = new FormData()
 					if (ins != 0){
 						for(let x = 0; x < ins; x++){
-							form_data.append("files[]", $('#recipeFile').prop('files')[x])
+							form_data.append("files[]", $('#recipeFile').prop('files')[x], name_images[x])
 						}
 						$.ajax({
 							type: 'POST',
@@ -577,6 +617,19 @@
 					}
 				}
 			})
+		}
+
+		// dec2hex :: Integer -> String
+		// i.e. 0-255 -> '00'-'ff'
+		function dec2hex (dec) {
+		  return ('0' + dec.toString(16)).substr(-2)
+		}
+
+		// generateId :: Integer -> String
+		function generateId (len) {
+		  let arr = new Uint8Array((len || 40) / 2)
+		  window.crypto.getRandomValues(arr)
+		  return Array.from(arr, dec2hex).join('')
 		}
     </script>
 </body>

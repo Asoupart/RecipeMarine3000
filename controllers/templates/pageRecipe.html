@@ -48,22 +48,42 @@
 			 <div style="text-align:center" class="text-nowrap">
 				 <div id="dotsForSlides">
 				 </div>
-			</div>
+			 </div>
+			 <div class="btn-edit text-center">
+				 <h3>Ajouter des images</h3>
+				 <input type="file" class="form-control-file" id="recipeFile" name="files[]" multiple="multiple">
+				 <button class="btn btn-warning" onclick="uploadImages()">Téléverser les images</button>
+				 <div id="editImages">
+
+				 </div>
+			 </div>
 			 <div class="text-center" id="headerRecipe">
 				 <h1 id="recipeTitle"></h1>
 				 <button type="button" class="btn btn-warning" onclick="toggleEditOption()">Editer</button>
 				 <button type="button" class="btn btn-danger" onclick="toggleModalDelete('recipe', 0, 0)">Supprimer</button>
 				 <h3 id="recipeSource"></h3>
+				 <div class="btn-edit" id="editSource"></div>
 				 <div id="categories"></div>
+				 <div class="btn-edit" id="editCategories"></div>
 				 <div id="tools"></div>
+				 <div class="btn-edit" id="editTools"></div>
 				 <h3 id="recipeNumber"></h3>
+				 <div class="btn-edit text-center">
+					 <input type="number" id="editNumber" class="form-control">
+					 <button class="btn btn-warning" onclick="modifyNumber()">Modifier le nombre de personnes</button>
+				 </div>
 			 </div>
 			 <div id="listIngredientsFull">
 
 			 </div>
 			<article id="sections">
 
-            </article>
+			</article>
+			<div class="btn-edit">
+				<button class="btn btn-warning" onclick="newsection()">Ajouter une section</button>
+				<div id="new_section"></div>
+				<div id="alertBox"></div>
+			</div>
          </div>
          <div class="col-1"></div>
     </main>
@@ -169,16 +189,54 @@
             crossorigin="anonymous"></script>
 <script type="text/javascript">
 	let id_recipe = window.location.toString().split('/')[4]
+	let recipe
 	let slideIndex = 1;
     window.onload = function(){
         $.getJSON("/api/recipes/"+id_recipe, function(data) {
+        	recipe = data
             $("#recipeTitle").html(data.name)
 			$("#recipeNumber").html("Nombre de personnes : " + data.nbr_person)
-		$.getJSON("/api/sources/" + data.id_src, function (source) {
-			$("#recipeSource").html("Source : " + source.name)
-		})
+			$.getJSON("/api/sources/" + data.id_src, function (source) {
+				$("#recipeSource").html("Source : " + source.name)
+			})
         })
-        $.getJSON("/api/sections/recipe/"+id_recipe, function(data) {
+
+		$.getJSON("/api/sources", function (sources) {
+			let select = $("<select>").attr("id","selectSource")
+			select.append($("<option>").attr("disabled", "disabled").attr("selected","selected").html("Choississez votre source"))
+			$.each(sources, function (key, val) {
+				select.append($("<option>").val(val.id).html(val.name))
+			})
+
+			$("#editSource").append(select)
+							.append($("<button>").addClass("btn btn-warning")
+												 .html("Modifier la source")
+									.attr("onclick", "modifySource()"))
+		})
+
+		$.getJSON("/api/categories", function(data) {
+			$.each(data, function(key, val) {
+				$("#editCategories").append($("<input>").attr("type", "checkbox").addClass("category").attr("id", "category"+val.id).val(val.id))
+				$("#editCategories").append($("<label>").attr("for", "category"+val.id).html(val.name))
+				$("#editCategories").append($("<br>"))
+			})
+			$("#editCategories").append($("<button>").addClass("btn btn-warning")
+												 	 .html("Modifier les catégories")
+													 .attr("onclick", "modifyCategories()"))
+		})
+
+		$.getJSON("/api/tools", function(data) {
+			$.each(data, function(key, val) {
+				$("#editTools").append($("<input>").attr("type", "checkbox").addClass("tool").attr("id", "tool"+val.id).val(val.id))
+				$("#editTools").append($("<label>").attr("for", "tool"+val.id).html(val.name))
+				$("#editTools").append($("<br>"))
+			})
+			$("#editTools").append($("<button>").addClass("btn btn-warning")
+												 	 .html("Modifier les outils")
+													 .attr("onclick", "modifyTools()"))
+		})
+
+		$.getJSON("/api/sections/recipe/"+id_recipe, function(data) {
 			displayCategories()
 			displayTools()
 			displayIngredientRecipe()
@@ -189,6 +247,9 @@
                     .attr("id","section"+id_section)
                     .append($("<h2>")
                         .html(val.name)))
+				$("#section" + id_section).append($("<button>").addClass("btn btn-edit btn-danger")
+															   .html("Supprimer cette section")
+															   .attr("onclick", "toggleModalDelete('section', " + id_section + "," + id_section + ")"))
 				$("#section" + id_section).append($("<div>").addClass("ingredients").attr("section",id_section))
 				displayIngredient(id_section)
 				$("#section" + id_section).append($("<div>").addClass("instructions").attr("section",id_section))
@@ -209,10 +270,109 @@
 				block_image.append($("<div>").addClass("numbertext").html(key+1 + " / " + image_number))
 				block_image.append($("<img>").addClass("text-center").attr("src","/images/" + val.name).attr("onclick", "plusSlides(1)"))
 				$("#listImages").append(block_image)
+
+				let block_edit_image = $("<div>").addClass("text-center")
+												 .append($("<img>").attr("src","/images/" + val.name))
+												 .append($("<button>").addClass("btn btn-danger")
+														              .html("<i class='fas fa-minus'></i>")
+														              .attr("onclick", "toggleModalDelete('image', " + 0 + ", " + val.id + ")"))
+				$("#editImages").append(block_edit_image)
 			})
 			showSlides(slideIndex);
 		})
     }
+
+    let modifySource = function(){
+		let new_recipe = {
+    		"id_src": parseInt($("#selectSource").val()),
+			"name" : recipe.name,
+			"nbr_person": recipe.nbr_person
+		}
+		$.ajax({
+			url: "/api/recipes/" + id_recipe,
+			type: 'PUT',
+			data: JSON.stringify(new_recipe),
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function (result) {
+				location.reload()
+			}
+		})
+	}
+
+	let modifyNumber = function(){
+    	let new_recipe = {
+    		"id_src": recipe.id_src,
+			"name" : recipe.name,
+			"nbr_person": parseInt($("#editNumber").val())
+		}
+		$.ajax({
+			url: "/api/recipes/" + id_recipe,
+			type: 'PUT',
+			data: JSON.stringify(new_recipe),
+			contentType: "application/json; charset=utf-8",
+			dataType: "json",
+			success: function (result) {
+				location.reload()
+			}
+		})
+	}
+
+	let modifyCategories = function(){
+		let categories = []
+		$(".category").each(function () {
+			if(this.checked == true){
+				categories.push(this.value)
+			}
+		})
+		if (categories.length == 0) {
+			$("#editCategories").append($("<p>").html("Aucune catégorie sélectionnée"))
+			return
+		}
+		$.ajax({
+			url: "/api/recipes/" + id_recipe + "/categories",
+			type: 'DELETE',
+			success: function (result) {
+				categories.forEach(function (elem) {
+					$.ajax({
+						url: "/api/recipes/" + id_recipe + "/category/" + elem,
+						type: 'POST',
+						success: function (result) {
+							location.reload()
+						}
+					})
+				})
+			}
+		})
+	}
+
+	let modifyTools = function(){
+		let tools = []
+		$(".tool").each(function () {
+			if(this.checked == true){
+				tools.push(this.value)
+			}
+		})
+		$.ajax({
+			url: "/api/recipes/" + id_recipe + "/tools",
+			type: 'DELETE',
+			success: function (result) {
+				if (tools.length > 0) {
+					tools.forEach(function (elem) {
+						$.ajax({
+							url: "/api/recipes/" + id_recipe + "/tool/" + elem,
+							type: 'POST',
+							success: function (result) {
+								location.reload()
+							}
+						})
+					})
+				} else {
+					location.reload()
+				}
+			}
+		})
+	}
 
 	$("#hamburger").click(function () {
 		if ($("#links").css("display") === "none") {
@@ -456,6 +616,12 @@
 		let id_instruction = $("#instructionIdforEdit").val()
 		let text_instruction = $("#instructionText").val()
 
+		if (id_section == 0) {
+			$("p[section=" + id_section + "][instruction=" + id_instruction + "]").html(text_instruction)
+			$("#modalEditInstruction").modal("hide")
+			return
+		}
+
 		let instruction = {
 			"text": text_instruction,
 			"id_section": id_section
@@ -523,36 +689,314 @@
 				})
 				$("#modalDeleteItem").modal("hide")
 				break
+			case "image":
+				$.ajax({
+					url : "/api/images/" + id_item,
+					type : 'DELETE',
+					success : function(result) {
+						location.reload()
+					}
+				})
+				$("#modalDeleteItem").modal("hide")
+				break
+			case "section":
+				$.ajax({
+					url : "/api/sections/" + id_item,
+					type : 'DELETE',
+					success : function(result) {
+						location.reload()
+					}
+				})
+				$("#modalDeleteItem").modal("hide")
+				break
 		}
 		$(".btn-edit").css("display", "none")
 	}
 
+	let i = 0
+	let newsection = function(){
+		let divAddIngredient = $("<div>").attr("id","ingredients"+i)
+		divAddIngredient.append($("<button>")
+				.attr("id", "buttonIngredient"+i)
+				.attr("type", "button")
+				.addClass("btn btn-primary")
+				.attr("onclick","addIngredient("+ i +")")
+				.html("Ajouter ingrédient")
+		)
+
+		let divAddInstruction = $("<div>").attr("id","instructions"+i)
+		divAddInstruction.append($("<button>")
+				.attr("id", "buttonInstruction"+i)
+				.attr("type", "button")
+				.addClass("btn btn-primary")
+				.attr("onclick","addInstruction("+ i +")")
+				.html("Ajouter instruction")
+		)
+		divAddInstruction.append($("<br>"))
+
+		let div = $("<div>").attr("id", "section"+i).addClass("col-12 sectionRecipe").attr("sectionId", i)
+		div.append($("<button>")
+				.attr("type", "button")
+				.addClass("btn btn-danger")
+				.attr("onclick","removeSection("+i+")")
+				.html("Supprimer cette section"))
+		div.append($("<br>"))
+		div.append($("<input>")
+				.attr("type", "text")
+				.addClass("form-control sectionTitle")
+				.attr("id", "sectionTitle"+i)
+				.attr("placeholder","Titre de la section"))
+		div.append($("<br>"))
+		div.append(divAddIngredient)
+		div.append(divAddInstruction)
+		$("#new_section").append(div)
+		$("#new_section").append($("<button>").addClass("btn btn-warning").html("Ajouter cette section").attr("onclick","addNewSection()"))
+		i++
+	}
+
+	let removeSection = function(idSection){
+		$("#section"+idSection).remove()
+	}
+
+	let displayIngredients = function(idSection){
+			$("#selectIngredient"+idSection).empty()
+			$.getJSON("/api/ingredients", function(data) {
+				$.each(data, function(key, val) {
+					$("#selectIngredient"+idSection).append($("<option>")
+							.attr("id", "section"+idSection+"ingredient"+val.id)
+							.attr("value", val.id)
+							.html(val.name))
+				})
+			})
+		}
+
+		let addIngredient = function (idSection){
+			$("#buttonIngredient"+idSection).attr("disabled", "disabled")
+			let selectIngredient = $("<select>").attr("id","selectIngredient"+idSection)
+			let table = $("<table>").attr("id", "listIngredients"+i)
+			selectIngredient.append($("<option>").attr("disabled","disabled").attr("selected","selected").html("Ingrédient"))
+			displayIngredients(idSection)
+
+			$("#ingredients"+idSection).append(selectIngredient)
+			$("#ingredients"+idSection).append($("<button>")
+					.attr("type","button")
+					.addClass("btn btn-primary")
+					.html("<i class='fas fa-plus'></i>")
+					.click(function () {
+						if(selectIngredient.val() != null && selectIngredient.val() != 0){
+							let tr = $("<tr>")
+							tr.attr("sectionId", idSection)
+							tr.addClass("ingredientsSection")
+							tr.append($("<td>")
+									.attr("value", selectIngredient.val())
+									.html($("#section"+idSection+"ingredient"+selectIngredient.val()).html()))
+							tr.append($("<td>")
+									.append($("<input>")
+											.attr("type", "number")
+											.attr("id", "quantityIngredient"+selectIngredient.val())
+									))
+							tr.append($("<td>")
+									.append($("<select>")
+											.append($("<option>").attr("id","unitIngredient"+selectIngredient.val()).html("Sans unité").val("nounit"))
+											.append($("<option>").attr("id","unitIngredient"+selectIngredient.val()).html("g").val("g"))
+									)
+							)
+							tr.append($("<td>")
+									.append($("<button>").attr("type", "button").addClass("btn btn-danger").html("<i class='fas fa-minus'></i>").click(function () {
+									tr.remove()
+									}
+							)))
+							table.append(tr)
+						}
+					})
+					)
+			$("#ingredients"+idSection).append(table)
+		}
+
+		let j = 1
+		let addInstruction = function(idSection){
+			$("#buttonInstruction"+idSection).attr("disabled", "disabled")
+			let textarea = $("<textarea>").attr("id","insertInstruction"+idSection).addClass("col-12").attr("placeholder", "Ecrivez votre instruction")
+			$("#instructions"+idSection).append(textarea)
+			$("#instructions"+idSection).append($("<br>"))
+			$("#instructions"+idSection).append($("<button>")
+					.attr("type","button")
+					.addClass("btn btn-success")
+					.html("<i class='fas fa-plus'></i>")
+					.attr("onclick", "newInstruction(" + idSection + ")")
+			)
+		}
+
+		let newInstruction = function(idSection){
+			let instruction = $("<div>").addClass("row").attr("section", 0).attr("instruction", j)
+					.append($("<p>").attr("section", 0).attr("instruction", j)
+							.addClass("col-8")
+							.html($("#insertInstruction"+idSection).val()))
+					.append($("<div>").addClass("col-2")
+							.append($("<button>")
+							.addClass("btn btn-warning")
+							.attr("type","button")
+							.html("<i class='fas fa-cog'></i>")
+							.attr("onclick","toggleModalEditInstruction(0, " + j + ")")
+							)
+					)
+					.append($("<div>").addClass("col-2")
+						.append($("<button>")
+							.addClass("btn btn-danger")
+							.attr("type","button")
+							.html("<i class='fas fa-minus'></i>")
+							.attr("onclick", "removeInstruction(0," + j +")")
+						)
+					)
+			$("#instructions"+idSection).append(instruction)
+			$("#insertInstruction"+idSection).val(null)
+			j++
+    }
+
+	let removeInstruction = function(idSection, idInstruction){
+		$("div[section=0][instruction=" + idInstruction +"]").remove()
+	}
+
+	let addNewSection = function(){
+  		$("#alertBox").empty()
+    	let valid_section = true
+		let valid_ingredient = true
+		let title = $("#sectionTitle0").val()
+
+		if (title == null || title == ""){
+			valid_section = false
+		}
+
+		let section = {
+					"name": title,
+					"ingredients": [],
+					"instructions": [],
+				}
+
+		let ingredients = []
+		$("tr[sectionId=0]").each(function () {
+			let columns = $(this).find("td")
+			let id_ingredient = columns[0].getAttribute("value")
+			let quantity = parseInt(columns[1].firstElementChild.value)
+
+			if (columns[1].firstElementChild.value == null || columns[1].firstElementChild.value == ""){
+				valid_ingredient = false
+			}
+
+			let unit = columns[2].firstElementChild.value
+			let ingredient = {
+				"id_ingredient": id_ingredient,
+				"quantity": quantity,
+				"unit": unit
+			}
+			ingredients.push(ingredient)
+		})
+		section.ingredients = ingredients
+
+		let instructions = []
+			$("p[section=0]").each(function () {
+				let instructionText = $(this).html()
+				let instruction = {
+					"text": instructionText
+				}
+				instructions.push(instruction)
+			})
+		section.instructions = instructions
+
+		if (valid_section == false) {
+			$("#alertBox").append($("<p>").html("Titre de section manquant"))
+			return;
+		} else if (valid_ingredient == false) {
+			$("#alertBox").append($("<p>").html("Quantité manquante"))
+			return;
+		}
+
+		$.ajax({
+				url : "/api/sections/recipe/" + id_recipe,
+				type : 'POST',
+				data :  JSON.stringify(section),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success : function() {
+					location.reload()
+				}
+		})
+	}
+
 	/* Tous ce qui est image*/
 
+	let uploadImages = function(){
+		let ins = $('#recipeFile').prop('files').length
+		for(let x = 0; x < ins; x++) {
+			let parsed_name = $("#recipeFile").prop('files')[x].name.split('.')
+			let extension = parsed_name[parsed_name.length-1]
+			let id = generateId(20) + Date.now() + '.' + extension
 
-function plusSlides(n) {
-  showSlides(slideIndex += n);
-}
+			let img = {
+				"name": id,
+				"id_recipe": parseInt(id_recipe)
+			}
 
-function currentSlide(n) {
-  showSlides(slideIndex = n);
-}
+			$.ajax({
+				url: "/api/images",
+				type: 'POST',
+				data: JSON.stringify(img),
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				success: function (id_returned) {
+					let form_data = new FormData()
+					form_data.append("files[]", $('#recipeFile').prop('files')[x], id)
 
-function showSlides(n) {
-	let i;
-	let slides = $(".MySlides")
-	let dots = $(".dot")
-	if (n > slides.length) {slideIndex = 1}
-	if (n < 1) {slideIndex = slides.length}
-	for (i = 0; i < slides.length; i++) {
-	  slides[i].style.display = "none";
+					$.ajax({
+						type: 'POST',
+						url: '/api/python-flask-files-upload',
+						data: form_data,
+						dataType: 'json',
+						processData: false,
+						contentType: false,
+						success: function (response) {
+							location.reload()
+						}
+					})
+				}
+			})
+		}
 	}
-	for (i = 0; i < dots.length; i++) {
-	  dots[i].className = dots[i].className.replace(" active", "");
+
+	function plusSlides(n) {
+  		showSlides(slideIndex += n);
 	}
-	slides[slideIndex-1].style.display = "flex";
-	dots[slideIndex-1].className += " active";
-}
+
+	function currentSlide(n) {
+  		showSlides(slideIndex = n);
+	}
+
+	function showSlides(n) {
+		let i;
+		let slides = $(".MySlides")
+		let dots = $(".dot")
+		if (n > slides.length) {slideIndex = 1}
+		if (n < 1) {slideIndex = slides.length}
+		for (i = 0; i < slides.length; i++) {
+	  		slides[i].style.display = "none";
+		}
+		for (i = 0; i < dots.length; i++) {
+	  		dots[i].className = dots[i].className.replace(" active", "");
+		}
+		slides[slideIndex-1].style.display = "flex";
+		dots[slideIndex-1].className += " active";
+	}
+
+	function dec2hex (dec) {
+		return ('0' + dec.toString(16)).substr(-2)
+	}
+
+	// generateId :: Integer -> String
+	function generateId (len) {
+		let arr = new Uint8Array((len || 40) / 2)
+		window.crypto.getRandomValues(arr)
+		return Array.from(arr, dec2hex).join('')
+	}
 
 </script>
 </html>

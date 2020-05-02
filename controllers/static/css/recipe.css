@@ -10,7 +10,7 @@
     margin: 10px 0 20px 0;
 }
 
-#headerRecipe button {
+.btn {
     font-size: 30px;
     font-weight: bold;
     margin: 5px 15px;
@@ -99,8 +99,31 @@ section {
     position: center;
 }
 
+input, select {
+    font-size: 40px;
+    margin: 20px 0;
+}
+
 input[type=number] {
     max-width: 200px;
+    font-size: 40px;
+}
+
+input[type=checkbox] {
+	margin: 0px 20px 0 10px;
+	height: 1.4em;
+	width: 1.4em;
+}
+
+.btn-edit input {
+    min-width: 100px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+label {
+    font-size: 40px;
+    margin: 15px 0 !important;
 }
 
 #listImages{
@@ -111,6 +134,10 @@ input[type=number] {
     max-width: 400px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.sectionRecipe {
+    padding: 0;
 }
 
 @media only screen and (min-width: 1500px) {
@@ -131,7 +158,7 @@ input[type=number] {
         font-size: 22px;
     }
 
-    #headerRecipe h3, #listIngredientsFull p, #sections td, .modal {
+    #headerRecipe h3, #listIngredientsFull p, #sections td, .modal, label, .btn, input, select, input[type=number] {
         font-size: 20px;
     }
 
@@ -147,6 +174,12 @@ input[type=number] {
 img {
 	vertical-align: middle;
 	width: 100%;
+}
+
+#editImages img {
+    margin: 10px;
+    height: 50px;
+    width: 50px;
 }
 
 /* Next & previous buttons */

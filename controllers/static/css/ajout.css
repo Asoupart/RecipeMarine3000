@@ -58,6 +58,16 @@ section {
 	border: black solid 1px;
 }
 
+#alertBox {
+	margin: 5px;
+	background-color: lightcoral;
+	color: crimson;
+}
+
+#alertBox p {
+	padding: 10px;
+}
+
 @media only screen and (min-width: 1500px) {
 
 	main h1, td {

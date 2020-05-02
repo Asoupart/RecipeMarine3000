@@ -1,6 +1,7 @@
 import json, os
 from flask import make_response, abort
 from DAO import RecipeDAOimpl, SectionDAOimpl, ImageDAOImpl, InstructionDAOimpl
+from restcontrollers import SectionsRestController
 from models.Recipe import Recipe
 from models.Section import Section
 from models.Instruction import Instruction
@@ -78,12 +79,7 @@ def create_recipe(recipe):
     for id_tool in recipe.get("id_tools", None):
         RecipeDAOimpl.addTool(id_recipe, id_tool)
     for section in recipe.get("sections", None):
-        section_to_insert = Section(None, section.get("name", None), id_recipe)
-        id_section = SectionDAOimpl.insert(section_to_insert)
-        for ingredient in section.get("ingredients", None):
-            SectionDAOimpl.addIngredientToDB(id_section, ingredient.get("id_ingredient", None), ingredient.get("quantity", None), ingredient.get("unit", None))
-        for instruction in section.get("instructions", None):
-            InstructionDAOimpl.insert(Instruction(None, instruction.get("text", None), id_section))
+        SectionsRestController.add_section(id_recipe, section)
 
 
 def update(id_recipe, recipe):
@@ -104,10 +100,7 @@ def delete_full(id_recipe):
         SectionDAOimpl.eraseAllMappingBySection(section.id_sec)
         SectionDAOimpl.deleteById(section.id_sec)
     for image in ImageDAOImpl.findByRecipe(id_recipe):
-        if os.path.exists('E:/Code/RecipeMarine3000/controllers/images/' + image.name):
-            os.remove('E:/Code/RecipeMarine3000/controllers/images/' + image.name)
-
-    ImageDAOImpl.findByRecipe(id_recipe)
+        ImageDAOImpl.deleteById(image.id_img)
     RecipeDAOimpl.eraseCategoryMapping(id_recipe)
     RecipeDAOimpl.eraseToolMapping(id_recipe)
     RecipeDAOimpl.deleteById(id_recipe)
@@ -117,5 +110,13 @@ def set_category(id_recipe, id_cat):
     RecipeDAOimpl.addCategory(id_recipe, id_cat)
 
 
+def delete_category_mapping(id_recipe):
+    RecipeDAOimpl.eraseCategoryMapping(id_recipe)
+
+
 def set_tool(id_recipe, id_tool):
     RecipeDAOimpl.addTool(id_recipe, id_tool)
+
+
+def delete_tool_mapping(id_recipe):
+    RecipeDAOimpl.eraseToolMapping(id_recipe)
